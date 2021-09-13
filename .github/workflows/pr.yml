@@ -1,0 +1,14 @@
+name: Pull request checks
+on: pull_request
+jobs:
+  pr-check:
+      name: Check pull request labels
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Install auto for pr-check
+          run: |
+            curl -vkL -o - https://github.com/intuit/auto/releases/download/v10.28.0/auto-linux.gz | gunzip > /usr/local/bin/auto && \
+            chmod a+x /usr/local/bin/auto
+        - name: Run auto pr-check
+          run: GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" auto pr-check --url https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
