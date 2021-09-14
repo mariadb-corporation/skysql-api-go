@@ -1,3 +1,15 @@
+# v0.0.2 (Tue Sep 14 2021)
+
+#### 🐛 Bug Fix
+
+- Fix module path in go.mod to align with name of repository [#5](https://github.com/mariadb-corporation/skysql-api-go/pull/5) ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+#### Authors: 1
+
+- Don Mayo ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+---
+
 # v0.0.1 (Tue Sep 14 2021)
 
 #### 💥 Breaking Change
