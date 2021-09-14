@@ -1,4 +1,4 @@
-module mariadb-corporation/skysql
+module mariadb-corporation/skysql-api-go
 
 go 1.17
 
