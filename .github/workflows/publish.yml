@@ -58,7 +58,7 @@ jobs:
   release:
     name: Publish new release
     runs-on: ubuntu-latest
-    needs: [pipeline-container, test, lint, pre-commit]
+    needs: [pipeline-container]
     container:
       image: ${{needs.pipeline-container.outputs.image}}
     outputs:
