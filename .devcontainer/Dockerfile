@@ -13,7 +13,9 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
 
 # [Optional] Uncomment the next line to use go get to install anything else you need
-RUN go get github.com/deepmap/oapi-codegen/cmd/oapi-codegen
+RUN go get github.com/deepmap/oapi-codegen/cmd/oapi-codegen && \
+    curl -vkL -o - https://github.com/intuit/auto/releases/download/v10.28.0/auto-linux.gz | gunzip > /usr/local/bin/auto && \
+    chmod a+x /usr/local/bin/auto
 
 
 # [Optional] Uncomment this line to install global node packages.
