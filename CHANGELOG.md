@@ -1,3 +1,15 @@
+# v0.0.3 (Tue Sep 14 2021)
+
+#### 🐛 Bug Fix
+
+- Include github.com in module path [#6](https://github.com/mariadb-corporation/skysql-api-go/pull/6) ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+#### Authors: 1
+
+- Don Mayo ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+---
+
 # v0.0.2 (Tue Sep 14 2021)
 
 #### 🐛 Bug Fix
