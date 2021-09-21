@@ -2,8 +2,8 @@
     "openapi": "3.0.2",
     "info": {
         "title": "SkySQL API",
-        "description": "\n\n\n\n",
-        "version": "0.0.12"
+        "description": "To authorize requests with the SkySQL API, first [generate an API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\nUsing the API key, generate a short lived token (JWT):\n\n    curl --location --request POST 'https://id-dev.mariadb.com/api/v1/token/' --header 'Authorization: Token REDACTED' --header 'Content-length: 0'\n\nThe JWT contained in the `token` field of the response may be used to authorized requests to the API.",
+        "version": "0.0.24"
     },
     "paths": {
         "/billing/quotas": {
@@ -921,6 +921,188 @@
                 ]
             }
         },
+        "/databases/{database_id}/allowlist/": {
+            "get": {
+                "tags": [
+                    "Databases \u00b7 Allowlist"
+                ],
+                "summary": "List Allowed Addresses",
+                "description": "Retrieve a list of IP addresses which are currently on the allowlist for accessing\nthe database cluster and its monitoring system",
+                "operationId": "list_allowed_addresses",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Database Id",
+                            "type": "string"
+                        },
+                        "name": "database_id",
+                        "in": "path"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Limit",
+                            "maximum": 100.0,
+                            "minimum": 1.0,
+                            "type": "integer",
+                            "default": 10
+                        },
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Offset",
+                            "type": "integer",
+                            "default": 0
+                        },
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response List Allowed Addresses Databases  Database Id  Allowlist  Get",
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AllowlistIPAddress"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Databases \u00b7 Allowlist"
+                ],
+                "summary": "Add Allowed Address",
+                "description": "Add an address to the database cluster\u2019s allowlist",
+                "operationId": "add_allowed_address",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Database Id",
+                            "type": "string"
+                        },
+                        "name": "database_id",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/IPAddress"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Databases \u00b7 Allowlist"
+                ],
+                "summary": "Remove Allowed Address",
+                "description": "Remove an address from the database cluster\u2019s allowlist",
+                "operationId": "remove_allowed_address",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "title": "Database Id",
+                            "type": "string"
+                        },
+                        "name": "database_id",
+                        "in": "path"
+                    },
+                    {
+                        "required": false,
+                        "schema": {
+                            "title": "Address",
+                            "pattern": "(?:\\d{1,3}\\.){3}\\d{1,3}(?:/\\d\\d?)?",
+                            "type": "string"
+                        },
+                        "name": "address",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "HTTPBearer": []
+                    }
+                ]
+            }
+        },
         "/offering/products": {
             "get": {
                 "tags": [
@@ -1522,6 +1704,30 @@
     },
     "components": {
         "schemas": {
+            "AllowlistIPAddress": {
+                "title": "AllowlistIPAddress",
+                "required": [
+                    "ip_address",
+                    "database"
+                ],
+                "type": "object",
+                "properties": {
+                    "comment": {
+                        "title": "Comment",
+                        "type": "string"
+                    },
+                    "ip_address": {
+                        "title": "Ip Address",
+                        "type": "string"
+                    },
+                    "database": {
+                        "title": "Database",
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "description": "IP Address that has been added to the database network allowlist"
+            },
             "Configuration": {
                 "title": "Configuration",
                 "required": [
@@ -2036,6 +2242,7 @@
                 "properties": {
                     "name": {
                         "title": "Name",
+                        "minLength": 1,
                         "type": "string"
                     }
                 },
@@ -2053,6 +2260,24 @@
                         }
                     }
                 }
+            },
+            "IPAddress": {
+                "title": "IPAddress",
+                "required": [
+                    "ip_address"
+                ],
+                "type": "object",
+                "properties": {
+                    "comment": {
+                        "title": "Comment",
+                        "type": "string"
+                    },
+                    "ip_address": {
+                        "title": "Ip Address",
+                        "type": "string"
+                    }
+                },
+                "description": "IP Address representation in SkySQL"
             },
             "Message": {
                 "title": "Message",
@@ -2195,18 +2420,22 @@
                 "properties": {
                     "release_version": {
                         "title": "Release Version",
+                        "minLength": 1,
                         "type": "string"
                     },
                     "topology": {
                         "title": "Topology",
+                        "minLength": 1,
                         "type": "string"
                     },
                     "size": {
                         "title": "Size",
+                        "minLength": 1,
                         "type": "string"
                     },
                     "tx_storage": {
                         "title": "Tx Storage",
+                        "minLength": 1,
                         "type": "string"
                     },
                     "maxscale_config": {
@@ -2215,10 +2444,12 @@
                     },
                     "name": {
                         "title": "Name",
+                        "minLength": 1,
                         "type": "string"
                     },
                     "region": {
                         "title": "Region",
+                        "minLength": 1,
                         "type": "string"
                     },
                     "repl_region": {
@@ -2227,10 +2458,12 @@
                     },
                     "provider": {
                         "title": "Provider",
+                        "minLength": 1,
                         "type": "string"
                     },
                     "replicas": {
                         "title": "Replicas",
+                        "minLength": 1,
                         "type": "string"
                     },
                     "monitor": {

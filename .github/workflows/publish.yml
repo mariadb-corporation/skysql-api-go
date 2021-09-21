@@ -77,4 +77,4 @@ jobs:
         run: GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" auto shipit
       - id: version
         name: Output new version
-        run: echo "::set-output name=version::$(poetry version -s)"
+        run: echo "::set-output name=version::$(git describe --tags)"
