@@ -7,6 +7,13 @@ const (
 	HTTPBearerScopes = "HTTPBearer.Scopes"
 )
 
+// IP Address that has been added to the database network allowlist
+type AllowlistIPAddress struct {
+	Comment   *string `json:"comment,omitempty"`
+	Database  string  `json:"database"`
+	IpAddress string  `json:"ip_address"`
+}
+
 // MariaDB Configuration in SkySQL
 type Configuration struct {
 	Active       string `json:"active"`
@@ -128,6 +135,12 @@ type DatabaseUpdate struct {
 // HTTPValidationError defines model for HTTPValidationError.
 type HTTPValidationError struct {
 	Detail *[]ValidationError `json:"detail,omitempty"`
+}
+
+// IP Address representation in SkySQL
+type IPAddress struct {
+	Comment   *string `json:"comment,omitempty"`
+	IpAddress string  `json:"ip_address"`
 }
 
 // Generic message body containing error details for failed requests
@@ -359,6 +372,20 @@ type CreateDatabaseJSONBody NewDatabase
 // UpdateDatabaseJSONBody defines parameters for UpdateDatabase.
 type UpdateDatabaseJSONBody DatabaseUpdate
 
+// RemoveAllowedAddressParams defines parameters for RemoveAllowedAddress.
+type RemoveAllowedAddressParams struct {
+	Address *string `json:"address,omitempty"`
+}
+
+// ListAllowedAddressesParams defines parameters for ListAllowedAddresses.
+type ListAllowedAddressesParams struct {
+	Limit  *int `json:"limit,omitempty"`
+	Offset *int `json:"offset,omitempty"`
+}
+
+// AddAllowedAddressJSONBody defines parameters for AddAllowedAddress.
+type AddAllowedAddressJSONBody IPAddress
+
 // ReadProductsParams defines parameters for ReadProducts.
 type ReadProductsParams struct {
 	Limit *int `json:"limit,omitempty"`
@@ -408,3 +435,7 @@ type CreateDatabaseJSONRequestBody CreateDatabaseJSONBody
 
 // UpdateDatabaseJSONRequestBody defines body for UpdateDatabase for application/json ContentType.
 type UpdateDatabaseJSONRequestBody UpdateDatabaseJSONBody
+
+// AddAllowedAddressJSONRequestBody defines body for AddAllowedAddress for application/json ContentType.
+type AddAllowedAddressJSONRequestBody AddAllowedAddressJSONBody
+

@@ -134,6 +134,17 @@ type ClientInterface interface {
 
 	UpdateDatabase(ctx context.Context, databaseId string, body UpdateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RemoveAllowedAddress request
+	RemoveAllowedAddress(ctx context.Context, databaseId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAllowedAddresses request
+	ListAllowedAddresses(ctx context.Context, databaseId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddAllowedAddress request with any body
+	AddAllowedAddressWithBody(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddAllowedAddress(ctx context.Context, databaseId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ReadProducts request
 	ReadProducts(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -338,6 +349,54 @@ func (c *Client) UpdateDatabaseWithBody(ctx context.Context, databaseId string, 
 
 func (c *Client) UpdateDatabase(ctx context.Context, databaseId string, body UpdateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateDatabaseRequest(c.Server, databaseId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveAllowedAddress(ctx context.Context, databaseId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveAllowedAddressRequest(c.Server, databaseId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAllowedAddresses(ctx context.Context, databaseId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAllowedAddressesRequest(c.Server, databaseId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddAllowedAddressWithBody(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddAllowedAddressRequestWithBody(c.Server, databaseId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddAllowedAddress(ctx context.Context, databaseId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddAllowedAddressRequest(c.Server, databaseId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -890,6 +949,177 @@ func NewUpdateDatabaseRequestWithBody(server string, databaseId string, contentT
 	return req, nil
 }
 
+// NewRemoveAllowedAddressRequest generates requests for RemoveAllowedAddress
+func NewRemoveAllowedAddressRequest(server string, databaseId string, params *RemoveAllowedAddressParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/databases/%s/allowlist/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := queryURL.Query()
+
+	if params.Address != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "address", runtime.ParamLocationQuery, *params.Address); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListAllowedAddressesRequest generates requests for ListAllowedAddresses
+func NewListAllowedAddressesRequest(server string, databaseId string, params *ListAllowedAddressesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/databases/%s/allowlist/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := queryURL.Query()
+
+	if params.Limit != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddAllowedAddressRequest calls the generic AddAllowedAddress builder with application/json body
+func NewAddAllowedAddressRequest(server string, databaseId string, body AddAllowedAddressJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddAllowedAddressRequestWithBody(server, databaseId, "application/json", bodyReader)
+}
+
+// NewAddAllowedAddressRequestWithBody generates requests for AddAllowedAddress with any type of body
+func NewAddAllowedAddressRequestWithBody(server string, databaseId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/databases/%s/allowlist/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewReadProductsRequest generates requests for ReadProducts
 func NewReadProductsRequest(server string, params *ReadProductsParams) (*http.Request, error) {
 	var err error
@@ -1354,6 +1584,17 @@ type ClientWithResponsesInterface interface {
 
 	UpdateDatabaseWithResponse(ctx context.Context, databaseId string, body UpdateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDatabaseResponse, error)
 
+	// RemoveAllowedAddress request
+	RemoveAllowedAddressWithResponse(ctx context.Context, databaseId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*RemoveAllowedAddressResponse, error)
+
+	// ListAllowedAddresses request
+	ListAllowedAddressesWithResponse(ctx context.Context, databaseId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*ListAllowedAddressesResponse, error)
+
+	// AddAllowedAddress request with any body
+	AddAllowedAddressWithBodyWithResponse(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
+
+	AddAllowedAddressWithResponse(ctx context.Context, databaseId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
+
 	// ReadProducts request
 	ReadProductsWithResponse(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*ReadProductsResponse, error)
 
@@ -1680,6 +1921,75 @@ func (r UpdateDatabaseResponse) StatusCode() int {
 	return 0
 }
 
+type RemoveAllowedAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveAllowedAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveAllowedAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListAllowedAddressesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]AllowlistIPAddress
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAllowedAddressesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAllowedAddressesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddAllowedAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AddAllowedAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddAllowedAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ReadProductsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1993,6 +2303,41 @@ func (c *ClientWithResponses) UpdateDatabaseWithResponse(ctx context.Context, da
 		return nil, err
 	}
 	return ParseUpdateDatabaseResponse(rsp)
+}
+
+// RemoveAllowedAddressWithResponse request returning *RemoveAllowedAddressResponse
+func (c *ClientWithResponses) RemoveAllowedAddressWithResponse(ctx context.Context, databaseId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*RemoveAllowedAddressResponse, error) {
+	rsp, err := c.RemoveAllowedAddress(ctx, databaseId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveAllowedAddressResponse(rsp)
+}
+
+// ListAllowedAddressesWithResponse request returning *ListAllowedAddressesResponse
+func (c *ClientWithResponses) ListAllowedAddressesWithResponse(ctx context.Context, databaseId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*ListAllowedAddressesResponse, error) {
+	rsp, err := c.ListAllowedAddresses(ctx, databaseId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAllowedAddressesResponse(rsp)
+}
+
+// AddAllowedAddressWithBodyWithResponse request with arbitrary body returning *AddAllowedAddressResponse
+func (c *ClientWithResponses) AddAllowedAddressWithBodyWithResponse(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error) {
+	rsp, err := c.AddAllowedAddressWithBody(ctx, databaseId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddAllowedAddressResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddAllowedAddressWithResponse(ctx context.Context, databaseId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error) {
+	rsp, err := c.AddAllowedAddress(ctx, databaseId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddAllowedAddressResponse(rsp)
 }
 
 // ReadProductsWithResponse request returning *ReadProductsResponse
@@ -2644,6 +2989,105 @@ func ParseUpdateDatabaseResponse(rsp *http.Response) (*UpdateDatabaseResponse, e
 			return nil, err
 		}
 		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveAllowedAddressResponse parses an HTTP response from a RemoveAllowedAddressWithResponse call
+func ParseRemoveAllowedAddressResponse(rsp *http.Response) (*RemoveAllowedAddressResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveAllowedAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAllowedAddressesResponse parses an HTTP response from a ListAllowedAddressesWithResponse call
+func ParseListAllowedAddressesResponse(rsp *http.Response) (*ListAllowedAddressesResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAllowedAddressesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []AllowlistIPAddress
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddAllowedAddressResponse parses an HTTP response from a AddAllowedAddressWithResponse call
+func ParseAddAllowedAddressResponse(rsp *http.Response) (*AddAllowedAddressResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddAllowedAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	}
 
