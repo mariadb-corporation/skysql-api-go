@@ -1,3 +1,15 @@
+# v0.0.5 (Wed Sep 22 2021)
+
+#### 🚀 Enhancement
+
+- Update SDK with spec for v0.0.26 [#8](https://github.com/mariadb-corporation/skysql-api-go/pull/8) ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+#### Authors: 1
+
+- Don Mayo ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+---
+
 # v0.0.4 (Tue Sep 21 2021)
 
 #### 🔩 Dependency Updates
