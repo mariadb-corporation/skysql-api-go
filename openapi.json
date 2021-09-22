@@ -3,7 +3,7 @@
     "info": {
         "title": "SkySQL API",
         "description": "To authorize requests with the SkySQL API, first [generate an API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\nUsing the API key, generate a short lived token (JWT):\n\n    curl --location --request POST 'https://id-dev.mariadb.com/api/v1/token/' --header 'Authorization: Token REDACTED' --header 'Content-length: 0'\n\nThe JWT contained in the `token` field of the response may be used to authorized requests to the API.",
-        "version": "0.0.24"
+        "version": "0.0.26"
     },
     "paths": {
         "/billing/quotas": {
@@ -88,7 +88,7 @@
                                     "title": "Response List Configurations Configurations  Get",
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Configuration"
+                                        "$ref": "#/components/schemas/ConfigurationResponse"
                                     }
                                 }
                             }
@@ -142,7 +142,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/NewConfigurationRequest"
+                                "$ref": "#/components/schemas/CreateConfigurationRequest"
                             },
                             "examples": {
                                 "timeout": {
@@ -151,7 +151,16 @@
                                     "value": {
                                         "name": "interactive-timeout",
                                         "topology": "Standalone",
-                                        "config_json": "{\"variables\":{\"interactive_timeout\":{\"type\":\"number\",\"value\":\"300\",\"requires_restart\":true,\"regex\": \"\"}}}"
+                                        "config_json": {
+                                            "variables": {
+                                                "interactive_timeout": {
+                                                    "type": "number",
+                                                    "value": "300",
+                                                    "requires_restart": true,
+                                                    "regex": ""
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -164,7 +173,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/NewConfigurationResponse"
+                                    "$ref": "#/components/schemas/CreateConfigurationResponse"
                                 }
                             }
                         }
@@ -411,7 +420,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ConfigurationUpdate"
+                                "$ref": "#/components/schemas/UpdateConfigurationRequest"
                             },
                             "examples": {
                                 "timeout": {
@@ -419,7 +428,16 @@
                                     "description": "Example configuration demonstrating how to update an existing config",
                                     "value": {
                                         "name": "interactive-timeout",
-                                        "config_json": "{\"variables\":{\"interactive_timeout\":{\"type\":\"number\",\"value\":\"150\",\"requires_restart\":true,\"regex\": \"\"}}}"
+                                        "config_json": {
+                                            "variables": {
+                                                "interactive_timeout": {
+                                                    "type": "number",
+                                                    "value": "150",
+                                                    "requires_restart": true,
+                                                    "regex": ""
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -587,6 +605,8 @@
                                         "repl_region": "",
                                         "provider": "Amazon AWS",
                                         "replicas": "0",
+                                        "volume_iops": "100",
+                                        "volume_type": "io1",
                                         "monitor": "false",
                                         "maxscale_proxy": "false"
                                     }
@@ -1728,256 +1748,132 @@
                 },
                 "description": "IP Address that has been added to the database network allowlist"
             },
-            "Configuration": {
-                "title": "Configuration",
-                "required": [
-                    "number",
-                    "topology",
-                    "sys_mod_count",
-                    "active",
-                    "project",
-                    "owned_by",
-                    "sys_updated_on",
-                    "sys_tags",
-                    "sys_id",
-                    "sys_updated_by",
-                    "public",
-                    "sys_created_on",
-                    "name",
-                    "sys_created_by"
-                ],
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "title": "Number",
-                        "type": "string"
-                    },
-                    "topology": {
-                        "title": "Topology",
-                        "type": "string"
-                    },
-                    "sys_mod_count": {
-                        "title": "Sys Mod Count",
-                        "type": "string"
-                    },
-                    "active": {
-                        "title": "Active",
-                        "type": "string"
-                    },
-                    "project": {
-                        "title": "Project",
-                        "type": "string"
-                    },
-                    "owned_by": {
-                        "title": "Owned By",
-                        "type": "string"
-                    },
-                    "sys_updated_on": {
-                        "title": "Sys Updated On",
-                        "type": "string"
-                    },
-                    "sys_tags": {
-                        "title": "Sys Tags",
-                        "type": "string"
-                    },
-                    "sys_id": {
-                        "title": "Sys Id",
-                        "type": "string"
-                    },
-                    "sys_updated_by": {
-                        "title": "Sys Updated By",
-                        "type": "string"
-                    },
-                    "public": {
-                        "title": "Public",
-                        "type": "string"
-                    },
-                    "sys_created_on": {
-                        "title": "Sys Created On",
-                        "type": "string"
-                    },
-                    "name": {
-                        "title": "Name",
-                        "type": "string"
-                    },
-                    "sys_created_by": {
-                        "title": "Sys Created By",
-                        "type": "string"
-                    }
-                },
-                "description": "MariaDB Configuration in SkySQL"
-            },
             "ConfigurationResponse": {
                 "title": "ConfigurationResponse",
                 "required": [
-                    "number",
-                    "topology",
-                    "sys_mod_count",
-                    "active",
-                    "project",
-                    "owned_by",
-                    "sys_updated_on",
-                    "sys_tags",
-                    "sys_id",
-                    "sys_updated_by",
-                    "public",
-                    "sys_created_on",
                     "name",
-                    "sys_created_by",
-                    "configuration_versions"
+                    "public",
+                    "topology",
+                    "sys_id",
+                    "number"
                 ],
                 "type": "object",
                 "properties": {
-                    "number": {
-                        "title": "Number",
-                        "type": "string"
-                    },
-                    "topology": {
-                        "title": "Topology",
-                        "type": "string"
-                    },
-                    "sys_mod_count": {
-                        "title": "Sys Mod Count",
-                        "type": "string"
-                    },
-                    "active": {
-                        "title": "Active",
-                        "type": "string"
-                    },
-                    "project": {
-                        "title": "Project",
-                        "type": "string"
-                    },
-                    "owned_by": {
-                        "title": "Owned By",
-                        "type": "string"
-                    },
-                    "sys_updated_on": {
-                        "title": "Sys Updated On",
-                        "type": "string"
-                    },
-                    "sys_tags": {
-                        "title": "Sys Tags",
-                        "type": "string"
-                    },
-                    "sys_id": {
-                        "title": "Sys Id",
-                        "type": "string"
-                    },
-                    "sys_updated_by": {
-                        "title": "Sys Updated By",
+                    "name": {
+                        "title": "Name",
                         "type": "string"
                     },
                     "public": {
                         "title": "Public",
                         "type": "string"
                     },
-                    "sys_created_on": {
-                        "title": "Sys Created On",
+                    "topology": {
+                        "title": "Topology",
                         "type": "string"
                     },
-                    "name": {
-                        "title": "Name",
+                    "sys_id": {
+                        "title": "Sys Id",
                         "type": "string"
                     },
-                    "sys_created_by": {
-                        "title": "Sys Created By",
+                    "number": {
+                        "title": "Number",
                         "type": "string"
                     },
                     "configuration_versions": {
                         "title": "Configuration Versions",
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ConfigurationVersion"
+                            "$ref": "#/components/schemas/ConfigurationVersionResponse"
                         }
                     }
                 },
                 "description": "GET Configuration Response"
             },
-            "ConfigurationUpdate": {
-                "title": "ConfigurationUpdate",
+            "ConfigurationVersionResponse": {
+                "title": "ConfigurationVersionResponse",
+                "required": [
+                    "config_json",
+                    "current_version",
+                    "version"
+                ],
+                "type": "object",
+                "properties": {
+                    "config_json": {
+                        "title": "Config Json",
+                        "type": "object"
+                    },
+                    "current_version": {
+                        "title": "Current Version",
+                        "type": "string"
+                    },
+                    "version": {
+                        "title": "Version",
+                        "type": "string"
+                    }
+                },
+                "description": "GET Configuration Response nested configuration version"
+            },
+            "CreateConfigurationRequest": {
+                "title": "CreateConfigurationRequest",
+                "required": [
+                    "name",
+                    "topology"
+                ],
                 "type": "object",
                 "properties": {
                     "name": {
                         "title": "Name",
                         "type": "string"
                     },
+                    "topology": {
+                        "title": "Topology",
+                        "type": "string"
+                    },
                     "config_json": {
                         "title": "Config Json",
-                        "type": "string",
-                        "default": "{}"
+                        "type": "object",
+                        "default": {}
                     }
                 },
-                "description": "Request body to update a configuration"
+                "description": "Request body to create a new MariaDB Configuration"
             },
-            "ConfigurationVersion": {
-                "title": "ConfigurationVersion",
+            "CreateConfigurationResponse": {
+                "title": "CreateConfigurationResponse",
                 "required": [
+                    "name",
+                    "public",
+                    "topology",
                     "sys_id",
-                    "config_json",
-                    "sys_updated_by",
-                    "sys_created_on",
-                    "sys_mod_count",
-                    "active",
-                    "current_version",
-                    "custom_config",
-                    "sys_updated_on",
-                    "sys_tags",
-                    "version",
-                    "sys_created_by"
+                    "number",
+                    "configuration_version"
                 ],
                 "type": "object",
                 "properties": {
+                    "name": {
+                        "title": "Name",
+                        "type": "string"
+                    },
+                    "public": {
+                        "title": "Public",
+                        "type": "string"
+                    },
+                    "topology": {
+                        "title": "Topology",
+                        "type": "string"
+                    },
                     "sys_id": {
                         "title": "Sys Id",
                         "type": "string"
                     },
-                    "config_json": {
-                        "title": "Config Json",
+                    "number": {
+                        "title": "Number",
                         "type": "string"
                     },
-                    "sys_updated_by": {
-                        "title": "Sys Updated By",
-                        "type": "string"
-                    },
-                    "sys_created_on": {
-                        "title": "Sys Created On",
-                        "type": "string"
-                    },
-                    "sys_mod_count": {
-                        "title": "Sys Mod Count",
-                        "type": "string"
-                    },
-                    "active": {
-                        "title": "Active",
-                        "type": "string"
-                    },
-                    "current_version": {
-                        "title": "Current Version",
-                        "type": "string"
-                    },
-                    "custom_config": {
-                        "title": "Custom Config",
-                        "type": "string"
-                    },
-                    "sys_updated_on": {
-                        "title": "Sys Updated On",
-                        "type": "string"
-                    },
-                    "sys_tags": {
-                        "title": "Sys Tags",
-                        "type": "string"
-                    },
-                    "version": {
-                        "title": "Version",
-                        "type": "string"
-                    },
-                    "sys_created_by": {
-                        "title": "Sys Created By",
-                        "type": "string"
+                    "configuration_version": {
+                        "$ref": "#/components/schemas/ConfigurationVersionResponse"
                     }
                 },
-                "description": "MariaDB Configuration Version in SkySQL"
+                "description": "Update Configuration Response"
             },
             "Database": {
                 "title": "Database",
@@ -2005,6 +1901,7 @@
                     "repl_master_host_ext",
                     "maxscale_config",
                     "volume_iops",
+                    "volume_type",
                     "attributes",
                     "skip_sync",
                     "repl_master",
@@ -2124,6 +2021,10 @@
                     },
                     "volume_iops": {
                         "title": "Volume Iops",
+                        "type": "string"
+                    },
+                    "volume_type": {
+                        "title": "Volume Type",
                         "type": "string"
                     },
                     "attributes": {
@@ -2293,113 +2194,6 @@
                 },
                 "description": "Generic message body containing error details for failed requests"
             },
-            "NewConfigurationRequest": {
-                "title": "NewConfigurationRequest",
-                "required": [
-                    "name",
-                    "topology"
-                ],
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "title": "Name",
-                        "type": "string"
-                    },
-                    "topology": {
-                        "title": "Topology",
-                        "type": "string"
-                    },
-                    "config_json": {
-                        "title": "Config Json",
-                        "type": "string",
-                        "default": "{}"
-                    }
-                },
-                "description": "Request body to create a new MariaDB Configuration"
-            },
-            "NewConfigurationResponse": {
-                "title": "NewConfigurationResponse",
-                "required": [
-                    "number",
-                    "topology",
-                    "sys_mod_count",
-                    "active",
-                    "project",
-                    "owned_by",
-                    "sys_updated_on",
-                    "sys_tags",
-                    "sys_id",
-                    "sys_updated_by",
-                    "public",
-                    "sys_created_on",
-                    "name",
-                    "sys_created_by",
-                    "configuration_version"
-                ],
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "title": "Number",
-                        "type": "string"
-                    },
-                    "topology": {
-                        "title": "Topology",
-                        "type": "string"
-                    },
-                    "sys_mod_count": {
-                        "title": "Sys Mod Count",
-                        "type": "string"
-                    },
-                    "active": {
-                        "title": "Active",
-                        "type": "string"
-                    },
-                    "project": {
-                        "title": "Project",
-                        "type": "string"
-                    },
-                    "owned_by": {
-                        "title": "Owned By",
-                        "type": "string"
-                    },
-                    "sys_updated_on": {
-                        "title": "Sys Updated On",
-                        "type": "string"
-                    },
-                    "sys_tags": {
-                        "title": "Sys Tags",
-                        "type": "string"
-                    },
-                    "sys_id": {
-                        "title": "Sys Id",
-                        "type": "string"
-                    },
-                    "sys_updated_by": {
-                        "title": "Sys Updated By",
-                        "type": "string"
-                    },
-                    "public": {
-                        "title": "Public",
-                        "type": "string"
-                    },
-                    "sys_created_on": {
-                        "title": "Sys Created On",
-                        "type": "string"
-                    },
-                    "name": {
-                        "title": "Name",
-                        "type": "string"
-                    },
-                    "sys_created_by": {
-                        "title": "Sys Created By",
-                        "type": "string"
-                    },
-                    "configuration_version": {
-                        "$ref": "#/components/schemas/ConfigurationVersion"
-                    }
-                },
-                "description": "New Configuration Response"
-            },
             "NewDatabase": {
                 "title": "NewDatabase",
                 "required": [
@@ -2413,6 +2207,8 @@
                     "repl_region",
                     "provider",
                     "replicas",
+                    "volume_iops",
+                    "volume_type",
                     "monitor",
                     "maxscale_proxy"
                 ],
@@ -2464,6 +2260,14 @@
                     "replicas": {
                         "title": "Replicas",
                         "minLength": 1,
+                        "type": "string"
+                    },
+                    "volume_iops": {
+                        "title": "Volume Iops",
+                        "type": "string"
+                    },
+                    "volume_type": {
+                        "title": "Volume Type",
                         "type": "string"
                     },
                     "monitor": {
@@ -3043,6 +2847,22 @@
                     }
                 },
                 "description": "Cluster topology valid for a particular product, e.g. Standalone or MaxScale"
+            },
+            "UpdateConfigurationRequest": {
+                "title": "UpdateConfigurationRequest",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "title": "Name",
+                        "type": "string"
+                    },
+                    "config_json": {
+                        "title": "Config Json",
+                        "type": "object",
+                        "default": {}
+                    }
+                },
+                "description": "Request body to update a configuration"
             },
             "ValidationError": {
                 "title": "ValidationError",

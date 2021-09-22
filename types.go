@@ -14,63 +14,39 @@ type AllowlistIPAddress struct {
 	IpAddress string  `json:"ip_address"`
 }
 
-// MariaDB Configuration in SkySQL
-type Configuration struct {
-	Active       string `json:"active"`
-	Name         string `json:"name"`
-	Number       string `json:"number"`
-	OwnedBy      string `json:"owned_by"`
-	Project      string `json:"project"`
-	Public       string `json:"public"`
-	SysCreatedBy string `json:"sys_created_by"`
-	SysCreatedOn string `json:"sys_created_on"`
-	SysId        string `json:"sys_id"`
-	SysModCount  string `json:"sys_mod_count"`
-	SysTags      string `json:"sys_tags"`
-	SysUpdatedBy string `json:"sys_updated_by"`
-	SysUpdatedOn string `json:"sys_updated_on"`
-	Topology     string `json:"topology"`
-}
-
 // GET Configuration Response
 type ConfigurationResponse struct {
-	Active                string                 `json:"active"`
-	ConfigurationVersions []ConfigurationVersion `json:"configuration_versions"`
-	Name                  string                 `json:"name"`
-	Number                string                 `json:"number"`
-	OwnedBy               string                 `json:"owned_by"`
-	Project               string                 `json:"project"`
-	Public                string                 `json:"public"`
-	SysCreatedBy          string                 `json:"sys_created_by"`
-	SysCreatedOn          string                 `json:"sys_created_on"`
-	SysId                 string                 `json:"sys_id"`
-	SysModCount           string                 `json:"sys_mod_count"`
-	SysTags               string                 `json:"sys_tags"`
-	SysUpdatedBy          string                 `json:"sys_updated_by"`
-	SysUpdatedOn          string                 `json:"sys_updated_on"`
-	Topology              string                 `json:"topology"`
+	ConfigurationVersions *[]ConfigurationVersionResponse `json:"configuration_versions,omitempty"`
+	Name                  string                          `json:"name"`
+	Number                string                          `json:"number"`
+	Public                string                          `json:"public"`
+	SysId                 string                          `json:"sys_id"`
+	Topology              string                          `json:"topology"`
 }
 
-// Request body to update a configuration
-type ConfigurationUpdate struct {
-	ConfigJson *string `json:"config_json,omitempty"`
-	Name       *string `json:"name,omitempty"`
+// GET Configuration Response nested configuration version
+type ConfigurationVersionResponse struct {
+	ConfigJson     map[string]interface{} `json:"config_json"`
+	CurrentVersion string                 `json:"current_version"`
+	Version        string                 `json:"version"`
 }
 
-// MariaDB Configuration Version in SkySQL
-type ConfigurationVersion struct {
-	Active         string `json:"active"`
-	ConfigJson     string `json:"config_json"`
-	CurrentVersion string `json:"current_version"`
-	CustomConfig   string `json:"custom_config"`
-	SysCreatedBy   string `json:"sys_created_by"`
-	SysCreatedOn   string `json:"sys_created_on"`
-	SysId          string `json:"sys_id"`
-	SysModCount    string `json:"sys_mod_count"`
-	SysTags        string `json:"sys_tags"`
-	SysUpdatedBy   string `json:"sys_updated_by"`
-	SysUpdatedOn   string `json:"sys_updated_on"`
-	Version        string `json:"version"`
+// Request body to create a new MariaDB Configuration
+type CreateConfigurationRequest struct {
+	ConfigJson *map[string]interface{} `json:"config_json,omitempty"`
+	Name       string                  `json:"name"`
+	Topology   string                  `json:"topology"`
+}
+
+// Update Configuration Response
+type CreateConfigurationResponse struct {
+	// GET Configuration Response nested configuration version
+	ConfigurationVersion ConfigurationVersionResponse `json:"configuration_version"`
+	Name                 string                       `json:"name"`
+	Number               string                       `json:"number"`
+	Public               string                       `json:"public"`
+	SysId                string                       `json:"sys_id"`
+	Topology             string                       `json:"topology"`
 }
 
 // MariaDB cluster deployed by SkySQL
@@ -125,6 +101,7 @@ type Database struct {
 	Topology                string  `json:"topology"`
 	TxStorage               string  `json:"tx_storage"`
 	VolumeIops              string  `json:"volume_iops"`
+	VolumeType              string  `json:"volume_type"`
 }
 
 // Request body to update a database - currently limited to name only
@@ -148,34 +125,6 @@ type Message struct {
 	Details string `json:"details"`
 }
 
-// Request body to create a new MariaDB Configuration
-type NewConfigurationRequest struct {
-	ConfigJson *string `json:"config_json,omitempty"`
-	Name       string  `json:"name"`
-	Topology   string  `json:"topology"`
-}
-
-// New Configuration Response
-type NewConfigurationResponse struct {
-	Active string `json:"active"`
-
-	// MariaDB Configuration Version in SkySQL
-	ConfigurationVersion ConfigurationVersion `json:"configuration_version"`
-	Name                 string               `json:"name"`
-	Number               string               `json:"number"`
-	OwnedBy              string               `json:"owned_by"`
-	Project              string               `json:"project"`
-	Public               string               `json:"public"`
-	SysCreatedBy         string               `json:"sys_created_by"`
-	SysCreatedOn         string               `json:"sys_created_on"`
-	SysId                string               `json:"sys_id"`
-	SysModCount          string               `json:"sys_mod_count"`
-	SysTags              string               `json:"sys_tags"`
-	SysUpdatedBy         string               `json:"sys_updated_by"`
-	SysUpdatedOn         string               `json:"sys_updated_on"`
-	Topology             string               `json:"topology"`
-}
-
 // Request body to create a new MariaDB cluster deployed by SkySQL
 type NewDatabase struct {
 	MaxscaleConfig string `json:"maxscale_config"`
@@ -190,6 +139,8 @@ type NewDatabase struct {
 	Size           string `json:"size"`
 	Topology       string `json:"topology"`
 	TxStorage      string `json:"tx_storage"`
+	VolumeIops     string `json:"volume_iops"`
+	VolumeType     string `json:"volume_type"`
 }
 
 // A database product, e.g. Xpand
@@ -322,6 +273,12 @@ type Topology struct {
 	Value                  string `json:"value"`
 }
 
+// Request body to update a configuration
+type UpdateConfigurationRequest struct {
+	ConfigJson *map[string]interface{} `json:"config_json,omitempty"`
+	Name       *string                 `json:"name,omitempty"`
+}
+
 // ValidationError defines model for ValidationError.
 type ValidationError struct {
 	Loc  []string `json:"loc"`
@@ -356,10 +313,10 @@ type ListConfigurationsParams struct {
 }
 
 // CreateConfigurationJSONBody defines parameters for CreateConfiguration.
-type CreateConfigurationJSONBody NewConfigurationRequest
+type CreateConfigurationJSONBody CreateConfigurationRequest
 
 // UpdateConfigurationJSONBody defines parameters for UpdateConfiguration.
-type UpdateConfigurationJSONBody ConfigurationUpdate
+type UpdateConfigurationJSONBody UpdateConfigurationRequest
 
 // ListDatabasesParams defines parameters for ListDatabases.
 type ListDatabasesParams struct {
