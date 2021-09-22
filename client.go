@@ -1666,7 +1666,7 @@ func (r ReadQuotasResponse) StatusCode() int {
 type ListConfigurationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]Configuration
+	JSON200      *[]ConfigurationResponse
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -1691,7 +1691,7 @@ func (r ListConfigurationsResponse) StatusCode() int {
 type CreateConfigurationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *NewConfigurationResponse
+	JSON200      *CreateConfigurationResponse
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2484,7 +2484,7 @@ func ParseListConfigurationsResponse(rsp *http.Response) (*ListConfigurationsRes
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Configuration
+		var dest []ConfigurationResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -2531,7 +2531,7 @@ func ParseCreateConfigurationResponse(rsp *http.Response) (*CreateConfigurationR
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest NewConfigurationResponse
+		var dest CreateConfigurationResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
