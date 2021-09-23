@@ -15,17 +15,17 @@ type AllowlistIPAddress struct {
 }
 
 // GET Configuration Response
-type ConfigurationResponse struct {
-	ConfigurationVersions *[]ConfigurationVersionResponse `json:"configuration_versions,omitempty"`
-	Name                  string                          `json:"name"`
-	Number                string                          `json:"number"`
-	Public                string                          `json:"public"`
-	SysId                 string                          `json:"sys_id"`
-	Topology              string                          `json:"topology"`
+type ConfigurationResp struct {
+	ConfigurationVersions *[]ConfigurationVersionResp `json:"configuration_versions,omitempty"`
+	Name                  string                      `json:"name"`
+	Number                string                      `json:"number"`
+	Public                string                      `json:"public"`
+	SysId                 string                      `json:"sys_id"`
+	Topology              string                      `json:"topology"`
 }
 
 // GET Configuration Response nested configuration version
-type ConfigurationVersionResponse struct {
+type ConfigurationVersionResp struct {
 	ConfigJson     map[string]interface{} `json:"config_json"`
 	CurrentVersion string                 `json:"current_version"`
 	Version        string                 `json:"version"`
@@ -39,14 +39,14 @@ type CreateConfigurationRequest struct {
 }
 
 // Update Configuration Response
-type CreateConfigurationResponse struct {
+type CreateConfigurationResp struct {
 	// GET Configuration Response nested configuration version
-	ConfigurationVersion ConfigurationVersionResponse `json:"configuration_version"`
-	Name                 string                       `json:"name"`
-	Number               string                       `json:"number"`
-	Public               string                       `json:"public"`
-	SysId                string                       `json:"sys_id"`
-	Topology             string                       `json:"topology"`
+	ConfigurationVersion ConfigurationVersionResp `json:"configuration_version"`
+	Name                 string                   `json:"name"`
+	Number               string                   `json:"number"`
+	Public               string                   `json:"public"`
+	SysId                string                   `json:"sys_id"`
+	Topology             string                   `json:"topology"`
 }
 
 // MariaDB cluster deployed by SkySQL
