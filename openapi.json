@@ -3,7 +3,7 @@
     "info": {
         "title": "SkySQL API",
         "description": "To authorize requests with the SkySQL API, first [generate an API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\nUsing the API key, generate a short lived token (JWT):\n\n    curl --location --request POST 'https://id-dev.mariadb.com/api/v1/token/' --header 'Authorization: Token REDACTED' --header 'Content-length: 0'\n\nThe JWT contained in the `token` field of the response may be used to authorized requests to the API.",
-        "version": "0.0.26"
+        "version": "0.0.27"
     },
     "paths": {
         "/billing/quotas": {
@@ -88,7 +88,7 @@
                                     "title": "Response List Configurations Configurations  Get",
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ConfigurationResponse"
+                                        "$ref": "#/components/schemas/ConfigurationResp"
                                     }
                                 }
                             }
@@ -173,7 +173,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CreateConfigurationResponse"
+                                    "$ref": "#/components/schemas/CreateConfigurationResp"
                                 }
                             }
                         }
@@ -248,7 +248,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ConfigurationResponse"
+                                    "$ref": "#/components/schemas/ConfigurationResp"
                                 }
                             }
                         }
@@ -450,7 +450,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ConfigurationResponse"
+                                    "$ref": "#/components/schemas/ConfigurationResp"
                                 }
                             }
                         }
@@ -1748,8 +1748,8 @@
                 },
                 "description": "IP Address that has been added to the database network allowlist"
             },
-            "ConfigurationResponse": {
-                "title": "ConfigurationResponse",
+            "ConfigurationResp": {
+                "title": "ConfigurationResp",
                 "required": [
                     "name",
                     "public",
@@ -1783,14 +1783,14 @@
                         "title": "Configuration Versions",
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/ConfigurationVersionResponse"
+                            "$ref": "#/components/schemas/ConfigurationVersionResp"
                         }
                     }
                 },
                 "description": "GET Configuration Response"
             },
-            "ConfigurationVersionResponse": {
-                "title": "ConfigurationVersionResponse",
+            "ConfigurationVersionResp": {
+                "title": "ConfigurationVersionResp",
                 "required": [
                     "config_json",
                     "current_version",
@@ -1837,8 +1837,8 @@
                 },
                 "description": "Request body to create a new MariaDB Configuration"
             },
-            "CreateConfigurationResponse": {
-                "title": "CreateConfigurationResponse",
+            "CreateConfigurationResp": {
+                "title": "CreateConfigurationResp",
                 "required": [
                     "name",
                     "public",
@@ -1870,7 +1870,7 @@
                         "type": "string"
                     },
                     "configuration_version": {
-                        "$ref": "#/components/schemas/ConfigurationVersionResponse"
+                        "$ref": "#/components/schemas/ConfigurationVersionResp"
                     }
                 },
                 "description": "Update Configuration Response"
