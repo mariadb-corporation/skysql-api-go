@@ -1,13 +1,7 @@
 {
   "plugins": [
     "git-tag",
-    "pr-body-labels",
-    [
-      "exec",
-      {
-        "beforeCommitChangelog": "[ $GITHUB_REF != '/ref/heads/next' ] || make all"
-      }
-    ]
+    "pr-body-labels"
   ],
   "owner": "mariadb-corporation",
   "repo": "skysql-api-go",
