@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+      - next
+  workflow_dispatch:
 jobs:
   pipeline-container:
     name: Build devcontainer for pipeline
@@ -73,6 +75,13 @@ jobs:
         run: |
           git config --global user.email "no-reply@mariadb.com"
           git config --global user.name "SkySQL API Golang SDK Release Pipeline"
+      - name: Autogenerate next sdk
+        if: github.ref == 'refs/heads/next'
+        run: |
+          make all
+          git add .
+          git commit -m "Regenerate SDK based on api v`jq -r .info.version openapi.json`"
+          git push origin next
       - name: Publish new version
         run: GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" auto shipit
       - id: version
