@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+      - next
+  workflow_dispatch:
 jobs:
   pipeline-container:
     name: Build devcontainer for pipeline
