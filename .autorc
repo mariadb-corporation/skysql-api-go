@@ -1,12 +1,19 @@
 {
   "plugins": [
     "git-tag",
-    "pr-body-labels"
+    "pr-body-labels",
+    [
+      "exec",
+      {
+        "beforeCommitChangelog": "[ $GITHUB_REF != '/ref/heads/next' ] || make all"
+      }
+    ]
   ],
   "owner": "mariadb-corporation",
   "repo": "skysql-api-go",
   "name": "SkySQL API Golang SDK Releases",
   "email": "no-reply@mariadb.com",
+  "prereleaseBranches": ["next"],
   "noDefaultLabels": true,
   "labels": [
     {
