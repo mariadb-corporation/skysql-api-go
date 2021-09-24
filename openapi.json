@@ -3,7 +3,7 @@
   "info": {
     "title": "SkySQL API",
     "description": "To authorize requests with the SkySQL API, first [generate an API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\nUsing the API key, generate a short lived token (JWT):\n\n    curl --location --request POST 'https://id-dev.mariadb.com/api/v1/token/' --header 'Authorization: Token REDACTED' --header 'Content-length: 0'\n\nThe JWT contained in the `token` field of the response may be used to authorized requests to the API.",
-    "version": "0.0.30"
+    "version": "0.0.34"
   },
   "paths": {
     "/billing/quotas": {
@@ -1123,6 +1123,148 @@
         ]
       }
     },
+    "/databases/{database_id}/status/": {
+      "get": {
+        "tags": [
+          "Databases · Status"
+        ],
+        "summary": "Read Status",
+        "description": "Retrieve the current running status of a database (e.g. Running, Paused, Pending, …)",
+        "operationId": "read_status",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Database Id",
+              "type": "string"
+            },
+            "name": "database_id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseStatus"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Databases · Status"
+        ],
+        "summary": "Update Status",
+        "description": "Alter the state of a database, (e.g. Start, Stop)",
+        "operationId": "update_status",
+        "parameters": [
+          {
+            "required": true,
+            "schema": {
+              "title": "Database Id",
+              "type": "string"
+            },
+            "name": "database_id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatabaseStatusUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/offering/products": {
       "get": {
         "tags": [
@@ -1283,6 +1425,27 @@
         "operationId": "read_regions",
         "parameters": [
           {
+            "required": true,
+            "schema": {
+              "title": "Provider",
+              "type": "string"
+            },
+            "examples": {
+              "amazon": {
+                "summary": "AWS",
+                "description": "Amazon Web Services",
+                "value": "Amazon AWS"
+              },
+              "gcp": {
+                "summary": "GCP",
+                "description": "Google Cloud Platform",
+                "value": "Google Cloud"
+              }
+            },
+            "name": "provider",
+            "in": "query"
+          },
+          {
             "required": false,
             "schema": {
               "title": "Limit",
@@ -1358,7 +1521,7 @@
         "operationId": "read_sizes",
         "parameters": [
           {
-            "required": false,
+            "required": true,
             "schema": {
               "title": "Product",
               "type": "string"
@@ -1374,7 +1537,7 @@
             "in": "query"
           },
           {
-            "required": false,
+            "required": true,
             "schema": {
               "title": "Provider",
               "type": "string"
@@ -1545,7 +1708,7 @@
         "operationId": "read_topologies",
         "parameters": [
           {
-            "required": false,
+            "required": true,
             "schema": {
               "title": "Product",
               "type": "string"
@@ -1900,8 +2063,6 @@
           "ssl_expires_on",
           "repl_master_host_ext",
           "maxscale_config",
-          "volume_iops",
-          "volume_type",
           "attributes",
           "skip_sync",
           "repl_master",
@@ -2133,6 +2294,41 @@
           }
         },
         "description": "MariaDB cluster deployed by SkySQL"
+      },
+      "DatabaseActions": {
+        "title": "DatabaseActions",
+        "enum": [
+          "Start",
+          "Stop"
+        ],
+        "description": "Actions that can be taken on a Database in a Task"
+      },
+      "DatabaseStatus": {
+        "title": "DatabaseStatus",
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "description": "Response body for a database status"
+      },
+      "DatabaseStatusUpdate": {
+        "title": "DatabaseStatusUpdate",
+        "required": [
+          "action"
+        ],
+        "type": "object",
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/DatabaseActions"
+          }
+        },
+        "description": "Request body to update a database"
       },
       "DatabaseUpdate": {
         "title": "DatabaseUpdate",

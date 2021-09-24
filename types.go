@@ -100,8 +100,22 @@ type Database struct {
 	SysUpdatedOn            string  `json:"sys_updated_on"`
 	Topology                string  `json:"topology"`
 	TxStorage               string  `json:"tx_storage"`
-	VolumeIops              string  `json:"volume_iops"`
-	VolumeType              string  `json:"volume_type"`
+	VolumeIops              *string `json:"volume_iops,omitempty"`
+	VolumeType              *string `json:"volume_type,omitempty"`
+}
+
+// Actions that can be taken on a Database in a Task
+type DatabaseActions interface{}
+
+// Response body for a database status
+type DatabaseStatus struct {
+	Status string `json:"status"`
+}
+
+// Request body to update a database
+type DatabaseStatusUpdate struct {
+	// Actions that can be taken on a Database in a Task
+	Action DatabaseActions `json:"action"`
 }
 
 // Request body to update a database - currently limited to name only
@@ -343,6 +357,9 @@ type ListAllowedAddressesParams struct {
 // AddAllowedAddressJSONBody defines parameters for AddAllowedAddress.
 type AddAllowedAddressJSONBody IPAddress
 
+// UpdateStatusJSONBody defines parameters for UpdateStatus.
+type UpdateStatusJSONBody DatabaseStatusUpdate
+
 // ReadProductsParams defines parameters for ReadProducts.
 type ReadProductsParams struct {
 	Limit *int `json:"limit,omitempty"`
@@ -355,14 +372,15 @@ type ReadProvidersParams struct {
 
 // ReadRegionsParams defines parameters for ReadRegions.
 type ReadRegionsParams struct {
-	Limit *int `json:"limit,omitempty"`
+	Provider string `json:"provider"`
+	Limit    *int   `json:"limit,omitempty"`
 }
 
 // ReadSizesParams defines parameters for ReadSizes.
 type ReadSizesParams struct {
-	Product  *string `json:"product,omitempty"`
-	Provider *string `json:"provider,omitempty"`
-	Limit    *int    `json:"limit,omitempty"`
+	Product  string `json:"product"`
+	Provider string `json:"provider"`
+	Limit    *int   `json:"limit,omitempty"`
 }
 
 // ReadTiersParams defines parameters for ReadTiers.
@@ -372,8 +390,8 @@ type ReadTiersParams struct {
 
 // ReadTopologiesParams defines parameters for ReadTopologies.
 type ReadTopologiesParams struct {
-	Product *string `json:"product,omitempty"`
-	Limit   *int    `json:"limit,omitempty"`
+	Product string `json:"product"`
+	Limit   *int   `json:"limit,omitempty"`
 }
 
 // ReadVersionsParams defines parameters for ReadVersions.
@@ -395,4 +413,7 @@ type UpdateDatabaseJSONRequestBody UpdateDatabaseJSONBody
 
 // AddAllowedAddressJSONRequestBody defines body for AddAllowedAddress for application/json ContentType.
 type AddAllowedAddressJSONRequestBody AddAllowedAddressJSONBody
+
+// UpdateStatusJSONRequestBody defines body for UpdateStatus for application/json ContentType.
+type UpdateStatusJSONRequestBody UpdateStatusJSONBody
 
