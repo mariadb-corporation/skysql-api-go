@@ -1,3 +1,16 @@
+# v0.0.7 (Fri Sep 24 2021)
+
+#### 🚢 DevOps
+
+- Autogenerate SDK based on API mainline on `next` branch [#10](https://github.com/mariadb-corporation/skysql-api-go/pull/10) ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+#### Authors: 2
+
+- Don Mayo ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+- SkySQL API Golang SDK Release Pipeline (no-reply@mariadb.com)
+
+---
+
 # v0.0.6 (Thu Sep 23 2021)
 
 #### 🔩 Dependency Updates
