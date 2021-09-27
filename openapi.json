@@ -3,7 +3,7 @@
   "info": {
     "title": "SkySQL API",
     "description": "To authorize requests with the SkySQL API, first [generate an API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\nUsing the API key, generate a short lived token (JWT):\n\n    curl --location --request POST 'https://id-dev.mariadb.com/api/v1/token/' --header 'Authorization: Token REDACTED' --header 'Content-length: 0'\n\nThe JWT contained in the `token` field of the response may be used to authorized requests to the API.",
-    "version": "0.0.34"
+    "version": "0.0.39"
   },
   "paths": {
     "/billing/quotas": {
