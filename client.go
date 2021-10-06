@@ -1776,6 +1776,7 @@ type ReadQuotasResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]QuotaProgress
+	JSON401      *Message
 	JSON403      *Message
 	JSON502      *Message
 }
@@ -1800,6 +1801,7 @@ type ListConfigurationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]ConfigurationResp
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -1825,6 +1827,7 @@ type CreateConfigurationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *CreateConfigurationResp
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -1850,6 +1853,7 @@ type DeleteConfigurationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *interface{}
+	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
 	JSON409      *Message
@@ -1877,6 +1881,7 @@ type ReadConfigurationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *ConfigurationResp
+	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
 	JSON422      *HTTPValidationError
@@ -1903,6 +1908,7 @@ type UpdateConfigurationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *ConfigurationResp
+	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
 	JSON422      *HTTPValidationError
@@ -1929,6 +1935,7 @@ type ListDatabasesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Database
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -1954,6 +1961,7 @@ type CreateDatabaseResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Database
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -1979,6 +1987,7 @@ type DeleteDatabaseResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *interface{}
+	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
 	JSON409      *Message
@@ -2006,6 +2015,7 @@ type ReadDatabaseResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Database
+	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
 	JSON422      *HTTPValidationError
@@ -2032,6 +2042,7 @@ type UpdateDatabaseResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Database
+	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
 	JSON422      *HTTPValidationError
@@ -2127,6 +2138,7 @@ type ReadStatusResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *DatabaseStatus
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2152,6 +2164,7 @@ type UpdateStatusResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *interface{}
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2177,6 +2190,7 @@ type ReadProductsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Product
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2202,6 +2216,7 @@ type ReadProvidersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Provider
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2227,6 +2242,7 @@ type ReadRegionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Region
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2252,6 +2268,7 @@ type ReadSizesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Size
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2277,6 +2294,7 @@ type ReadTiersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Tier
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2302,6 +2320,7 @@ type ReadTopologiesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Topology
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2327,6 +2346,7 @@ type ReadVersionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Version
+	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
@@ -2659,6 +2679,13 @@ func ParseReadQuotasResponse(rsp *http.Response) (*ReadQuotasResponse, error) {
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -2698,6 +2725,13 @@ func ParseListConfigurationsResponse(rsp *http.Response) (*ListConfigurationsRes
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
@@ -2746,6 +2780,13 @@ func ParseCreateConfigurationResponse(rsp *http.Response) (*CreateConfigurationR
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -2792,6 +2833,13 @@ func ParseDeleteConfigurationResponse(rsp *http.Response) (*DeleteConfigurationR
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
@@ -2854,6 +2902,13 @@ func ParseReadConfigurationResponse(rsp *http.Response) (*ReadConfigurationRespo
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -2907,6 +2962,13 @@ func ParseUpdateConfigurationResponse(rsp *http.Response) (*UpdateConfigurationR
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
@@ -2962,6 +3024,13 @@ func ParseListDatabasesResponse(rsp *http.Response) (*ListDatabasesResponse, err
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3009,6 +3078,13 @@ func ParseCreateDatabaseResponse(rsp *http.Response) (*CreateDatabaseResponse, e
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3055,6 +3131,13 @@ func ParseDeleteDatabaseResponse(rsp *http.Response) (*DeleteDatabaseResponse, e
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
@@ -3117,6 +3200,13 @@ func ParseReadDatabaseResponse(rsp *http.Response) (*ReadDatabaseResponse, error
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3170,6 +3260,13 @@ func ParseUpdateDatabaseResponse(rsp *http.Response) (*UpdateDatabaseResponse, e
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
@@ -3324,6 +3421,13 @@ func ParseReadStatusResponse(rsp *http.Response) (*ReadStatusResponse, error) {
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3370,6 +3474,13 @@ func ParseUpdateStatusResponse(rsp *http.Response) (*UpdateStatusResponse, error
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
@@ -3418,6 +3529,13 @@ func ParseReadProductsResponse(rsp *http.Response) (*ReadProductsResponse, error
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3464,6 +3582,13 @@ func ParseReadProvidersResponse(rsp *http.Response) (*ReadProvidersResponse, err
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
@@ -3512,6 +3637,13 @@ func ParseReadRegionsResponse(rsp *http.Response) (*ReadRegionsResponse, error) 
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3558,6 +3690,13 @@ func ParseReadSizesResponse(rsp *http.Response) (*ReadSizesResponse, error) {
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
@@ -3606,6 +3745,13 @@ func ParseReadTiersResponse(rsp *http.Response) (*ReadTiersResponse, error) {
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3653,6 +3799,13 @@ func ParseReadTopologiesResponse(rsp *http.Response) (*ReadTopologiesResponse, e
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3699,6 +3852,13 @@ func ParseReadVersionsResponse(rsp *http.Response) (*ReadVersionsResponse, error
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
 		var dest Message
