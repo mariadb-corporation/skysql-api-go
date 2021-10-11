@@ -97,6 +97,7 @@ type Database struct {
 	SysModCount       string  `json:"sys_mod_count"`
 	SysUpdatedBy      string  `json:"sys_updated_by"`
 	SysUpdatedOn      string  `json:"sys_updated_on"`
+	Tier              string  `json:"tier"`
 	Topology          string  `json:"topology"`
 	TxStorage         string  `json:"tx_storage"`
 	VolumeIops        *string `json:"volume_iops,omitempty"`
@@ -150,6 +151,7 @@ type NewDatabase struct {
 	ReplRegion     string `json:"repl_region"`
 	Replicas       string `json:"replicas"`
 	Size           string `json:"size"`
+	Tier           string `json:"tier"`
 	Topology       string `json:"topology"`
 	TxStorage      string `json:"tx_storage"`
 	VolumeIops     string `json:"volume_iops"`
@@ -379,6 +381,7 @@ type ReadRegionsParams struct {
 type ReadSizesParams struct {
 	Product  string `json:"product"`
 	Provider string `json:"provider"`
+	Tier     string `json:"tier"`
 	Limit    *int   `json:"limit,omitempty"`
 }
 
