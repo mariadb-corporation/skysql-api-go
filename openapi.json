@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field in the response in the _Authorization_ header for subsequent api requests\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.",
-    "version": "0.0.48"
+    "version": "0.0.49"
   },
   "paths": {
     "/billing/quotas": {
@@ -665,7 +665,7 @@
                   "summary": "Standalone database",
                   "description": "Create a new database using a standalone topology",
                   "value": {
-                    "release_version": "MariaDB Enterprise Server 10.5.9-6",
+                    "release_version": "MariaDB Enterprise Server 10.4.18-11",
                     "topology": "Standalone",
                     "size": "Sky-2x4",
                     "tx_storage": "100",
@@ -945,7 +945,7 @@
           "Databases"
         ],
         "summary": "Update Database",
-        "description": "Update an existing database cluster, (e.g. provision more IOPS, change node type)",
+        "description": "Update an existing database cluster name",
         "operationId": "update_database",
         "parameters": [
           {
