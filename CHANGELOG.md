@@ -1,3 +1,15 @@
+# v0.0.10 (Tue Oct 12 2021)
+
+#### 🔩 Dependency Updates
+
+
+#### Authors: 2
+
+- Don Mayo ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+- SkySQL API Golang SDK Release Pipeline (no-reply@mariadb.com)
+
+---
+
 # v0.0.9 (Mon Oct 11 2021)
 
 #### 🔩 Dependency Updates
