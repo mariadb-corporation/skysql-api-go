@@ -141,21 +141,21 @@ type Message struct {
 
 // Request body to create a new MariaDB cluster deployed by SkySQL
 type NewDatabase struct {
-	MaxscaleConfig string `json:"maxscale_config"`
-	MaxscaleProxy  string `json:"maxscale_proxy"`
-	Monitor        string `json:"monitor"`
-	Name           string `json:"name"`
-	Provider       string `json:"provider"`
-	Region         string `json:"region"`
-	ReleaseVersion string `json:"release_version"`
-	ReplRegion     string `json:"repl_region"`
-	Replicas       string `json:"replicas"`
-	Size           string `json:"size"`
-	Tier           string `json:"tier"`
-	Topology       string `json:"topology"`
-	TxStorage      string `json:"tx_storage"`
-	VolumeIops     string `json:"volume_iops"`
-	VolumeType     string `json:"volume_type"`
+	MaxscaleConfig *string `json:"maxscale_config,omitempty"`
+	MaxscaleProxy  *string `json:"maxscale_proxy,omitempty"`
+	Monitor        *string `json:"monitor,omitempty"`
+	Name           string  `json:"name"`
+	Provider       string  `json:"provider"`
+	Region         string  `json:"region"`
+	ReleaseVersion string  `json:"release_version"`
+	ReplRegion     *string `json:"repl_region,omitempty"`
+	Replicas       string  `json:"replicas"`
+	Size           string  `json:"size"`
+	Tier           string  `json:"tier"`
+	Topology       string  `json:"topology"`
+	TxStorage      string  `json:"tx_storage"`
+	VolumeIops     *string `json:"volume_iops,omitempty"`
+	VolumeType     *string `json:"volume_type,omitempty"`
 }
 
 // A database product, e.g. Xpand
