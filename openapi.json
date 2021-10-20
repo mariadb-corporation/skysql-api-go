@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field in the response in the _Authorization_ header for subsequent api requests\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.",
-    "version": "0.0.52"
+    "version": "0.0.53"
   },
   "paths": {
     "/billing/quotas": {
@@ -2263,48 +2263,11 @@
       "Database": {
         "title": "Database",
         "required": [
-          "active_replicas",
-          "attributes",
-          "bulkdata_port_1",
-          "bulkdata_port_2",
-          "columnstore_bucket",
-          "custom_config",
-          "dns_domain",
-          "fault_count",
-          "fqdn",
-          "gl_account",
-          "id",
           "install_status",
-          "instance_state",
-          "ip_address",
-          "mac_address",
-          "maxscale_config",
-          "maxscale_proxy",
-          "monitor",
-          "name",
-          "number",
           "operational_status",
-          "owned_by",
           "provider",
-          "proxy",
-          "read_only_port",
-          "read_write_port",
-          "release_version",
-          "repl_master",
-          "repl_master_host_ext",
-          "replicas",
+          "region",
           "size",
-          "skip_sync",
-          "ssl_certificate",
-          "ssl_expires_on",
-          "ssl_serial",
-          "sys_created_by",
-          "sys_created_on",
-          "sys_id",
-          "sys_mod_count",
-          "tier",
-          "sys_updated_by",
-          "sys_updated_on",
           "topology",
           "tx_storage"
         ],
@@ -2702,20 +2665,8 @@
       "Product": {
         "title": "Product",
         "required": [
-          "short_description",
-          "sys_id",
-          "sys_updated_by",
-          "sys_updated_on",
-          "sys_created_on",
-          "display_name",
           "name",
-          "sys_created_by",
-          "sys_tags",
-          "active",
-          "order",
-          "sys_mod_count",
-          "active_topologies",
-          "default_topology"
+          "sys_tags"
         ],
         "type": "object",
         "properties": {
@@ -2785,20 +2736,10 @@
       "Provider": {
         "title": "Provider",
         "required": [
-          "icon_image",
-          "sys_mod_count",
-          "active",
           "sys_updated_on",
-          "logo_image",
           "sys_tags",
-          "products",
-          "topologies",
-          "sys_id",
-          "sys_updated_by",
-          "sys_created_on",
           "name",
-          "value",
-          "sys_created_by"
+          "value"
         ],
         "type": "object",
         "properties": {
@@ -2865,7 +2806,6 @@
         "title": "QuotaProgress",
         "required": [
           "name",
-          "description",
           "limit"
         ],
         "type": "object",
@@ -2904,20 +2844,11 @@
       "Region": {
         "title": "Region",
         "required": [
-          "sys_mod_count",
-          "active",
-          "sys_updated_on",
           "sys_tags",
-          "sys_id",
-          "default",
-          "sys_updated_by",
           "provider",
-          "sys_created_on",
           "name",
           "location",
-          "region",
-          "sys_created_by",
-          "api_handle"
+          "region"
         ],
         "type": "object",
         "properties": {
@@ -2989,24 +2920,12 @@
         "required": [
           "product",
           "visibility",
-          "sys_mod_count",
-          "active",
-          "cpu",
-          "sys_updated_on",
-          "sys_tags",
-          "sequence",
-          "sys_id",
           "component",
-          "sys_updated_by",
           "tier",
           "provider",
-          "sys_created_on",
           "name",
           "node_pool",
-          "value",
-          "sys_created_by",
-          "api_handle",
-          "ram"
+          "value"
         ],
         "type": "object",
         "properties": {
@@ -3095,18 +3014,6 @@
       },
       "Tier": {
         "title": "Tier",
-        "required": [
-          "sys_id",
-          "sys_updated_by",
-          "sys_created_on",
-          "name",
-          "paid",
-          "sys_mod_count",
-          "active",
-          "sys_updated_on",
-          "sys_tags",
-          "sys_created_by"
-        ],
         "type": "object",
         "properties": {
           "sys_id": {
@@ -3155,27 +3062,9 @@
       "Topology": {
         "title": "Topology",
         "required": [
-          "maxscale_supported",
-          "operator_replica_minimum",
           "product",
-          "replica_options",
-          "sys_mod_count",
-          "active",
-          "sys_updated_on",
-          "display_name",
-          "sys_tags",
-          "sys_id",
-          "has_replicas",
-          "sys_updated_by",
-          "has_clustrix_frontend",
-          "sys_created_on",
           "name",
-          "paid",
-          "replica_label",
-          "mariadb_cronback_enabled",
-          "value",
-          "sys_created_by",
-          "api_handle"
+          "value"
         ],
         "type": "object",
         "properties": {
@@ -3310,24 +3199,6 @@
       },
       "Version": {
         "title": "Version",
-        "required": [
-          "product",
-          "sys_mod_count",
-          "sys_updated_on",
-          "display_name",
-          "sys_tags",
-          "type",
-          "release_notes_url",
-          "sys_id",
-          "sys_updated_by",
-          "public",
-          "provider",
-          "release_date",
-          "sys_created_on",
-          "parent_release",
-          "name",
-          "sys_created_by"
-        ],
         "type": "object",
         "properties": {
           "product": {
