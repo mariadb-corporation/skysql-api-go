@@ -7,7 +7,7 @@ const (
 	HTTPBearerScopes = "HTTPBearer.Scopes"
 )
 
-// IP Address that has been added to the database network allowlist
+// IP Address that has been added to the services network allowlist
 type AllowlistIPAddress struct {
 	Comment   *string `json:"comment,omitempty"`
 	Database  string  `json:"database"`
@@ -49,80 +49,6 @@ type CreateConfigurationResp struct {
 	Topology             string                   `json:"topology"`
 }
 
-// MariaDB cluster deployed by SkySQL
-type Database struct {
-	ActiveReplicas    string  `json:"active_replicas"`
-	Attributes        string  `json:"attributes"`
-	BulkdataPort1     string  `json:"bulkdata_port_1"`
-	BulkdataPort2     string  `json:"bulkdata_port_2"`
-	Cluster           *string `json:"cluster,omitempty"`
-	ColumnstoreBucket string  `json:"columnstore_bucket"`
-	CustomConfig      string  `json:"custom_config"`
-	DnsDomain         string  `json:"dns_domain"`
-	FaultCount        string  `json:"fault_count"`
-	Fqdn              string  `json:"fqdn"`
-	GlAccount         string  `json:"gl_account"`
-	Id                string  `json:"id"`
-	InstallStatus     string  `json:"install_status"`
-	InstanceState     string  `json:"instance_state"`
-	IpAddress         string  `json:"ip_address"`
-	MacAddress        string  `json:"mac_address"`
-	MaxscaleConfig    string  `json:"maxscale_config"`
-	MaxscaleProxy     string  `json:"maxscale_proxy"`
-	Monitor           string  `json:"monitor"`
-	Name              string  `json:"name"`
-	Number            string  `json:"number"`
-	OperationalStatus string  `json:"operational_status"`
-	OwnedBy           string  `json:"owned_by"`
-	Provider          string  `json:"provider"`
-	Proxy             string  `json:"proxy"`
-	ReadOnlyPort      string  `json:"read_only_port"`
-	ReadWritePort     string  `json:"read_write_port"`
-	Region            *string `json:"region,omitempty"`
-	ReleaseVersion    string  `json:"release_version"`
-	ReplMaster        string  `json:"repl_master"`
-	ReplMasterHostExt string  `json:"repl_master_host_ext"`
-	ReplRegion        *string `json:"repl_region,omitempty"`
-	Replicas          string  `json:"replicas"`
-	ReplicationStatus *string `json:"replication_status,omitempty"`
-	ReplicationType   *string `json:"replication_type,omitempty"`
-	Size              string  `json:"size"`
-	SkipSync          string  `json:"skip_sync"`
-	SslCertificate    string  `json:"ssl_certificate"`
-	SslExpiresOn      string  `json:"ssl_expires_on"`
-	SslSerial         string  `json:"ssl_serial"`
-	SysCreatedBy      string  `json:"sys_created_by"`
-	SysCreatedOn      string  `json:"sys_created_on"`
-	SysId             string  `json:"sys_id"`
-	SysModCount       string  `json:"sys_mod_count"`
-	SysUpdatedBy      string  `json:"sys_updated_by"`
-	SysUpdatedOn      string  `json:"sys_updated_on"`
-	Tier              string  `json:"tier"`
-	Topology          string  `json:"topology"`
-	TxStorage         string  `json:"tx_storage"`
-	VolumeIops        *string `json:"volume_iops,omitempty"`
-	VolumeType        *string `json:"volume_type,omitempty"`
-}
-
-// Actions that can be taken on a Database in a Task
-type DatabaseActions interface{}
-
-// Response body for a database status
-type DatabaseStatus struct {
-	Status string `json:"status"`
-}
-
-// Request body to update a database
-type DatabaseStatusUpdate struct {
-	// Actions that can be taken on a Database in a Task
-	Action DatabaseActions `json:"action"`
-}
-
-// Request body to update a database - currently limited to name only
-type DatabaseUpdate struct {
-	Name string `json:"name"`
-}
-
 // HTTPValidationError defines model for HTTPValidationError.
 type HTTPValidationError struct {
 	Detail *[]ValidationError `json:"detail,omitempty"`
@@ -139,8 +65,8 @@ type Message struct {
 	Details string `json:"details"`
 }
 
-// Request body to create a new MariaDB cluster deployed by SkySQL
-type NewDatabase struct {
+// Request body to create a new MariaDB services deployed by SkySQL
+type NewService struct {
 	MaxscaleConfig *string `json:"maxscale_config,omitempty"`
 	MaxscaleProxy  *string `json:"maxscale_proxy,omitempty"`
 	Monitor        *string `json:"monitor,omitempty"`
@@ -160,44 +86,44 @@ type NewDatabase struct {
 
 // A database product, e.g. Xpand
 type Product struct {
-	Active           string  `json:"active"`
-	ActiveTopologies string  `json:"active_topologies"`
-	DefaultTopology  string  `json:"default_topology"`
+	Active           *string `json:"active,omitempty"`
+	ActiveTopologies *string `json:"active_topologies,omitempty"`
+	DefaultTopology  *string `json:"default_topology,omitempty"`
 	Description      *string `json:"description,omitempty"`
-	DisplayName      string  `json:"display_name"`
+	DisplayName      *string `json:"display_name,omitempty"`
 	Name             string  `json:"name"`
-	Order            string  `json:"order"`
-	ShortDescription string  `json:"short_description"`
-	SysCreatedBy     string  `json:"sys_created_by"`
-	SysCreatedOn     string  `json:"sys_created_on"`
-	SysId            string  `json:"sys_id"`
-	SysModCount      string  `json:"sys_mod_count"`
+	Order            *string `json:"order,omitempty"`
+	ShortDescription *string `json:"short_description,omitempty"`
+	SysCreatedBy     *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn     *string `json:"sys_created_on,omitempty"`
+	SysId            *string `json:"sys_id,omitempty"`
+	SysModCount      *string `json:"sys_mod_count,omitempty"`
 	SysTags          string  `json:"sys_tags"`
-	SysUpdatedBy     string  `json:"sys_updated_by"`
-	SysUpdatedOn     string  `json:"sys_updated_on"`
+	SysUpdatedBy     *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn     *string `json:"sys_updated_on,omitempty"`
 }
 
 // Cloud provider, e.g. AWS or GCP
 type Provider struct {
-	Active       string `json:"active"`
-	IconImage    string `json:"icon_image"`
-	LogoImage    string `json:"logo_image"`
-	Name         string `json:"name"`
-	Products     string `json:"products"`
-	SysCreatedBy string `json:"sys_created_by"`
-	SysCreatedOn string `json:"sys_created_on"`
-	SysId        string `json:"sys_id"`
-	SysModCount  string `json:"sys_mod_count"`
-	SysTags      string `json:"sys_tags"`
-	SysUpdatedBy string `json:"sys_updated_by"`
-	SysUpdatedOn string `json:"sys_updated_on"`
-	Topologies   string `json:"topologies"`
-	Value        string `json:"value"`
+	Active       *string `json:"active,omitempty"`
+	IconImage    *string `json:"icon_image,omitempty"`
+	LogoImage    *string `json:"logo_image,omitempty"`
+	Name         string  `json:"name"`
+	Products     *string `json:"products,omitempty"`
+	SysCreatedBy *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn *string `json:"sys_created_on,omitempty"`
+	SysId        *string `json:"sys_id,omitempty"`
+	SysModCount  *string `json:"sys_mod_count,omitempty"`
+	SysTags      string  `json:"sys_tags"`
+	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn string  `json:"sys_updated_on"`
+	Topologies   *string `json:"topologies,omitempty"`
+	Value        string  `json:"value"`
 }
 
 // A quota progress response
 type QuotaProgress struct {
-	Description string  `json:"description"`
+	Description *string `json:"description,omitempty"`
 	Limit       int     `json:"limit"`
 	Name        string  `json:"name"`
 	Provider    *string `json:"provider,omitempty"`
@@ -208,84 +134,158 @@ type QuotaProgress struct {
 
 // Geographic region, as defined by the providers
 type Region struct {
-	Active       string  `json:"active"`
-	ApiHandle    string  `json:"api_handle"`
-	Default      string  `json:"default"`
+	Active       *string `json:"active,omitempty"`
+	ApiHandle    *string `json:"api_handle,omitempty"`
+	Default      *string `json:"default,omitempty"`
 	Location     string  `json:"location"`
 	Name         string  `json:"name"`
 	NodeType     *string `json:"node_type,omitempty"`
 	Provider     string  `json:"provider"`
 	Region       string  `json:"region"`
-	SysCreatedBy string  `json:"sys_created_by"`
-	SysCreatedOn string  `json:"sys_created_on"`
-	SysId        string  `json:"sys_id"`
-	SysModCount  string  `json:"sys_mod_count"`
+	SysCreatedBy *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn *string `json:"sys_created_on,omitempty"`
+	SysId        *string `json:"sys_id,omitempty"`
+	SysModCount  *string `json:"sys_mod_count,omitempty"`
 	SysTags      string  `json:"sys_tags"`
-	SysUpdatedBy string  `json:"sys_updated_by"`
-	SysUpdatedOn string  `json:"sys_updated_on"`
+	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn *string `json:"sys_updated_on,omitempty"`
+}
+
+// MariaDB services deployed by SkySQL
+type Service struct {
+	ActiveReplicas    *string `json:"active_replicas,omitempty"`
+	Attributes        *string `json:"attributes,omitempty"`
+	BulkdataPort1     *string `json:"bulkdata_port_1,omitempty"`
+	BulkdataPort2     *string `json:"bulkdata_port_2,omitempty"`
+	Cluster           *string `json:"cluster,omitempty"`
+	ColumnstoreBucket *string `json:"columnstore_bucket,omitempty"`
+	CustomConfig      *string `json:"custom_config,omitempty"`
+	DnsDomain         *string `json:"dns_domain,omitempty"`
+	FaultCount        *string `json:"fault_count,omitempty"`
+	Fqdn              *string `json:"fqdn,omitempty"`
+	GlAccount         *string `json:"gl_account,omitempty"`
+	Id                *string `json:"id,omitempty"`
+	InstallStatus     string  `json:"install_status"`
+	InstanceState     *string `json:"instance_state,omitempty"`
+	IpAddress         *string `json:"ip_address,omitempty"`
+	MacAddress        *string `json:"mac_address,omitempty"`
+	MaxscaleConfig    *string `json:"maxscale_config,omitempty"`
+	MaxscaleProxy     *string `json:"maxscale_proxy,omitempty"`
+	Monitor           *string `json:"monitor,omitempty"`
+	Name              *string `json:"name,omitempty"`
+	Number            *string `json:"number,omitempty"`
+	OperationalStatus string  `json:"operational_status"`
+	OwnedBy           *string `json:"owned_by,omitempty"`
+	Provider          string  `json:"provider"`
+	Proxy             *string `json:"proxy,omitempty"`
+	ReadOnlyPort      *string `json:"read_only_port,omitempty"`
+	ReadWritePort     *string `json:"read_write_port,omitempty"`
+	Region            string  `json:"region"`
+	ReleaseVersion    *string `json:"release_version,omitempty"`
+	ReplMaster        *string `json:"repl_master,omitempty"`
+	ReplMasterHostExt *string `json:"repl_master_host_ext,omitempty"`
+	ReplRegion        *string `json:"repl_region,omitempty"`
+	Replicas          *string `json:"replicas,omitempty"`
+	ReplicationStatus *string `json:"replication_status,omitempty"`
+	ReplicationType   *string `json:"replication_type,omitempty"`
+	Size              string  `json:"size"`
+	SkipSync          *string `json:"skip_sync,omitempty"`
+	SslCertificate    *string `json:"ssl_certificate,omitempty"`
+	SslExpiresOn      *string `json:"ssl_expires_on,omitempty"`
+	SslSerial         *string `json:"ssl_serial,omitempty"`
+	SysCreatedBy      *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn      *string `json:"sys_created_on,omitempty"`
+	SysId             *string `json:"sys_id,omitempty"`
+	SysModCount       *string `json:"sys_mod_count,omitempty"`
+	SysUpdatedBy      *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn      *string `json:"sys_updated_on,omitempty"`
+	Tier              *string `json:"tier,omitempty"`
+	Topology          string  `json:"topology"`
+	TxStorage         string  `json:"tx_storage"`
+	VolumeIops        *string `json:"volume_iops,omitempty"`
+	VolumeType        *string `json:"volume_type,omitempty"`
+}
+
+// Actions that can be taken on a services in a Task
+type ServiceActions interface{}
+
+// Response body for a services status
+type ServiceStatus struct {
+	Status string `json:"status"`
+}
+
+// Request body to update a service
+type ServiceStatusUpdate struct {
+	// Actions that can be taken on a services in a Task
+	Action ServiceActions `json:"action"`
+}
+
+// Request body to update a services - currently limited to name only
+type ServiceUpdate struct {
+	Name string `json:"name"`
 }
 
 // Node size, as defined by the providers
 type Size struct {
-	Active       string `json:"active"`
-	ApiHandle    string `json:"api_handle"`
-	Component    string `json:"component"`
-	Cpu          string `json:"cpu"`
-	Name         string `json:"name"`
-	NodePool     string `json:"node_pool"`
-	Product      string `json:"product"`
-	Provider     string `json:"provider"`
-	Ram          string `json:"ram"`
-	Sequence     string `json:"sequence"`
-	SysCreatedBy string `json:"sys_created_by"`
-	SysCreatedOn string `json:"sys_created_on"`
-	SysId        string `json:"sys_id"`
-	SysModCount  string `json:"sys_mod_count"`
-	SysTags      string `json:"sys_tags"`
-	SysUpdatedBy string `json:"sys_updated_by"`
-	SysUpdatedOn string `json:"sys_updated_on"`
-	Tier         string `json:"tier"`
-	Value        string `json:"value"`
-	Visibility   string `json:"visibility"`
+	Active       *string `json:"active,omitempty"`
+	ApiHandle    *string `json:"api_handle,omitempty"`
+	Component    string  `json:"component"`
+	Cpu          *string `json:"cpu,omitempty"`
+	Name         string  `json:"name"`
+	NodePool     string  `json:"node_pool"`
+	Product      string  `json:"product"`
+	Provider     string  `json:"provider"`
+	Ram          *string `json:"ram,omitempty"`
+	Sequence     *string `json:"sequence,omitempty"`
+	SysCreatedBy *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn *string `json:"sys_created_on,omitempty"`
+	SysId        *string `json:"sys_id,omitempty"`
+	SysModCount  *string `json:"sys_mod_count,omitempty"`
+	SysTags      *string `json:"sys_tags,omitempty"`
+	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn *string `json:"sys_updated_on,omitempty"`
+	Tier         string  `json:"tier"`
+	Value        string  `json:"value"`
+	Visibility   string  `json:"visibility"`
 }
 
 // Availability tier, e.g. dedicated or shared tenancy
 type Tier struct {
-	Active       string `json:"active"`
-	Name         string `json:"name"`
-	Paid         string `json:"paid"`
-	SysCreatedBy string `json:"sys_created_by"`
-	SysCreatedOn string `json:"sys_created_on"`
-	SysId        string `json:"sys_id"`
-	SysModCount  string `json:"sys_mod_count"`
-	SysTags      string `json:"sys_tags"`
-	SysUpdatedBy string `json:"sys_updated_by"`
-	SysUpdatedOn string `json:"sys_updated_on"`
+	Active       *string `json:"active,omitempty"`
+	Name         *string `json:"name,omitempty"`
+	Paid         *string `json:"paid,omitempty"`
+	SysCreatedBy *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn *string `json:"sys_created_on,omitempty"`
+	SysId        *string `json:"sys_id,omitempty"`
+	SysModCount  *string `json:"sys_mod_count,omitempty"`
+	SysTags      *string `json:"sys_tags,omitempty"`
+	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn *string `json:"sys_updated_on,omitempty"`
 }
 
 // Cluster topology valid for a particular product, e.g. Standalone or MaxScale
 type Topology struct {
-	Active                 string `json:"active"`
-	ApiHandle              string `json:"api_handle"`
-	DisplayName            string `json:"display_name"`
-	HasClustrixFrontend    string `json:"has_clustrix_frontend"`
-	HasReplicas            string `json:"has_replicas"`
-	MariadbCronbackEnabled string `json:"mariadb_cronback_enabled"`
-	MaxscaleSupported      string `json:"maxscale_supported"`
-	Name                   string `json:"name"`
-	OperatorReplicaMinimum string `json:"operator_replica_minimum"`
-	Paid                   string `json:"paid"`
-	Product                string `json:"product"`
-	ReplicaLabel           string `json:"replica_label"`
-	ReplicaOptions         string `json:"replica_options"`
-	SysCreatedBy           string `json:"sys_created_by"`
-	SysCreatedOn           string `json:"sys_created_on"`
-	SysId                  string `json:"sys_id"`
-	SysModCount            string `json:"sys_mod_count"`
-	SysTags                string `json:"sys_tags"`
-	SysUpdatedBy           string `json:"sys_updated_by"`
-	SysUpdatedOn           string `json:"sys_updated_on"`
-	Value                  string `json:"value"`
+	Active                 *string `json:"active,omitempty"`
+	ApiHandle              *string `json:"api_handle,omitempty"`
+	DisplayName            *string `json:"display_name,omitempty"`
+	HasClustrixFrontend    *string `json:"has_clustrix_frontend,omitempty"`
+	HasReplicas            *string `json:"has_replicas,omitempty"`
+	MariadbCronbackEnabled *string `json:"mariadb_cronback_enabled,omitempty"`
+	MaxscaleSupported      *string `json:"maxscale_supported,omitempty"`
+	Name                   string  `json:"name"`
+	OperatorReplicaMinimum *string `json:"operator_replica_minimum,omitempty"`
+	Paid                   *string `json:"paid,omitempty"`
+	Product                string  `json:"product"`
+	ReplicaLabel           *string `json:"replica_label,omitempty"`
+	ReplicaOptions         *string `json:"replica_options,omitempty"`
+	SysCreatedBy           *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn           *string `json:"sys_created_on,omitempty"`
+	SysId                  *string `json:"sys_id,omitempty"`
+	SysModCount            *string `json:"sys_mod_count,omitempty"`
+	SysTags                *string `json:"sys_tags,omitempty"`
+	SysUpdatedBy           *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn           *string `json:"sys_updated_on,omitempty"`
+	Value                  string  `json:"value"`
 }
 
 // Request body to update a configuration
@@ -303,23 +303,23 @@ type ValidationError struct {
 
 // Database version, e.g. 10.4 or 10.5
 type Version struct {
-	DisplayName       string  `json:"display_name"`
+	DisplayName       *string `json:"display_name,omitempty"`
 	EnterpriseVersion *string `json:"enterprise_version,omitempty"`
-	Name              string  `json:"name"`
-	ParentRelease     string  `json:"parent_release"`
-	Product           string  `json:"product"`
-	Provider          string  `json:"provider"`
-	Public            string  `json:"public"`
-	ReleaseDate       string  `json:"release_date"`
-	ReleaseNotesUrl   string  `json:"release_notes_url"`
-	SysCreatedBy      string  `json:"sys_created_by"`
-	SysCreatedOn      string  `json:"sys_created_on"`
-	SysId             string  `json:"sys_id"`
-	SysModCount       string  `json:"sys_mod_count"`
-	SysTags           string  `json:"sys_tags"`
-	SysUpdatedBy      string  `json:"sys_updated_by"`
-	SysUpdatedOn      string  `json:"sys_updated_on"`
-	Type              string  `json:"type"`
+	Name              *string `json:"name,omitempty"`
+	ParentRelease     *string `json:"parent_release,omitempty"`
+	Product           *string `json:"product,omitempty"`
+	Provider          *string `json:"provider,omitempty"`
+	Public            *string `json:"public,omitempty"`
+	ReleaseDate       *string `json:"release_date,omitempty"`
+	ReleaseNotesUrl   *string `json:"release_notes_url,omitempty"`
+	SysCreatedBy      *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn      *string `json:"sys_created_on,omitempty"`
+	SysId             *string `json:"sys_id,omitempty"`
+	SysModCount       *string `json:"sys_mod_count,omitempty"`
+	SysTags           *string `json:"sys_tags,omitempty"`
+	SysUpdatedBy      *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn      *string `json:"sys_updated_on,omitempty"`
+	Type              *string `json:"type,omitempty"`
 }
 
 // ListConfigurationsParams defines parameters for ListConfigurations.
@@ -332,34 +332,6 @@ type CreateConfigurationJSONBody CreateConfigurationRequest
 
 // UpdateConfigurationJSONBody defines parameters for UpdateConfiguration.
 type UpdateConfigurationJSONBody UpdateConfigurationRequest
-
-// ListDatabasesParams defines parameters for ListDatabases.
-type ListDatabasesParams struct {
-	Limit *int `json:"limit,omitempty"`
-}
-
-// CreateDatabaseJSONBody defines parameters for CreateDatabase.
-type CreateDatabaseJSONBody NewDatabase
-
-// UpdateDatabaseJSONBody defines parameters for UpdateDatabase.
-type UpdateDatabaseJSONBody DatabaseUpdate
-
-// RemoveAllowedAddressParams defines parameters for RemoveAllowedAddress.
-type RemoveAllowedAddressParams struct {
-	Address *string `json:"address,omitempty"`
-}
-
-// ListAllowedAddressesParams defines parameters for ListAllowedAddresses.
-type ListAllowedAddressesParams struct {
-	Limit  *int `json:"limit,omitempty"`
-	Offset *int `json:"offset,omitempty"`
-}
-
-// AddAllowedAddressJSONBody defines parameters for AddAllowedAddress.
-type AddAllowedAddressJSONBody IPAddress
-
-// UpdateStatusJSONBody defines parameters for UpdateStatus.
-type UpdateStatusJSONBody DatabaseStatusUpdate
 
 // ReadProductsParams defines parameters for ReadProducts.
 type ReadProductsParams struct {
@@ -401,17 +373,45 @@ type ReadVersionsParams struct {
 	Limit *int `json:"limit,omitempty"`
 }
 
+// ListServicesParams defines parameters for ListServices.
+type ListServicesParams struct {
+	Limit *int `json:"limit,omitempty"`
+}
+
+// CreateServiceJSONBody defines parameters for CreateService.
+type CreateServiceJSONBody NewService
+
+// UpdateServiceJSONBody defines parameters for UpdateService.
+type UpdateServiceJSONBody ServiceUpdate
+
+// RemoveAllowedAddressParams defines parameters for RemoveAllowedAddress.
+type RemoveAllowedAddressParams struct {
+	Address *string `json:"address,omitempty"`
+}
+
+// ListAllowedAddressesParams defines parameters for ListAllowedAddresses.
+type ListAllowedAddressesParams struct {
+	Limit  *int `json:"limit,omitempty"`
+	Offset *int `json:"offset,omitempty"`
+}
+
+// AddAllowedAddressJSONBody defines parameters for AddAllowedAddress.
+type AddAllowedAddressJSONBody IPAddress
+
+// UpdateStatusJSONBody defines parameters for UpdateStatus.
+type UpdateStatusJSONBody ServiceStatusUpdate
+
 // CreateConfigurationJSONRequestBody defines body for CreateConfiguration for application/json ContentType.
 type CreateConfigurationJSONRequestBody CreateConfigurationJSONBody
 
 // UpdateConfigurationJSONRequestBody defines body for UpdateConfiguration for application/json ContentType.
 type UpdateConfigurationJSONRequestBody UpdateConfigurationJSONBody
 
-// CreateDatabaseJSONRequestBody defines body for CreateDatabase for application/json ContentType.
-type CreateDatabaseJSONRequestBody CreateDatabaseJSONBody
+// CreateServiceJSONRequestBody defines body for CreateService for application/json ContentType.
+type CreateServiceJSONRequestBody CreateServiceJSONBody
 
-// UpdateDatabaseJSONRequestBody defines body for UpdateDatabase for application/json ContentType.
-type UpdateDatabaseJSONRequestBody UpdateDatabaseJSONBody
+// UpdateServiceJSONRequestBody defines body for UpdateService for application/json ContentType.
+type UpdateServiceJSONRequestBody UpdateServiceJSONBody
 
 // AddAllowedAddressJSONRequestBody defines body for AddAllowedAddress for application/json ContentType.
 type AddAllowedAddressJSONRequestBody AddAllowedAddressJSONBody

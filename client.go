@@ -115,44 +115,6 @@ type ClientInterface interface {
 
 	UpdateConfiguration(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// ListDatabases request
-	ListDatabases(ctx context.Context, params *ListDatabasesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// CreateDatabase request with any body
-	CreateDatabaseWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	CreateDatabase(ctx context.Context, body CreateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// DeleteDatabase request
-	DeleteDatabase(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// ReadDatabase request
-	ReadDatabase(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// UpdateDatabase request with any body
-	UpdateDatabaseWithBody(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	UpdateDatabase(ctx context.Context, databaseId string, body UpdateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// RemoveAllowedAddress request
-	RemoveAllowedAddress(ctx context.Context, databaseId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// ListAllowedAddresses request
-	ListAllowedAddresses(ctx context.Context, databaseId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// AddAllowedAddress request with any body
-	AddAllowedAddressWithBody(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	AddAllowedAddress(ctx context.Context, databaseId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// ReadStatus request
-	ReadStatus(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// UpdateStatus request with any body
-	UpdateStatusWithBody(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	UpdateStatus(ctx context.Context, databaseId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// ReadProducts request
 	ReadProducts(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -173,6 +135,44 @@ type ClientInterface interface {
 
 	// ReadVersions request
 	ReadVersions(ctx context.Context, params *ReadVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListServices request
+	ListServices(ctx context.Context, params *ListServicesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateService request with any body
+	CreateServiceWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateService(ctx context.Context, body CreateServiceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteService request
+	DeleteService(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReadService request
+	ReadService(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateService request with any body
+	UpdateServiceWithBody(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateService(ctx context.Context, serviceId string, body UpdateServiceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveAllowedAddress request
+	RemoveAllowedAddress(ctx context.Context, serviceId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAllowedAddresses request
+	ListAllowedAddresses(ctx context.Context, serviceId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddAllowedAddress request with any body
+	AddAllowedAddressWithBody(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddAllowedAddress(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReadStatus request
+	ReadStatus(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateStatus request with any body
+	UpdateStatusWithBody(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateStatus(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) RedirectToDocumentation(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -283,174 +283,6 @@ func (c *Client) UpdateConfiguration(ctx context.Context, configurationNumber st
 	return c.Client.Do(req)
 }
 
-func (c *Client) ListDatabases(ctx context.Context, params *ListDatabasesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListDatabasesRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateDatabaseWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateDatabaseRequestWithBody(c.Server, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) CreateDatabase(ctx context.Context, body CreateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewCreateDatabaseRequest(c.Server, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) DeleteDatabase(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteDatabaseRequest(c.Server, databaseId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ReadDatabase(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewReadDatabaseRequest(c.Server, databaseId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateDatabaseWithBody(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateDatabaseRequestWithBody(c.Server, databaseId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateDatabase(ctx context.Context, databaseId string, body UpdateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateDatabaseRequest(c.Server, databaseId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) RemoveAllowedAddress(ctx context.Context, databaseId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewRemoveAllowedAddressRequest(c.Server, databaseId, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ListAllowedAddresses(ctx context.Context, databaseId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListAllowedAddressesRequest(c.Server, databaseId, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) AddAllowedAddressWithBody(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAddAllowedAddressRequestWithBody(c.Server, databaseId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) AddAllowedAddress(ctx context.Context, databaseId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAddAllowedAddressRequest(c.Server, databaseId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ReadStatus(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewReadStatusRequest(c.Server, databaseId)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateStatusWithBody(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateStatusRequestWithBody(c.Server, databaseId, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) UpdateStatus(ctx context.Context, databaseId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateStatusRequest(c.Server, databaseId, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
 func (c *Client) ReadProducts(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewReadProductsRequest(c.Server, params)
 	if err != nil {
@@ -525,6 +357,174 @@ func (c *Client) ReadTopologies(ctx context.Context, params *ReadTopologiesParam
 
 func (c *Client) ReadVersions(ctx context.Context, params *ReadVersionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewReadVersionsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListServices(ctx context.Context, params *ListServicesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListServicesRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateServiceWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateServiceRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateService(ctx context.Context, body CreateServiceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateServiceRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteService(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteServiceRequest(c.Server, serviceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReadService(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadServiceRequest(c.Server, serviceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateServiceWithBody(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateServiceRequestWithBody(c.Server, serviceId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateService(ctx context.Context, serviceId string, body UpdateServiceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateServiceRequest(c.Server, serviceId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveAllowedAddress(ctx context.Context, serviceId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveAllowedAddressRequest(c.Server, serviceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListAllowedAddresses(ctx context.Context, serviceId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAllowedAddressesRequest(c.Server, serviceId, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddAllowedAddressWithBody(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddAllowedAddressRequestWithBody(c.Server, serviceId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddAllowedAddress(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddAllowedAddressRequest(c.Server, serviceId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReadStatus(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadStatusRequest(c.Server, serviceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateStatusWithBody(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateStatusRequestWithBody(c.Server, serviceId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateStatus(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateStatusRequest(c.Server, serviceId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -782,460 +782,6 @@ func NewUpdateConfigurationRequestWithBody(server string, configurationNumber st
 	}
 
 	req, err := http.NewRequest("PATCH", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewListDatabasesRequest generates requests for ListDatabases
-func NewListDatabasesRequest(server string, params *ListDatabasesParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	queryValues := queryURL.Query()
-
-	if params.Limit != nil {
-
-		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
-				}
-			}
-		}
-
-	}
-
-	queryURL.RawQuery = queryValues.Encode()
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewCreateDatabaseRequest calls the generic CreateDatabase builder with application/json body
-func NewCreateDatabaseRequest(server string, body CreateDatabaseJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewCreateDatabaseRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewCreateDatabaseRequestWithBody generates requests for CreateDatabase with any type of body
-func NewCreateDatabaseRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewDeleteDatabaseRequest generates requests for DeleteDatabase
-func NewDeleteDatabaseRequest(server string, databaseId string) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewReadDatabaseRequest generates requests for ReadDatabase
-func NewReadDatabaseRequest(server string, databaseId string) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewUpdateDatabaseRequest calls the generic UpdateDatabase builder with application/json body
-func NewUpdateDatabaseRequest(server string, databaseId string, body UpdateDatabaseJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewUpdateDatabaseRequestWithBody(server, databaseId, "application/json", bodyReader)
-}
-
-// NewUpdateDatabaseRequestWithBody generates requests for UpdateDatabase with any type of body
-func NewUpdateDatabaseRequestWithBody(server string, databaseId string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/%s", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("PATCH", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewRemoveAllowedAddressRequest generates requests for RemoveAllowedAddress
-func NewRemoveAllowedAddressRequest(server string, databaseId string, params *RemoveAllowedAddressParams) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/%s/allowlist/", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	queryValues := queryURL.Query()
-
-	if params.Address != nil {
-
-		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "address", runtime.ParamLocationQuery, *params.Address); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
-				}
-			}
-		}
-
-	}
-
-	queryURL.RawQuery = queryValues.Encode()
-
-	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewListAllowedAddressesRequest generates requests for ListAllowedAddresses
-func NewListAllowedAddressesRequest(server string, databaseId string, params *ListAllowedAddressesParams) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/%s/allowlist/", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	queryValues := queryURL.Query()
-
-	if params.Limit != nil {
-
-		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
-				}
-			}
-		}
-
-	}
-
-	if params.Offset != nil {
-
-		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
-				}
-			}
-		}
-
-	}
-
-	queryURL.RawQuery = queryValues.Encode()
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewAddAllowedAddressRequest calls the generic AddAllowedAddress builder with application/json body
-func NewAddAllowedAddressRequest(server string, databaseId string, body AddAllowedAddressJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewAddAllowedAddressRequestWithBody(server, databaseId, "application/json", bodyReader)
-}
-
-// NewAddAllowedAddressRequestWithBody generates requests for AddAllowedAddress with any type of body
-func NewAddAllowedAddressRequestWithBody(server string, databaseId string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/%s/allowlist/", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewReadStatusRequest generates requests for ReadStatus
-func NewReadStatusRequest(server string, databaseId string) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/%s/status/", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// NewUpdateStatusRequest calls the generic UpdateStatus builder with application/json body
-func NewUpdateStatusRequest(server string, databaseId string, body UpdateStatusJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
-	if err != nil {
-		return nil, err
-	}
-	bodyReader = bytes.NewReader(buf)
-	return NewUpdateStatusRequestWithBody(server, databaseId, "application/json", bodyReader)
-}
-
-// NewUpdateStatusRequestWithBody generates requests for UpdateStatus with any type of body
-func NewUpdateStatusRequestWithBody(server string, databaseId string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
-
-	var pathParam0 string
-
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "database_id", runtime.ParamLocationPath, databaseId)
-	if err != nil {
-		return nil, err
-	}
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/databases/%s/status/", pathParam0)
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
@@ -1634,6 +1180,460 @@ func NewReadVersionsRequest(server string, params *ReadVersionsParams) (*http.Re
 	return req, nil
 }
 
+// NewListServicesRequest generates requests for ListServices
+func NewListServicesRequest(server string, params *ListServicesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := queryURL.Query()
+
+	if params.Limit != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateServiceRequest calls the generic CreateService builder with application/json body
+func NewCreateServiceRequest(server string, body CreateServiceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateServiceRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateServiceRequestWithBody generates requests for CreateService with any type of body
+func NewCreateServiceRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteServiceRequest generates requests for DeleteService
+func NewDeleteServiceRequest(server string, serviceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewReadServiceRequest generates requests for ReadService
+func NewReadServiceRequest(server string, serviceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateServiceRequest calls the generic UpdateService builder with application/json body
+func NewUpdateServiceRequest(server string, serviceId string, body UpdateServiceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateServiceRequestWithBody(server, serviceId, "application/json", bodyReader)
+}
+
+// NewUpdateServiceRequestWithBody generates requests for UpdateService with any type of body
+func NewUpdateServiceRequestWithBody(server string, serviceId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRemoveAllowedAddressRequest generates requests for RemoveAllowedAddress
+func NewRemoveAllowedAddressRequest(server string, serviceId string, params *RemoveAllowedAddressParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s/allowlist/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := queryURL.Query()
+
+	if params.Address != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "address", runtime.ParamLocationQuery, *params.Address); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListAllowedAddressesRequest generates requests for ListAllowedAddresses
+func NewListAllowedAddressesRequest(server string, serviceId string, params *ListAllowedAddressesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s/allowlist/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := queryURL.Query()
+
+	if params.Limit != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddAllowedAddressRequest calls the generic AddAllowedAddress builder with application/json body
+func NewAddAllowedAddressRequest(server string, serviceId string, body AddAllowedAddressJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddAllowedAddressRequestWithBody(server, serviceId, "application/json", bodyReader)
+}
+
+// NewAddAllowedAddressRequestWithBody generates requests for AddAllowedAddress with any type of body
+func NewAddAllowedAddressRequestWithBody(server string, serviceId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s/allowlist/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewReadStatusRequest generates requests for ReadStatus
+func NewReadStatusRequest(server string, serviceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s/status/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateStatusRequest calls the generic UpdateStatus builder with application/json body
+func NewUpdateStatusRequest(server string, serviceId string, body UpdateStatusJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateStatusRequestWithBody(server, serviceId, "application/json", bodyReader)
+}
+
+// NewUpdateStatusRequestWithBody generates requests for UpdateStatus with any type of body
+func NewUpdateStatusRequestWithBody(server string, serviceId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s/status/", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -1702,44 +1702,6 @@ type ClientWithResponsesInterface interface {
 
 	UpdateConfigurationWithResponse(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
 
-	// ListDatabases request
-	ListDatabasesWithResponse(ctx context.Context, params *ListDatabasesParams, reqEditors ...RequestEditorFn) (*ListDatabasesResponse, error)
-
-	// CreateDatabase request with any body
-	CreateDatabaseWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateDatabaseResponse, error)
-
-	CreateDatabaseWithResponse(ctx context.Context, body CreateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDatabaseResponse, error)
-
-	// DeleteDatabase request
-	DeleteDatabaseWithResponse(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*DeleteDatabaseResponse, error)
-
-	// ReadDatabase request
-	ReadDatabaseWithResponse(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*ReadDatabaseResponse, error)
-
-	// UpdateDatabase request with any body
-	UpdateDatabaseWithBodyWithResponse(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateDatabaseResponse, error)
-
-	UpdateDatabaseWithResponse(ctx context.Context, databaseId string, body UpdateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDatabaseResponse, error)
-
-	// RemoveAllowedAddress request
-	RemoveAllowedAddressWithResponse(ctx context.Context, databaseId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*RemoveAllowedAddressResponse, error)
-
-	// ListAllowedAddresses request
-	ListAllowedAddressesWithResponse(ctx context.Context, databaseId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*ListAllowedAddressesResponse, error)
-
-	// AddAllowedAddress request with any body
-	AddAllowedAddressWithBodyWithResponse(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
-
-	AddAllowedAddressWithResponse(ctx context.Context, databaseId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
-
-	// ReadStatus request
-	ReadStatusWithResponse(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*ReadStatusResponse, error)
-
-	// UpdateStatus request with any body
-	UpdateStatusWithBodyWithResponse(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
-
-	UpdateStatusWithResponse(ctx context.Context, databaseId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
-
 	// ReadProducts request
 	ReadProductsWithResponse(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*ReadProductsResponse, error)
 
@@ -1760,6 +1722,44 @@ type ClientWithResponsesInterface interface {
 
 	// ReadVersions request
 	ReadVersionsWithResponse(ctx context.Context, params *ReadVersionsParams, reqEditors ...RequestEditorFn) (*ReadVersionsResponse, error)
+
+	// ListServices request
+	ListServicesWithResponse(ctx context.Context, params *ListServicesParams, reqEditors ...RequestEditorFn) (*ListServicesResponse, error)
+
+	// CreateService request with any body
+	CreateServiceWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateServiceResponse, error)
+
+	CreateServiceWithResponse(ctx context.Context, body CreateServiceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateServiceResponse, error)
+
+	// DeleteService request
+	DeleteServiceWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*DeleteServiceResponse, error)
+
+	// ReadService request
+	ReadServiceWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*ReadServiceResponse, error)
+
+	// UpdateService request with any body
+	UpdateServiceWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateServiceResponse, error)
+
+	UpdateServiceWithResponse(ctx context.Context, serviceId string, body UpdateServiceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateServiceResponse, error)
+
+	// RemoveAllowedAddress request
+	RemoveAllowedAddressWithResponse(ctx context.Context, serviceId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*RemoveAllowedAddressResponse, error)
+
+	// ListAllowedAddresses request
+	ListAllowedAddressesWithResponse(ctx context.Context, serviceId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*ListAllowedAddressesResponse, error)
+
+	// AddAllowedAddress request with any body
+	AddAllowedAddressWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
+
+	AddAllowedAddressWithResponse(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
+
+	// ReadStatus request
+	ReadStatusWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*ReadStatusResponse, error)
+
+	// UpdateStatus request with any body
+	UpdateStatusWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
+
+	UpdateStatusWithResponse(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
 }
 
 type RedirectToDocumentationResponse struct {
@@ -1937,261 +1937,6 @@ func (r UpdateConfigurationResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateConfigurationResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ListDatabasesResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *[]Database
-	JSON401      *Message
-	JSON403      *Message
-	JSON422      *HTTPValidationError
-	JSON502      *Message
-}
-
-// Status returns HTTPResponse.Status
-func (r ListDatabasesResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ListDatabasesResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type CreateDatabaseResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *Database
-	JSON401      *Message
-	JSON403      *Message
-	JSON422      *HTTPValidationError
-	JSON502      *Message
-}
-
-// Status returns HTTPResponse.Status
-func (r CreateDatabaseResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r CreateDatabaseResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type DeleteDatabaseResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *interface{}
-	JSON401      *Message
-	JSON403      *Message
-	JSON404      *Message
-	JSON409      *Message
-	JSON422      *HTTPValidationError
-	JSON502      *Message
-}
-
-// Status returns HTTPResponse.Status
-func (r DeleteDatabaseResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r DeleteDatabaseResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ReadDatabaseResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *Database
-	JSON401      *Message
-	JSON403      *Message
-	JSON404      *Message
-	JSON422      *HTTPValidationError
-	JSON502      *Message
-}
-
-// Status returns HTTPResponse.Status
-func (r ReadDatabaseResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ReadDatabaseResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type UpdateDatabaseResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *Database
-	JSON401      *Message
-	JSON403      *Message
-	JSON404      *Message
-	JSON422      *HTTPValidationError
-	JSON502      *Message
-}
-
-// Status returns HTTPResponse.Status
-func (r UpdateDatabaseResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r UpdateDatabaseResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type RemoveAllowedAddressResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *interface{}
-	JSON422      *HTTPValidationError
-}
-
-// Status returns HTTPResponse.Status
-func (r RemoveAllowedAddressResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r RemoveAllowedAddressResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ListAllowedAddressesResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *[]AllowlistIPAddress
-	JSON422      *HTTPValidationError
-}
-
-// Status returns HTTPResponse.Status
-func (r ListAllowedAddressesResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ListAllowedAddressesResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type AddAllowedAddressResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *interface{}
-	JSON422      *HTTPValidationError
-}
-
-// Status returns HTTPResponse.Status
-func (r AddAllowedAddressResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r AddAllowedAddressResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type ReadStatusResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *DatabaseStatus
-	JSON401      *Message
-	JSON403      *Message
-	JSON422      *HTTPValidationError
-	JSON502      *Message
-}
-
-// Status returns HTTPResponse.Status
-func (r ReadStatusResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ReadStatusResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
-type UpdateStatusResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *interface{}
-	JSON401      *Message
-	JSON403      *Message
-	JSON422      *HTTPValidationError
-	JSON502      *Message
-}
-
-// Status returns HTTPResponse.Status
-func (r UpdateStatusResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r UpdateStatusResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -2380,6 +2125,261 @@ func (r ReadVersionsResponse) StatusCode() int {
 	return 0
 }
 
+type ListServicesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]Service
+	JSON401      *Message
+	JSON403      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r ListServicesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListServicesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateServiceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Service
+	JSON401      *Message
+	JSON403      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateServiceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateServiceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteServiceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON401      *Message
+	JSON403      *Message
+	JSON404      *Message
+	JSON409      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteServiceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteServiceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ReadServiceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Service
+	JSON401      *Message
+	JSON403      *Message
+	JSON404      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r ReadServiceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReadServiceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateServiceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Service
+	JSON401      *Message
+	JSON403      *Message
+	JSON404      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateServiceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateServiceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveAllowedAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveAllowedAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveAllowedAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListAllowedAddressesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]AllowlistIPAddress
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAllowedAddressesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAllowedAddressesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddAllowedAddressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r AddAllowedAddressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddAllowedAddressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ReadStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *ServiceStatus
+	JSON401      *Message
+	JSON403      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r ReadStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReadStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+	JSON401      *Message
+	JSON403      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // RedirectToDocumentationWithResponse request returning *RedirectToDocumentationResponse
 func (c *ClientWithResponses) RedirectToDocumentationWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*RedirectToDocumentationResponse, error) {
 	rsp, err := c.RedirectToDocumentation(ctx, reqEditors...)
@@ -2459,128 +2459,6 @@ func (c *ClientWithResponses) UpdateConfigurationWithResponse(ctx context.Contex
 	return ParseUpdateConfigurationResponse(rsp)
 }
 
-// ListDatabasesWithResponse request returning *ListDatabasesResponse
-func (c *ClientWithResponses) ListDatabasesWithResponse(ctx context.Context, params *ListDatabasesParams, reqEditors ...RequestEditorFn) (*ListDatabasesResponse, error) {
-	rsp, err := c.ListDatabases(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseListDatabasesResponse(rsp)
-}
-
-// CreateDatabaseWithBodyWithResponse request with arbitrary body returning *CreateDatabaseResponse
-func (c *ClientWithResponses) CreateDatabaseWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateDatabaseResponse, error) {
-	rsp, err := c.CreateDatabaseWithBody(ctx, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateDatabaseResponse(rsp)
-}
-
-func (c *ClientWithResponses) CreateDatabaseWithResponse(ctx context.Context, body CreateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateDatabaseResponse, error) {
-	rsp, err := c.CreateDatabase(ctx, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseCreateDatabaseResponse(rsp)
-}
-
-// DeleteDatabaseWithResponse request returning *DeleteDatabaseResponse
-func (c *ClientWithResponses) DeleteDatabaseWithResponse(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*DeleteDatabaseResponse, error) {
-	rsp, err := c.DeleteDatabase(ctx, databaseId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseDeleteDatabaseResponse(rsp)
-}
-
-// ReadDatabaseWithResponse request returning *ReadDatabaseResponse
-func (c *ClientWithResponses) ReadDatabaseWithResponse(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*ReadDatabaseResponse, error) {
-	rsp, err := c.ReadDatabase(ctx, databaseId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseReadDatabaseResponse(rsp)
-}
-
-// UpdateDatabaseWithBodyWithResponse request with arbitrary body returning *UpdateDatabaseResponse
-func (c *ClientWithResponses) UpdateDatabaseWithBodyWithResponse(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateDatabaseResponse, error) {
-	rsp, err := c.UpdateDatabaseWithBody(ctx, databaseId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateDatabaseResponse(rsp)
-}
-
-func (c *ClientWithResponses) UpdateDatabaseWithResponse(ctx context.Context, databaseId string, body UpdateDatabaseJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateDatabaseResponse, error) {
-	rsp, err := c.UpdateDatabase(ctx, databaseId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateDatabaseResponse(rsp)
-}
-
-// RemoveAllowedAddressWithResponse request returning *RemoveAllowedAddressResponse
-func (c *ClientWithResponses) RemoveAllowedAddressWithResponse(ctx context.Context, databaseId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*RemoveAllowedAddressResponse, error) {
-	rsp, err := c.RemoveAllowedAddress(ctx, databaseId, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseRemoveAllowedAddressResponse(rsp)
-}
-
-// ListAllowedAddressesWithResponse request returning *ListAllowedAddressesResponse
-func (c *ClientWithResponses) ListAllowedAddressesWithResponse(ctx context.Context, databaseId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*ListAllowedAddressesResponse, error) {
-	rsp, err := c.ListAllowedAddresses(ctx, databaseId, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseListAllowedAddressesResponse(rsp)
-}
-
-// AddAllowedAddressWithBodyWithResponse request with arbitrary body returning *AddAllowedAddressResponse
-func (c *ClientWithResponses) AddAllowedAddressWithBodyWithResponse(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error) {
-	rsp, err := c.AddAllowedAddressWithBody(ctx, databaseId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseAddAllowedAddressResponse(rsp)
-}
-
-func (c *ClientWithResponses) AddAllowedAddressWithResponse(ctx context.Context, databaseId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error) {
-	rsp, err := c.AddAllowedAddress(ctx, databaseId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseAddAllowedAddressResponse(rsp)
-}
-
-// ReadStatusWithResponse request returning *ReadStatusResponse
-func (c *ClientWithResponses) ReadStatusWithResponse(ctx context.Context, databaseId string, reqEditors ...RequestEditorFn) (*ReadStatusResponse, error) {
-	rsp, err := c.ReadStatus(ctx, databaseId, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseReadStatusResponse(rsp)
-}
-
-// UpdateStatusWithBodyWithResponse request with arbitrary body returning *UpdateStatusResponse
-func (c *ClientWithResponses) UpdateStatusWithBodyWithResponse(ctx context.Context, databaseId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error) {
-	rsp, err := c.UpdateStatusWithBody(ctx, databaseId, contentType, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateStatusResponse(rsp)
-}
-
-func (c *ClientWithResponses) UpdateStatusWithResponse(ctx context.Context, databaseId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error) {
-	rsp, err := c.UpdateStatus(ctx, databaseId, body, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseUpdateStatusResponse(rsp)
-}
-
 // ReadProductsWithResponse request returning *ReadProductsResponse
 func (c *ClientWithResponses) ReadProductsWithResponse(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*ReadProductsResponse, error) {
 	rsp, err := c.ReadProducts(ctx, params, reqEditors...)
@@ -2642,6 +2520,128 @@ func (c *ClientWithResponses) ReadVersionsWithResponse(ctx context.Context, para
 		return nil, err
 	}
 	return ParseReadVersionsResponse(rsp)
+}
+
+// ListServicesWithResponse request returning *ListServicesResponse
+func (c *ClientWithResponses) ListServicesWithResponse(ctx context.Context, params *ListServicesParams, reqEditors ...RequestEditorFn) (*ListServicesResponse, error) {
+	rsp, err := c.ListServices(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListServicesResponse(rsp)
+}
+
+// CreateServiceWithBodyWithResponse request with arbitrary body returning *CreateServiceResponse
+func (c *ClientWithResponses) CreateServiceWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateServiceResponse, error) {
+	rsp, err := c.CreateServiceWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateServiceResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateServiceWithResponse(ctx context.Context, body CreateServiceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateServiceResponse, error) {
+	rsp, err := c.CreateService(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateServiceResponse(rsp)
+}
+
+// DeleteServiceWithResponse request returning *DeleteServiceResponse
+func (c *ClientWithResponses) DeleteServiceWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*DeleteServiceResponse, error) {
+	rsp, err := c.DeleteService(ctx, serviceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteServiceResponse(rsp)
+}
+
+// ReadServiceWithResponse request returning *ReadServiceResponse
+func (c *ClientWithResponses) ReadServiceWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*ReadServiceResponse, error) {
+	rsp, err := c.ReadService(ctx, serviceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReadServiceResponse(rsp)
+}
+
+// UpdateServiceWithBodyWithResponse request with arbitrary body returning *UpdateServiceResponse
+func (c *ClientWithResponses) UpdateServiceWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateServiceResponse, error) {
+	rsp, err := c.UpdateServiceWithBody(ctx, serviceId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateServiceResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateServiceWithResponse(ctx context.Context, serviceId string, body UpdateServiceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateServiceResponse, error) {
+	rsp, err := c.UpdateService(ctx, serviceId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateServiceResponse(rsp)
+}
+
+// RemoveAllowedAddressWithResponse request returning *RemoveAllowedAddressResponse
+func (c *ClientWithResponses) RemoveAllowedAddressWithResponse(ctx context.Context, serviceId string, params *RemoveAllowedAddressParams, reqEditors ...RequestEditorFn) (*RemoveAllowedAddressResponse, error) {
+	rsp, err := c.RemoveAllowedAddress(ctx, serviceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveAllowedAddressResponse(rsp)
+}
+
+// ListAllowedAddressesWithResponse request returning *ListAllowedAddressesResponse
+func (c *ClientWithResponses) ListAllowedAddressesWithResponse(ctx context.Context, serviceId string, params *ListAllowedAddressesParams, reqEditors ...RequestEditorFn) (*ListAllowedAddressesResponse, error) {
+	rsp, err := c.ListAllowedAddresses(ctx, serviceId, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAllowedAddressesResponse(rsp)
+}
+
+// AddAllowedAddressWithBodyWithResponse request with arbitrary body returning *AddAllowedAddressResponse
+func (c *ClientWithResponses) AddAllowedAddressWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error) {
+	rsp, err := c.AddAllowedAddressWithBody(ctx, serviceId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddAllowedAddressResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddAllowedAddressWithResponse(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error) {
+	rsp, err := c.AddAllowedAddress(ctx, serviceId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddAllowedAddressResponse(rsp)
+}
+
+// ReadStatusWithResponse request returning *ReadStatusResponse
+func (c *ClientWithResponses) ReadStatusWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*ReadStatusResponse, error) {
+	rsp, err := c.ReadStatus(ctx, serviceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReadStatusResponse(rsp)
+}
+
+// UpdateStatusWithBodyWithResponse request with arbitrary body returning *UpdateStatusResponse
+func (c *ClientWithResponses) UpdateStatusWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error) {
+	rsp, err := c.UpdateStatusWithBody(ctx, serviceId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateStatusResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateStatusWithResponse(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error) {
+	rsp, err := c.UpdateStatus(ctx, serviceId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateStatusResponse(rsp)
 }
 
 // ParseRedirectToDocumentationResponse parses an HTTP response from a RedirectToDocumentationWithResponse call
@@ -3015,511 +3015,6 @@ func ParseUpdateConfigurationResponse(rsp *http.Response) (*UpdateConfigurationR
 	return response, nil
 }
 
-// ParseListDatabasesResponse parses an HTTP response from a ListDatabasesWithResponse call
-func ParseListDatabasesResponse(rsp *http.Response) (*ListDatabasesResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ListDatabasesResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Database
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON502 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseCreateDatabaseResponse parses an HTTP response from a CreateDatabaseWithResponse call
-func ParseCreateDatabaseResponse(rsp *http.Response) (*CreateDatabaseResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &CreateDatabaseResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Database
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON502 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseDeleteDatabaseResponse parses an HTTP response from a DeleteDatabaseWithResponse call
-func ParseDeleteDatabaseResponse(rsp *http.Response) (*DeleteDatabaseResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &DeleteDatabaseResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest interface{}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON409 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON502 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseReadDatabaseResponse parses an HTTP response from a ReadDatabaseWithResponse call
-func ParseReadDatabaseResponse(rsp *http.Response) (*ReadDatabaseResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ReadDatabaseResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Database
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON502 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseUpdateDatabaseResponse parses an HTTP response from a UpdateDatabaseWithResponse call
-func ParseUpdateDatabaseResponse(rsp *http.Response) (*UpdateDatabaseResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &UpdateDatabaseResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Database
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON404 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON502 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseRemoveAllowedAddressResponse parses an HTTP response from a RemoveAllowedAddressWithResponse call
-func ParseRemoveAllowedAddressResponse(rsp *http.Response) (*RemoveAllowedAddressResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &RemoveAllowedAddressResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest interface{}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseListAllowedAddressesResponse parses an HTTP response from a ListAllowedAddressesWithResponse call
-func ParseListAllowedAddressesResponse(rsp *http.Response) (*ListAllowedAddressesResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ListAllowedAddressesResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []AllowlistIPAddress
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseAddAllowedAddressResponse parses an HTTP response from a AddAllowedAddressWithResponse call
-func ParseAddAllowedAddressResponse(rsp *http.Response) (*AddAllowedAddressResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &AddAllowedAddressResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest interface{}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseReadStatusResponse parses an HTTP response from a ReadStatusWithResponse call
-func ParseReadStatusResponse(rsp *http.Response) (*ReadStatusResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ReadStatusResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest DatabaseStatus
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON502 = &dest
-
-	}
-
-	return response, nil
-}
-
-// ParseUpdateStatusResponse parses an HTTP response from a UpdateStatusWithResponse call
-func ParseUpdateStatusResponse(rsp *http.Response) (*UpdateStatusResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer rsp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &UpdateStatusResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest interface{}
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON502 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseReadProductsResponse parses an HTTP response from a ReadProductsWithResponse call
 func ParseReadProductsResponse(rsp *http.Response) (*ReadProductsResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
@@ -3860,6 +3355,511 @@ func ParseReadVersionsResponse(rsp *http.Response) (*ReadVersionsResponse, error
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest []Version
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListServicesResponse parses an HTTP response from a ListServicesWithResponse call
+func ParseListServicesResponse(rsp *http.Response) (*ListServicesResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListServicesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []Service
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateServiceResponse parses an HTTP response from a CreateServiceWithResponse call
+func ParseCreateServiceResponse(rsp *http.Response) (*CreateServiceResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateServiceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Service
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteServiceResponse parses an HTTP response from a DeleteServiceWithResponse call
+func ParseDeleteServiceResponse(rsp *http.Response) (*DeleteServiceResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteServiceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReadServiceResponse parses an HTTP response from a ReadServiceWithResponse call
+func ParseReadServiceResponse(rsp *http.Response) (*ReadServiceResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReadServiceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Service
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateServiceResponse parses an HTTP response from a UpdateServiceWithResponse call
+func ParseUpdateServiceResponse(rsp *http.Response) (*UpdateServiceResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateServiceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Service
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveAllowedAddressResponse parses an HTTP response from a RemoveAllowedAddressWithResponse call
+func ParseRemoveAllowedAddressResponse(rsp *http.Response) (*RemoveAllowedAddressResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveAllowedAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAllowedAddressesResponse parses an HTTP response from a ListAllowedAddressesWithResponse call
+func ParseListAllowedAddressesResponse(rsp *http.Response) (*ListAllowedAddressesResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAllowedAddressesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []AllowlistIPAddress
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddAllowedAddressResponse parses an HTTP response from a AddAllowedAddressWithResponse call
+func ParseAddAllowedAddressResponse(rsp *http.Response) (*AddAllowedAddressResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddAllowedAddressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReadStatusResponse parses an HTTP response from a ReadStatusWithResponse call
+func ParseReadStatusResponse(rsp *http.Response) (*ReadStatusResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReadStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ServiceStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateStatusResponse parses an HTTP response from a UpdateStatusWithResponse call
+func ParseUpdateStatusResponse(rsp *http.Response) (*UpdateStatusResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer rsp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
