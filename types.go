@@ -7,7 +7,7 @@ const (
 	HTTPBearerScopes = "HTTPBearer.Scopes"
 )
 
-// IP Address that has been added to the database network allowlist
+// IP Address that has been added to the services network allowlist
 type AllowlistIPAddress struct {
 	Comment   *string `json:"comment,omitempty"`
 	Database  string  `json:"database"`
@@ -49,80 +49,6 @@ type CreateConfigurationResp struct {
 	Topology             string                   `json:"topology"`
 }
 
-// MariaDB cluster deployed by SkySQL
-type Database struct {
-	ActiveReplicas    *string `json:"active_replicas,omitempty"`
-	Attributes        *string `json:"attributes,omitempty"`
-	BulkdataPort1     *string `json:"bulkdata_port_1,omitempty"`
-	BulkdataPort2     *string `json:"bulkdata_port_2,omitempty"`
-	Cluster           *string `json:"cluster,omitempty"`
-	ColumnstoreBucket *string `json:"columnstore_bucket,omitempty"`
-	CustomConfig      *string `json:"custom_config,omitempty"`
-	DnsDomain         *string `json:"dns_domain,omitempty"`
-	FaultCount        *string `json:"fault_count,omitempty"`
-	Fqdn              *string `json:"fqdn,omitempty"`
-	GlAccount         *string `json:"gl_account,omitempty"`
-	Id                *string `json:"id,omitempty"`
-	InstallStatus     string  `json:"install_status"`
-	InstanceState     *string `json:"instance_state,omitempty"`
-	IpAddress         *string `json:"ip_address,omitempty"`
-	MacAddress        *string `json:"mac_address,omitempty"`
-	MaxscaleConfig    *string `json:"maxscale_config,omitempty"`
-	MaxscaleProxy     *string `json:"maxscale_proxy,omitempty"`
-	Monitor           *string `json:"monitor,omitempty"`
-	Name              *string `json:"name,omitempty"`
-	Number            *string `json:"number,omitempty"`
-	OperationalStatus string  `json:"operational_status"`
-	OwnedBy           *string `json:"owned_by,omitempty"`
-	Provider          string  `json:"provider"`
-	Proxy             *string `json:"proxy,omitempty"`
-	ReadOnlyPort      *string `json:"read_only_port,omitempty"`
-	ReadWritePort     *string `json:"read_write_port,omitempty"`
-	Region            string  `json:"region"`
-	ReleaseVersion    *string `json:"release_version,omitempty"`
-	ReplMaster        *string `json:"repl_master,omitempty"`
-	ReplMasterHostExt *string `json:"repl_master_host_ext,omitempty"`
-	ReplRegion        *string `json:"repl_region,omitempty"`
-	Replicas          *string `json:"replicas,omitempty"`
-	ReplicationStatus *string `json:"replication_status,omitempty"`
-	ReplicationType   *string `json:"replication_type,omitempty"`
-	Size              string  `json:"size"`
-	SkipSync          *string `json:"skip_sync,omitempty"`
-	SslCertificate    *string `json:"ssl_certificate,omitempty"`
-	SslExpiresOn      *string `json:"ssl_expires_on,omitempty"`
-	SslSerial         *string `json:"ssl_serial,omitempty"`
-	SysCreatedBy      *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn      *string `json:"sys_created_on,omitempty"`
-	SysId             *string `json:"sys_id,omitempty"`
-	SysModCount       *string `json:"sys_mod_count,omitempty"`
-	SysUpdatedBy      *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn      *string `json:"sys_updated_on,omitempty"`
-	Tier              *string `json:"tier,omitempty"`
-	Topology          string  `json:"topology"`
-	TxStorage         string  `json:"tx_storage"`
-	VolumeIops        *string `json:"volume_iops,omitempty"`
-	VolumeType        *string `json:"volume_type,omitempty"`
-}
-
-// Actions that can be taken on a Database in a Task
-type DatabaseActions interface{}
-
-// Response body for a database status
-type DatabaseStatus struct {
-	Status string `json:"status"`
-}
-
-// Request body to update a database
-type DatabaseStatusUpdate struct {
-	// Actions that can be taken on a Database in a Task
-	Action DatabaseActions `json:"action"`
-}
-
-// Request body to update a database - currently limited to name only
-type DatabaseUpdate struct {
-	Name string `json:"name"`
-}
-
 // HTTPValidationError defines model for HTTPValidationError.
 type HTTPValidationError struct {
 	Detail *[]ValidationError `json:"detail,omitempty"`
@@ -139,8 +65,8 @@ type Message struct {
 	Details string `json:"details"`
 }
 
-// Request body to create a new MariaDB cluster deployed by SkySQL
-type NewDatabase struct {
+// Request body to create a new MariaDB services deployed by SkySQL
+type NewService struct {
 	MaxscaleConfig *string `json:"maxscale_config,omitempty"`
 	MaxscaleProxy  *string `json:"maxscale_proxy,omitempty"`
 	Monitor        *string `json:"monitor,omitempty"`
@@ -223,6 +149,80 @@ type Region struct {
 	SysTags      string  `json:"sys_tags"`
 	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
 	SysUpdatedOn *string `json:"sys_updated_on,omitempty"`
+}
+
+// MariaDB services deployed by SkySQL
+type Service struct {
+	ActiveReplicas    *string `json:"active_replicas,omitempty"`
+	Attributes        *string `json:"attributes,omitempty"`
+	BulkdataPort1     *string `json:"bulkdata_port_1,omitempty"`
+	BulkdataPort2     *string `json:"bulkdata_port_2,omitempty"`
+	Cluster           *string `json:"cluster,omitempty"`
+	ColumnstoreBucket *string `json:"columnstore_bucket,omitempty"`
+	CustomConfig      *string `json:"custom_config,omitempty"`
+	DnsDomain         *string `json:"dns_domain,omitempty"`
+	FaultCount        *string `json:"fault_count,omitempty"`
+	Fqdn              *string `json:"fqdn,omitempty"`
+	GlAccount         *string `json:"gl_account,omitempty"`
+	Id                *string `json:"id,omitempty"`
+	InstallStatus     string  `json:"install_status"`
+	InstanceState     *string `json:"instance_state,omitempty"`
+	IpAddress         *string `json:"ip_address,omitempty"`
+	MacAddress        *string `json:"mac_address,omitempty"`
+	MaxscaleConfig    *string `json:"maxscale_config,omitempty"`
+	MaxscaleProxy     *string `json:"maxscale_proxy,omitempty"`
+	Monitor           *string `json:"monitor,omitempty"`
+	Name              *string `json:"name,omitempty"`
+	Number            *string `json:"number,omitempty"`
+	OperationalStatus string  `json:"operational_status"`
+	OwnedBy           *string `json:"owned_by,omitempty"`
+	Provider          string  `json:"provider"`
+	Proxy             *string `json:"proxy,omitempty"`
+	ReadOnlyPort      *string `json:"read_only_port,omitempty"`
+	ReadWritePort     *string `json:"read_write_port,omitempty"`
+	Region            string  `json:"region"`
+	ReleaseVersion    *string `json:"release_version,omitempty"`
+	ReplMaster        *string `json:"repl_master,omitempty"`
+	ReplMasterHostExt *string `json:"repl_master_host_ext,omitempty"`
+	ReplRegion        *string `json:"repl_region,omitempty"`
+	Replicas          *string `json:"replicas,omitempty"`
+	ReplicationStatus *string `json:"replication_status,omitempty"`
+	ReplicationType   *string `json:"replication_type,omitempty"`
+	Size              string  `json:"size"`
+	SkipSync          *string `json:"skip_sync,omitempty"`
+	SslCertificate    *string `json:"ssl_certificate,omitempty"`
+	SslExpiresOn      *string `json:"ssl_expires_on,omitempty"`
+	SslSerial         *string `json:"ssl_serial,omitempty"`
+	SysCreatedBy      *string `json:"sys_created_by,omitempty"`
+	SysCreatedOn      *string `json:"sys_created_on,omitempty"`
+	SysId             *string `json:"sys_id,omitempty"`
+	SysModCount       *string `json:"sys_mod_count,omitempty"`
+	SysUpdatedBy      *string `json:"sys_updated_by,omitempty"`
+	SysUpdatedOn      *string `json:"sys_updated_on,omitempty"`
+	Tier              *string `json:"tier,omitempty"`
+	Topology          string  `json:"topology"`
+	TxStorage         string  `json:"tx_storage"`
+	VolumeIops        *string `json:"volume_iops,omitempty"`
+	VolumeType        *string `json:"volume_type,omitempty"`
+}
+
+// Actions that can be taken on a services in a Task
+type ServiceActions interface{}
+
+// Response body for a services status
+type ServiceStatus struct {
+	Status string `json:"status"`
+}
+
+// Request body to update a service
+type ServiceStatusUpdate struct {
+	// Actions that can be taken on a services in a Task
+	Action ServiceActions `json:"action"`
+}
+
+// Request body to update a services - currently limited to name only
+type ServiceUpdate struct {
+	Name string `json:"name"`
 }
 
 // Node size, as defined by the providers
@@ -333,34 +333,6 @@ type CreateConfigurationJSONBody CreateConfigurationRequest
 // UpdateConfigurationJSONBody defines parameters for UpdateConfiguration.
 type UpdateConfigurationJSONBody UpdateConfigurationRequest
 
-// ListDatabasesParams defines parameters for ListDatabases.
-type ListDatabasesParams struct {
-	Limit *int `json:"limit,omitempty"`
-}
-
-// CreateDatabaseJSONBody defines parameters for CreateDatabase.
-type CreateDatabaseJSONBody NewDatabase
-
-// UpdateDatabaseJSONBody defines parameters for UpdateDatabase.
-type UpdateDatabaseJSONBody DatabaseUpdate
-
-// RemoveAllowedAddressParams defines parameters for RemoveAllowedAddress.
-type RemoveAllowedAddressParams struct {
-	Address *string `json:"address,omitempty"`
-}
-
-// ListAllowedAddressesParams defines parameters for ListAllowedAddresses.
-type ListAllowedAddressesParams struct {
-	Limit  *int `json:"limit,omitempty"`
-	Offset *int `json:"offset,omitempty"`
-}
-
-// AddAllowedAddressJSONBody defines parameters for AddAllowedAddress.
-type AddAllowedAddressJSONBody IPAddress
-
-// UpdateStatusJSONBody defines parameters for UpdateStatus.
-type UpdateStatusJSONBody DatabaseStatusUpdate
-
 // ReadProductsParams defines parameters for ReadProducts.
 type ReadProductsParams struct {
 	Limit *int `json:"limit,omitempty"`
@@ -401,17 +373,45 @@ type ReadVersionsParams struct {
 	Limit *int `json:"limit,omitempty"`
 }
 
+// ListServicesParams defines parameters for ListServices.
+type ListServicesParams struct {
+	Limit *int `json:"limit,omitempty"`
+}
+
+// CreateServiceJSONBody defines parameters for CreateService.
+type CreateServiceJSONBody NewService
+
+// UpdateServiceJSONBody defines parameters for UpdateService.
+type UpdateServiceJSONBody ServiceUpdate
+
+// RemoveAllowedAddressParams defines parameters for RemoveAllowedAddress.
+type RemoveAllowedAddressParams struct {
+	Address *string `json:"address,omitempty"`
+}
+
+// ListAllowedAddressesParams defines parameters for ListAllowedAddresses.
+type ListAllowedAddressesParams struct {
+	Limit  *int `json:"limit,omitempty"`
+	Offset *int `json:"offset,omitempty"`
+}
+
+// AddAllowedAddressJSONBody defines parameters for AddAllowedAddress.
+type AddAllowedAddressJSONBody IPAddress
+
+// UpdateStatusJSONBody defines parameters for UpdateStatus.
+type UpdateStatusJSONBody ServiceStatusUpdate
+
 // CreateConfigurationJSONRequestBody defines body for CreateConfiguration for application/json ContentType.
 type CreateConfigurationJSONRequestBody CreateConfigurationJSONBody
 
 // UpdateConfigurationJSONRequestBody defines body for UpdateConfiguration for application/json ContentType.
 type UpdateConfigurationJSONRequestBody UpdateConfigurationJSONBody
 
-// CreateDatabaseJSONRequestBody defines body for CreateDatabase for application/json ContentType.
-type CreateDatabaseJSONRequestBody CreateDatabaseJSONBody
+// CreateServiceJSONRequestBody defines body for CreateService for application/json ContentType.
+type CreateServiceJSONRequestBody CreateServiceJSONBody
 
-// UpdateDatabaseJSONRequestBody defines body for UpdateDatabase for application/json ContentType.
-type UpdateDatabaseJSONRequestBody UpdateDatabaseJSONBody
+// UpdateServiceJSONRequestBody defines body for UpdateService for application/json ContentType.
+type UpdateServiceJSONRequestBody UpdateServiceJSONBody
 
 // AddAllowedAddressJSONRequestBody defines body for AddAllowedAddress for application/json ContentType.
 type AddAllowedAddressJSONRequestBody AddAllowedAddressJSONBody

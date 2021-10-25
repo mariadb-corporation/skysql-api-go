@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field in the response in the _Authorization_ header for subsequent api requests\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.54"
+    "version": "0.0.55"
   },
   "paths": {
     "/billing/quotas": {
@@ -156,7 +156,7 @@
           "Configurations"
         ],
         "summary": "Create Configuration",
-        "description": "Launch a new configuration cluster for the current user\nStill need to handle ownership once we have JWT authentication implemented.",
+        "description": "Launch a new configuration cluster for the current user",
         "operationId": "create_configuration",
         "requestBody": {
           "content": {
@@ -563,14 +563,14 @@
         ]
       }
     },
-    "/databases/": {
+    "/services/": {
       "get": {
         "tags": [
-          "Databases"
+          "Services"
         ],
-        "summary": "List Databases",
-        "description": "Retrieve a list of databases owned by the current user",
-        "operationId": "list_databases",
+        "summary": "List Services",
+        "description": "Retrieve a list of services owned by the current user",
+        "operationId": "list_services",
         "parameters": [
           {
             "required": false,
@@ -591,10 +591,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Databases Databases  Get",
+                  "title": "Response List Services Services  Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Database"
+                    "$ref": "#/components/schemas/Service"
                   }
                 }
               }
@@ -649,21 +649,21 @@
       },
       "post": {
         "tags": [
-          "Databases"
+          "Services"
         ],
-        "summary": "Create Database",
-        "description": "Launch a new database cluster for the current user",
-        "operationId": "create_database",
+        "summary": "Create Service",
+        "description": "Launch a new service for the current user",
+        "operationId": "create_service",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewDatabase"
+                "$ref": "#/components/schemas/NewService"
               },
               "examples": {
                 "standalone": {
-                  "summary": "Standalone database",
-                  "description": "Create a new database using a standalone topology",
+                  "summary": "Standalone",
+                  "description": "Create a new service using a standalone topology",
                   "value": {
                     "release_version": "MariaDB Enterprise Server 10.6.4-1",
                     "topology": "Standalone",
@@ -692,7 +692,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Database"
+                  "$ref": "#/components/schemas/Service"
                 }
               }
             }
@@ -745,29 +745,29 @@
         ]
       }
     },
-    "/databases/{database_id}": {
+    "/services/{service_id}": {
       "get": {
         "tags": [
-          "Databases"
+          "Services"
         ],
-        "summary": "Read Database",
-        "description": "Retrieve status and metadata for the specified database",
-        "operationId": "read_database",
+        "summary": "Read Service",
+        "description": "Retrieve status and metadata for the specified service",
+        "operationId": "read_service",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Database Id",
+              "title": "Service Id",
               "type": "string"
             },
             "examples": {
               "id": {
                 "summary": "ID",
-                "description": "Identifier for a database",
+                "description": "Identifier for a service",
                 "value": "db00000000"
               }
             },
-            "name": "database_id",
+            "name": "service_id",
             "in": "path"
           }
         ],
@@ -777,7 +777,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Database"
+                  "$ref": "#/components/schemas/Service"
                 }
               }
             }
@@ -841,26 +841,26 @@
       },
       "delete": {
         "tags": [
-          "Databases"
+          "Services"
         ],
-        "summary": "Delete Database",
-        "description": "Delete the specified database and its associated data",
-        "operationId": "delete_database",
+        "summary": "Delete Service",
+        "description": "Delete the specified service and its associated data",
+        "operationId": "delete_service",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Database Id",
+              "title": "Service Id",
               "type": "string"
             },
             "examples": {
               "id": {
                 "summary": "ID",
-                "description": "Identifier for a database",
+                "description": "Identifier for a service",
                 "value": "db00000000"
               }
             },
-            "name": "database_id",
+            "name": "service_id",
             "in": "path"
           }
         ],
@@ -942,26 +942,26 @@
       },
       "patch": {
         "tags": [
-          "Databases"
+          "Services"
         ],
-        "summary": "Update Database",
-        "description": "Update an existing database cluster name",
-        "operationId": "update_database",
+        "summary": "Update Service",
+        "description": "Update an existing service name",
+        "operationId": "update_service",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Database Id",
+              "title": "Service Id",
               "type": "string"
             },
             "examples": {
               "id": {
                 "summary": "ID",
-                "description": "Identifier for a database",
+                "description": "Identifier for a service",
                 "value": "db00000000"
               }
             },
-            "name": "database_id",
+            "name": "service_id",
             "in": "path"
           }
         ],
@@ -969,12 +969,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DatabaseUpdate"
+                "$ref": "#/components/schemas/ServiceUpdate"
               },
               "examples": {
                 "rename": {
-                  "summary": "Rename database",
-                  "description": "Change the name of a database",
+                  "summary": "Rename service",
+                  "description": "Change the name of a services",
                   "value": {
                     "name": "new-custom-name"
                   }
@@ -989,7 +989,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Database"
+                  "$ref": "#/components/schemas/Service"
                 }
               }
             }
@@ -1052,22 +1052,22 @@
         ]
       }
     },
-    "/databases/{database_id}/allowlist/": {
+    "/services/{service_id}/allowlist/": {
       "get": {
         "tags": [
-          "Databases · Allowlist"
+          "Services · Allowlist"
         ],
         "summary": "List Allowed Addresses",
-        "description": "Retrieve a list of IP addresses which are currently on the allowlist for accessing\nthe database cluster and its monitoring system",
+        "description": "Retrieve a list of IP addresses which are currently on the allowlist for accessing\nthe service and its monitoring system",
         "operationId": "list_allowed_addresses",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Database Id",
+              "title": "Service Id",
               "type": "string"
             },
-            "name": "database_id",
+            "name": "service_id",
             "in": "path"
           },
           {
@@ -1099,7 +1099,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Allowed Addresses Databases  Database Id  Allowlist  Get",
+                  "title": "Response List Allowed Addresses Services  Service Id  Allowlist  Get",
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/AllowlistIPAddress"
@@ -1127,19 +1127,19 @@
       },
       "post": {
         "tags": [
-          "Databases · Allowlist"
+          "Services · Allowlist"
         ],
         "summary": "Add Allowed Address",
-        "description": "Add an address to the database cluster’s allowlist",
+        "description": "Add an address to the service’s allowlist",
         "operationId": "add_allowed_address",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Database Id",
+              "title": "Service Id",
               "type": "string"
             },
-            "name": "database_id",
+            "name": "service_id",
             "in": "path"
           }
         ],
@@ -1181,19 +1181,19 @@
       },
       "delete": {
         "tags": [
-          "Databases · Allowlist"
+          "Services · Allowlist"
         ],
         "summary": "Remove Allowed Address",
-        "description": "Remove an address from the database cluster’s allowlist",
+        "description": "Remove an address from the service’s allowlist",
         "operationId": "remove_allowed_address",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Database Id",
+              "title": "Service Id",
               "type": "string"
             },
-            "name": "database_id",
+            "name": "service_id",
             "in": "path"
           },
           {
@@ -1234,22 +1234,22 @@
         ]
       }
     },
-    "/databases/{database_id}/status/": {
+    "/services/{service_id}/status/": {
       "get": {
         "tags": [
-          "Databases · Status"
+          "Services · Status"
         ],
         "summary": "Read Status",
-        "description": "Retrieve the current running status of a database (e.g. Running, Paused, Pending, …)",
+        "description": "Retrieve the current running status of a service (e.g. Running, Paused, Pending, …)",
         "operationId": "read_status",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Database Id",
+              "title": "Service Id",
               "type": "string"
             },
-            "name": "database_id",
+            "name": "service_id",
             "in": "path"
           }
         ],
@@ -1259,7 +1259,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DatabaseStatus"
+                  "$ref": "#/components/schemas/ServiceStatus"
                 }
               }
             }
@@ -1313,19 +1313,19 @@
       },
       "post": {
         "tags": [
-          "Databases · Status"
+          "Services · Status"
         ],
         "summary": "Update Status",
-        "description": "Alter the state of a database, (e.g. Start, Stop)",
+        "description": "Alter the state of a service, (e.g. Start, Stop)",
         "operationId": "update_status",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Database Id",
+              "title": "Service Id",
               "type": "string"
             },
-            "name": "database_id",
+            "name": "service_id",
             "in": "path"
           }
         ],
@@ -1333,7 +1333,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DatabaseStatusUpdate"
+                "$ref": "#/components/schemas/ServiceStatusUpdate"
               }
             }
           },
@@ -2131,7 +2131,7 @@
             "type": "string"
           }
         },
-        "description": "IP Address that has been added to the database network allowlist"
+        "description": "IP Address that has been added to the services network allowlist"
       },
       "ConfigurationResp": {
         "title": "ConfigurationResp",
@@ -2260,276 +2260,6 @@
         },
         "description": "Update Configuration Response"
       },
-      "Database": {
-        "title": "Database",
-        "required": [
-          "install_status",
-          "operational_status",
-          "provider",
-          "region",
-          "size",
-          "topology",
-          "tx_storage"
-        ],
-        "type": "object",
-        "properties": {
-          "active_replicas": {
-            "title": "Active Replicas",
-            "type": "string"
-          },
-          "attributes": {
-            "title": "Attributes",
-            "type": "string"
-          },
-          "bulkdata_port_1": {
-            "title": "Bulkdata Port 1",
-            "type": "string"
-          },
-          "bulkdata_port_2": {
-            "title": "Bulkdata Port 2",
-            "type": "string"
-          },
-          "cluster": {
-            "title": "Cluster",
-            "type": "string"
-          },
-          "columnstore_bucket": {
-            "title": "Columnstore Bucket",
-            "type": "string"
-          },
-          "custom_config": {
-            "title": "Custom Config",
-            "type": "string"
-          },
-          "dns_domain": {
-            "title": "Dns Domain",
-            "type": "string"
-          },
-          "fault_count": {
-            "title": "Fault Count",
-            "type": "string"
-          },
-          "fqdn": {
-            "title": "Fqdn",
-            "type": "string"
-          },
-          "gl_account": {
-            "title": "Gl Account",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "install_status": {
-            "title": "Install Status",
-            "type": "string"
-          },
-          "instance_state": {
-            "title": "Instance State",
-            "type": "string"
-          },
-          "ip_address": {
-            "title": "Ip Address",
-            "type": "string"
-          },
-          "mac_address": {
-            "title": "Mac Address",
-            "type": "string"
-          },
-          "maxscale_config": {
-            "title": "Maxscale Config",
-            "type": "string"
-          },
-          "maxscale_proxy": {
-            "title": "Maxscale Proxy",
-            "type": "string"
-          },
-          "monitor": {
-            "title": "Monitor",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "number": {
-            "title": "Number",
-            "type": "string"
-          },
-          "operational_status": {
-            "title": "Operational Status",
-            "type": "string"
-          },
-          "owned_by": {
-            "title": "Owned By",
-            "type": "string"
-          },
-          "provider": {
-            "title": "Provider",
-            "type": "string"
-          },
-          "proxy": {
-            "title": "Proxy",
-            "type": "string"
-          },
-          "read_only_port": {
-            "title": "Read Only Port",
-            "type": "string"
-          },
-          "read_write_port": {
-            "title": "Read Write Port",
-            "type": "string"
-          },
-          "region": {
-            "title": "Region",
-            "type": "string"
-          },
-          "release_version": {
-            "title": "Release Version",
-            "type": "string"
-          },
-          "repl_master": {
-            "title": "Repl Master",
-            "type": "string"
-          },
-          "repl_master_host_ext": {
-            "title": "Repl Master Host Ext",
-            "type": "string"
-          },
-          "repl_region": {
-            "title": "Repl Region",
-            "type": "string"
-          },
-          "replicas": {
-            "title": "Replicas",
-            "type": "string"
-          },
-          "replication_status": {
-            "title": "Replication Status",
-            "type": "string"
-          },
-          "replication_type": {
-            "title": "Replication Type",
-            "type": "string"
-          },
-          "size": {
-            "title": "Size",
-            "type": "string"
-          },
-          "skip_sync": {
-            "title": "Skip Sync",
-            "type": "string"
-          },
-          "ssl_certificate": {
-            "title": "Ssl Certificate",
-            "type": "string"
-          },
-          "ssl_expires_on": {
-            "title": "Ssl Expires On",
-            "type": "string"
-          },
-          "ssl_serial": {
-            "title": "Ssl Serial",
-            "type": "string"
-          },
-          "sys_created_by": {
-            "title": "Sys Created By",
-            "type": "string"
-          },
-          "sys_created_on": {
-            "title": "Sys Created On",
-            "type": "string"
-          },
-          "sys_id": {
-            "title": "Sys Id",
-            "type": "string"
-          },
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
-            "type": "string"
-          },
-          "tier": {
-            "title": "Tier",
-            "type": "string"
-          },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
-            "type": "string"
-          },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
-            "type": "string"
-          },
-          "topology": {
-            "title": "Topology",
-            "type": "string"
-          },
-          "tx_storage": {
-            "title": "Tx Storage",
-            "type": "string"
-          },
-          "volume_iops": {
-            "title": "Volume Iops",
-            "type": "string"
-          },
-          "volume_type": {
-            "title": "Volume Type",
-            "type": "string"
-          }
-        },
-        "description": "MariaDB cluster deployed by SkySQL"
-      },
-      "DatabaseActions": {
-        "title": "DatabaseActions",
-        "enum": [
-          "Start",
-          "Stop"
-        ],
-        "description": "Actions that can be taken on a Database in a Task"
-      },
-      "DatabaseStatus": {
-        "title": "DatabaseStatus",
-        "required": [
-          "status"
-        ],
-        "type": "object",
-        "properties": {
-          "status": {
-            "title": "Status",
-            "type": "string"
-          }
-        },
-        "description": "Response body for a database status"
-      },
-      "DatabaseStatusUpdate": {
-        "title": "DatabaseStatusUpdate",
-        "required": [
-          "action"
-        ],
-        "type": "object",
-        "properties": {
-          "action": {
-            "$ref": "#/components/schemas/DatabaseActions"
-          }
-        },
-        "description": "Request body to update a database"
-      },
-      "DatabaseUpdate": {
-        "title": "DatabaseUpdate",
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "title": "Name",
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "description": "Request body to update a database - currently limited to name only"
-      },
       "HTTPValidationError": {
         "title": "HTTPValidationError",
         "type": "object",
@@ -2575,8 +2305,8 @@
         },
         "description": "Generic message body containing error details for failed requests"
       },
-      "NewDatabase": {
-        "title": "NewDatabase",
+      "NewService": {
+        "title": "NewService",
         "required": [
           "release_version",
           "topology",
@@ -2660,7 +2390,7 @@
             "type": "string"
           }
         },
-        "description": "Request body to create a new MariaDB cluster deployed by SkySQL"
+        "description": "Request body to create a new MariaDB services deployed by SkySQL"
       },
       "Product": {
         "title": "Product",
@@ -2914,6 +2644,276 @@
           }
         },
         "description": "Geographic region, as defined by the providers"
+      },
+      "Service": {
+        "title": "Service",
+        "required": [
+          "install_status",
+          "operational_status",
+          "provider",
+          "region",
+          "size",
+          "topology",
+          "tx_storage"
+        ],
+        "type": "object",
+        "properties": {
+          "active_replicas": {
+            "title": "Active Replicas",
+            "type": "string"
+          },
+          "attributes": {
+            "title": "Attributes",
+            "type": "string"
+          },
+          "bulkdata_port_1": {
+            "title": "Bulkdata Port 1",
+            "type": "string"
+          },
+          "bulkdata_port_2": {
+            "title": "Bulkdata Port 2",
+            "type": "string"
+          },
+          "cluster": {
+            "title": "Cluster",
+            "type": "string"
+          },
+          "columnstore_bucket": {
+            "title": "Columnstore Bucket",
+            "type": "string"
+          },
+          "custom_config": {
+            "title": "Custom Config",
+            "type": "string"
+          },
+          "dns_domain": {
+            "title": "Dns Domain",
+            "type": "string"
+          },
+          "fault_count": {
+            "title": "Fault Count",
+            "type": "string"
+          },
+          "fqdn": {
+            "title": "Fqdn",
+            "type": "string"
+          },
+          "gl_account": {
+            "title": "Gl Account",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "install_status": {
+            "title": "Install Status",
+            "type": "string"
+          },
+          "instance_state": {
+            "title": "Instance State",
+            "type": "string"
+          },
+          "ip_address": {
+            "title": "Ip Address",
+            "type": "string"
+          },
+          "mac_address": {
+            "title": "Mac Address",
+            "type": "string"
+          },
+          "maxscale_config": {
+            "title": "Maxscale Config",
+            "type": "string"
+          },
+          "maxscale_proxy": {
+            "title": "Maxscale Proxy",
+            "type": "string"
+          },
+          "monitor": {
+            "title": "Monitor",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          },
+          "operational_status": {
+            "title": "Operational Status",
+            "type": "string"
+          },
+          "owned_by": {
+            "title": "Owned By",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "proxy": {
+            "title": "Proxy",
+            "type": "string"
+          },
+          "read_only_port": {
+            "title": "Read Only Port",
+            "type": "string"
+          },
+          "read_write_port": {
+            "title": "Read Write Port",
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "release_version": {
+            "title": "Release Version",
+            "type": "string"
+          },
+          "repl_master": {
+            "title": "Repl Master",
+            "type": "string"
+          },
+          "repl_master_host_ext": {
+            "title": "Repl Master Host Ext",
+            "type": "string"
+          },
+          "repl_region": {
+            "title": "Repl Region",
+            "type": "string"
+          },
+          "replicas": {
+            "title": "Replicas",
+            "type": "string"
+          },
+          "replication_status": {
+            "title": "Replication Status",
+            "type": "string"
+          },
+          "replication_type": {
+            "title": "Replication Type",
+            "type": "string"
+          },
+          "size": {
+            "title": "Size",
+            "type": "string"
+          },
+          "skip_sync": {
+            "title": "Skip Sync",
+            "type": "string"
+          },
+          "ssl_certificate": {
+            "title": "Ssl Certificate",
+            "type": "string"
+          },
+          "ssl_expires_on": {
+            "title": "Ssl Expires On",
+            "type": "string"
+          },
+          "ssl_serial": {
+            "title": "Ssl Serial",
+            "type": "string"
+          },
+          "sys_created_by": {
+            "title": "Sys Created By",
+            "type": "string"
+          },
+          "sys_created_on": {
+            "title": "Sys Created On",
+            "type": "string"
+          },
+          "sys_id": {
+            "title": "Sys Id",
+            "type": "string"
+          },
+          "sys_mod_count": {
+            "title": "Sys Mod Count",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "sys_updated_by": {
+            "title": "Sys Updated By",
+            "type": "string"
+          },
+          "sys_updated_on": {
+            "title": "Sys Updated On",
+            "type": "string"
+          },
+          "topology": {
+            "title": "Topology",
+            "type": "string"
+          },
+          "tx_storage": {
+            "title": "Tx Storage",
+            "type": "string"
+          },
+          "volume_iops": {
+            "title": "Volume Iops",
+            "type": "string"
+          },
+          "volume_type": {
+            "title": "Volume Type",
+            "type": "string"
+          }
+        },
+        "description": "MariaDB services deployed by SkySQL"
+      },
+      "ServiceActions": {
+        "title": "ServiceActions",
+        "enum": [
+          "Start",
+          "Stop"
+        ],
+        "description": "Actions that can be taken on a services in a Task"
+      },
+      "ServiceStatus": {
+        "title": "ServiceStatus",
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "description": "Response body for a services status"
+      },
+      "ServiceStatusUpdate": {
+        "title": "ServiceStatusUpdate",
+        "required": [
+          "action"
+        ],
+        "type": "object",
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/ServiceActions"
+          }
+        },
+        "description": "Request body to update a service"
+      },
+      "ServiceUpdate": {
+        "title": "ServiceUpdate",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "description": "Request body to update a services - currently limited to name only"
       },
       "Size": {
         "title": "Size",
