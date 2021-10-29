@@ -16,11 +16,11 @@ type AllowlistIPAddress struct {
 
 // GET Configuration Response
 type ConfigurationResp struct {
+	Id                    string                      `json:"_id"`
 	ConfigurationVersions *[]ConfigurationVersionResp `json:"configuration_versions,omitempty"`
 	Name                  string                      `json:"name"`
 	Number                string                      `json:"number"`
 	Public                string                      `json:"public"`
-	SysId                 string                      `json:"sys_id"`
 	Topology              string                      `json:"topology"`
 }
 
@@ -40,12 +40,13 @@ type CreateConfigurationRequest struct {
 
 // Update Configuration Response
 type CreateConfigurationResp struct {
+	Id string `json:"_id"`
+
 	// GET Configuration Response nested configuration version
 	ConfigurationVersion ConfigurationVersionResp `json:"configuration_version"`
 	Name                 string                   `json:"name"`
 	Number               string                   `json:"number"`
 	Public               string                   `json:"public"`
-	SysId                string                   `json:"sys_id"`
 	Topology             string                   `json:"topology"`
 }
 
@@ -86,39 +87,39 @@ type NewService struct {
 
 // A database product, e.g. Xpand
 type Product struct {
+	Id               *string `json:"_id,omitempty"`
 	Active           *string `json:"active,omitempty"`
 	ActiveTopologies *string `json:"active_topologies,omitempty"`
+	CreatedBy        *string `json:"created_by,omitempty"`
+	CreatedOn        *string `json:"created_on,omitempty"`
 	DefaultTopology  *string `json:"default_topology,omitempty"`
 	Description      *string `json:"description,omitempty"`
 	DisplayName      *string `json:"display_name,omitempty"`
+	ModCount         *string `json:"mod_count,omitempty"`
 	Name             string  `json:"name"`
 	Order            *string `json:"order,omitempty"`
 	ShortDescription *string `json:"short_description,omitempty"`
-	SysCreatedBy     *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn     *string `json:"sys_created_on,omitempty"`
-	SysId            *string `json:"sys_id,omitempty"`
-	SysModCount      *string `json:"sys_mod_count,omitempty"`
-	SysTags          string  `json:"sys_tags"`
-	SysUpdatedBy     *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn     *string `json:"sys_updated_on,omitempty"`
+	Tags             string  `json:"tags"`
+	UpdatedBy        *string `json:"updated_by,omitempty"`
+	UpdatedOn        *string `json:"updated_on,omitempty"`
 }
 
 // Cloud provider, e.g. AWS or GCP
 type Provider struct {
-	Active       *string `json:"active,omitempty"`
-	IconImage    *string `json:"icon_image,omitempty"`
-	LogoImage    *string `json:"logo_image,omitempty"`
-	Name         string  `json:"name"`
-	Products     *string `json:"products,omitempty"`
-	SysCreatedBy *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn *string `json:"sys_created_on,omitempty"`
-	SysId        *string `json:"sys_id,omitempty"`
-	SysModCount  *string `json:"sys_mod_count,omitempty"`
-	SysTags      string  `json:"sys_tags"`
-	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn string  `json:"sys_updated_on"`
-	Topologies   *string `json:"topologies,omitempty"`
-	Value        string  `json:"value"`
+	Id         *string `json:"_id,omitempty"`
+	Active     *string `json:"active,omitempty"`
+	CreatedBy  *string `json:"created_by,omitempty"`
+	CreatedOn  *string `json:"created_on,omitempty"`
+	IconImage  *string `json:"icon_image,omitempty"`
+	LogoImage  *string `json:"logo_image,omitempty"`
+	ModCount   *string `json:"mod_count,omitempty"`
+	Name       string  `json:"name"`
+	Products   *string `json:"products,omitempty"`
+	Tags       string  `json:"tags"`
+	Topologies *string `json:"topologies,omitempty"`
+	UpdatedBy  *string `json:"updated_by,omitempty"`
+	UpdatedOn  string  `json:"updated_on"`
+	Value      string  `json:"value"`
 }
 
 // A quota progress response
@@ -134,31 +135,34 @@ type QuotaProgress struct {
 
 // Geographic region, as defined by the providers
 type Region struct {
-	Active       *string `json:"active,omitempty"`
-	ApiHandle    *string `json:"api_handle,omitempty"`
-	Default      *string `json:"default,omitempty"`
-	Location     string  `json:"location"`
-	Name         string  `json:"name"`
-	NodeType     *string `json:"node_type,omitempty"`
-	Provider     string  `json:"provider"`
-	Region       string  `json:"region"`
-	SysCreatedBy *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn *string `json:"sys_created_on,omitempty"`
-	SysId        *string `json:"sys_id,omitempty"`
-	SysModCount  *string `json:"sys_mod_count,omitempty"`
-	SysTags      string  `json:"sys_tags"`
-	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn *string `json:"sys_updated_on,omitempty"`
+	Id        *string `json:"_id,omitempty"`
+	Active    *string `json:"active,omitempty"`
+	ApiHandle *string `json:"api_handle,omitempty"`
+	CreatedBy *string `json:"created_by,omitempty"`
+	CreatedOn *string `json:"created_on,omitempty"`
+	Default   *string `json:"default,omitempty"`
+	Location  string  `json:"location"`
+	ModCount  *string `json:"mod_count,omitempty"`
+	Name      string  `json:"name"`
+	NodeType  *string `json:"node_type,omitempty"`
+	Provider  string  `json:"provider"`
+	Region    string  `json:"region"`
+	Tags      string  `json:"tags"`
+	UpdatedBy *string `json:"updated_by,omitempty"`
+	UpdatedOn *string `json:"updated_on,omitempty"`
 }
 
 // MariaDB services deployed by SkySQL
 type Service struct {
+	Id                *string `json:"_id,omitempty"`
 	ActiveReplicas    *string `json:"active_replicas,omitempty"`
 	Attributes        *string `json:"attributes,omitempty"`
 	BulkdataPort1     *string `json:"bulkdata_port_1,omitempty"`
 	BulkdataPort2     *string `json:"bulkdata_port_2,omitempty"`
 	Cluster           *string `json:"cluster,omitempty"`
 	ColumnstoreBucket *string `json:"columnstore_bucket,omitempty"`
+	CreatedBy         *string `json:"created_by,omitempty"`
+	CreatedOn         *string `json:"created_on,omitempty"`
 	CustomConfig      *string `json:"custom_config,omitempty"`
 	DnsDomain         *string `json:"dns_domain,omitempty"`
 	FaultCount        *string `json:"fault_count,omitempty"`
@@ -171,6 +175,7 @@ type Service struct {
 	MacAddress        *string `json:"mac_address,omitempty"`
 	MaxscaleConfig    *string `json:"maxscale_config,omitempty"`
 	MaxscaleProxy     *string `json:"maxscale_proxy,omitempty"`
+	ModCount          *string `json:"mod_count,omitempty"`
 	Monitor           *string `json:"monitor,omitempty"`
 	Name              *string `json:"name,omitempty"`
 	Number            *string `json:"number,omitempty"`
@@ -193,15 +198,11 @@ type Service struct {
 	SslCertificate    *string `json:"ssl_certificate,omitempty"`
 	SslExpiresOn      *string `json:"ssl_expires_on,omitempty"`
 	SslSerial         *string `json:"ssl_serial,omitempty"`
-	SysCreatedBy      *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn      *string `json:"sys_created_on,omitempty"`
-	SysId             *string `json:"sys_id,omitempty"`
-	SysModCount       *string `json:"sys_mod_count,omitempty"`
-	SysUpdatedBy      *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn      *string `json:"sys_updated_on,omitempty"`
 	Tier              *string `json:"tier,omitempty"`
 	Topology          string  `json:"topology"`
 	TxStorage         string  `json:"tx_storage"`
+	UpdatedBy         *string `json:"updated_by,omitempty"`
+	UpdatedOn         *string `json:"updated_on,omitempty"`
 	VolumeIops        *string `json:"volume_iops,omitempty"`
 	VolumeType        *string `json:"volume_type,omitempty"`
 }
@@ -227,64 +228,64 @@ type ServiceUpdate struct {
 
 // Node size, as defined by the providers
 type Size struct {
-	Active       *string `json:"active,omitempty"`
-	ApiHandle    *string `json:"api_handle,omitempty"`
-	Component    string  `json:"component"`
-	Cpu          *string `json:"cpu,omitempty"`
-	Name         string  `json:"name"`
-	NodePool     string  `json:"node_pool"`
-	Product      string  `json:"product"`
-	Provider     string  `json:"provider"`
-	Ram          *string `json:"ram,omitempty"`
-	Sequence     *string `json:"sequence,omitempty"`
-	SysCreatedBy *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn *string `json:"sys_created_on,omitempty"`
-	SysId        *string `json:"sys_id,omitempty"`
-	SysModCount  *string `json:"sys_mod_count,omitempty"`
-	SysTags      *string `json:"sys_tags,omitempty"`
-	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn *string `json:"sys_updated_on,omitempty"`
-	Tier         string  `json:"tier"`
-	Value        string  `json:"value"`
-	Visibility   string  `json:"visibility"`
+	Id         *string `json:"_id,omitempty"`
+	Active     *string `json:"active,omitempty"`
+	ApiHandle  *string `json:"api_handle,omitempty"`
+	Component  string  `json:"component"`
+	Cpu        *string `json:"cpu,omitempty"`
+	CreatedBy  *string `json:"created_by,omitempty"`
+	CreatedOn  *string `json:"created_on,omitempty"`
+	ModCount   *string `json:"mod_count,omitempty"`
+	Name       string  `json:"name"`
+	NodePool   string  `json:"node_pool"`
+	Product    string  `json:"product"`
+	Provider   string  `json:"provider"`
+	Ram        *string `json:"ram,omitempty"`
+	Sequence   *string `json:"sequence,omitempty"`
+	Tags       *string `json:"tags,omitempty"`
+	Tier       string  `json:"tier"`
+	UpdatedBy  *string `json:"updated_by,omitempty"`
+	UpdatedOn  *string `json:"updated_on,omitempty"`
+	Value      string  `json:"value"`
+	Visibility string  `json:"visibility"`
 }
 
 // Availability tier, e.g. dedicated or shared tenancy
 type Tier struct {
-	Active       *string `json:"active,omitempty"`
-	Name         *string `json:"name,omitempty"`
-	Paid         *string `json:"paid,omitempty"`
-	SysCreatedBy *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn *string `json:"sys_created_on,omitempty"`
-	SysId        *string `json:"sys_id,omitempty"`
-	SysModCount  *string `json:"sys_mod_count,omitempty"`
-	SysTags      *string `json:"sys_tags,omitempty"`
-	SysUpdatedBy *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn *string `json:"sys_updated_on,omitempty"`
+	Id        *string `json:"_id,omitempty"`
+	Active    *string `json:"active,omitempty"`
+	CreatedBy *string `json:"created_by,omitempty"`
+	CreatedOn *string `json:"created_on,omitempty"`
+	ModCount  *string `json:"mod_count,omitempty"`
+	Name      *string `json:"name,omitempty"`
+	Paid      *string `json:"paid,omitempty"`
+	Tags      *string `json:"tags,omitempty"`
+	UpdatedBy *string `json:"updated_by,omitempty"`
+	UpdatedOn *string `json:"updated_on,omitempty"`
 }
 
 // Cluster topology valid for a particular product, e.g. Standalone or MaxScale
 type Topology struct {
+	Id                     *string `json:"_id,omitempty"`
 	Active                 *string `json:"active,omitempty"`
 	ApiHandle              *string `json:"api_handle,omitempty"`
+	CreatedBy              *string `json:"created_by,omitempty"`
+	CreatedOn              *string `json:"created_on,omitempty"`
 	DisplayName            *string `json:"display_name,omitempty"`
 	HasClustrixFrontend    *string `json:"has_clustrix_frontend,omitempty"`
 	HasReplicas            *string `json:"has_replicas,omitempty"`
 	MariadbCronbackEnabled *string `json:"mariadb_cronback_enabled,omitempty"`
 	MaxscaleSupported      *string `json:"maxscale_supported,omitempty"`
+	ModCount               *string `json:"mod_count,omitempty"`
 	Name                   string  `json:"name"`
 	OperatorReplicaMinimum *string `json:"operator_replica_minimum,omitempty"`
 	Paid                   *string `json:"paid,omitempty"`
 	Product                string  `json:"product"`
 	ReplicaLabel           *string `json:"replica_label,omitempty"`
 	ReplicaOptions         *string `json:"replica_options,omitempty"`
-	SysCreatedBy           *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn           *string `json:"sys_created_on,omitempty"`
-	SysId                  *string `json:"sys_id,omitempty"`
-	SysModCount            *string `json:"sys_mod_count,omitempty"`
-	SysTags                *string `json:"sys_tags,omitempty"`
-	SysUpdatedBy           *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn           *string `json:"sys_updated_on,omitempty"`
+	Tags                   *string `json:"tags,omitempty"`
+	UpdatedBy              *string `json:"updated_by,omitempty"`
+	UpdatedOn              *string `json:"updated_on,omitempty"`
 	Value                  string  `json:"value"`
 }
 
@@ -303,8 +304,12 @@ type ValidationError struct {
 
 // Database version, e.g. 10.4 or 10.5
 type Version struct {
+	Id                *string `json:"_id,omitempty"`
+	CreatedBy         *string `json:"created_by,omitempty"`
+	CreatedOn         *string `json:"created_on,omitempty"`
 	DisplayName       *string `json:"display_name,omitempty"`
 	EnterpriseVersion *string `json:"enterprise_version,omitempty"`
+	ModCount          *string `json:"mod_count,omitempty"`
 	Name              *string `json:"name,omitempty"`
 	ParentRelease     *string `json:"parent_release,omitempty"`
 	Product           *string `json:"product,omitempty"`
@@ -312,14 +317,10 @@ type Version struct {
 	Public            *string `json:"public,omitempty"`
 	ReleaseDate       *string `json:"release_date,omitempty"`
 	ReleaseNotesUrl   *string `json:"release_notes_url,omitempty"`
-	SysCreatedBy      *string `json:"sys_created_by,omitempty"`
-	SysCreatedOn      *string `json:"sys_created_on,omitempty"`
-	SysId             *string `json:"sys_id,omitempty"`
-	SysModCount       *string `json:"sys_mod_count,omitempty"`
-	SysTags           *string `json:"sys_tags,omitempty"`
-	SysUpdatedBy      *string `json:"sys_updated_by,omitempty"`
-	SysUpdatedOn      *string `json:"sys_updated_on,omitempty"`
+	Tags              *string `json:"tags,omitempty"`
 	Type              *string `json:"type,omitempty"`
+	UpdatedBy         *string `json:"updated_by,omitempty"`
+	UpdatedOn         *string `json:"updated_on,omitempty"`
 }
 
 // ListConfigurationsParams defines parameters for ListConfigurations.
