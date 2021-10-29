@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field in the response in the _Authorization_ header for subsequent api requests\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.57"
+    "version": "0.0.58"
   },
   "paths": {
     "/billing/quotas": {
@@ -2139,7 +2139,7 @@
           "name",
           "public",
           "topology",
-          "sys_id",
+          "_id",
           "number"
         ],
         "type": "object",
@@ -2156,8 +2156,8 @@
             "title": "Topology",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
           "number": {
@@ -2228,7 +2228,7 @@
           "name",
           "public",
           "topology",
-          "sys_id",
+          "_id",
           "number",
           "configuration_version"
         ],
@@ -2246,8 +2246,8 @@
             "title": "Topology",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
           "number": {
@@ -2396,7 +2396,7 @@
         "title": "Product",
         "required": [
           "name",
-          "sys_tags"
+          "tags"
         ],
         "type": "object",
         "properties": {
@@ -2408,20 +2408,20 @@
             "title": "Description",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
+          "updated_by": {
+            "title": "Updated By",
             "type": "string"
           },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
+          "updated_on": {
+            "title": "Updated On",
             "type": "string"
           },
-          "sys_created_on": {
-            "title": "Sys Created On",
+          "created_on": {
+            "title": "Created On",
             "type": "string"
           },
           "display_name": {
@@ -2432,12 +2432,12 @@
             "title": "Name",
             "type": "string"
           },
-          "sys_created_by": {
-            "title": "Sys Created By",
+          "created_by": {
+            "title": "Created By",
             "type": "string"
           },
-          "sys_tags": {
-            "title": "Sys Tags",
+          "tags": {
+            "title": "Tags",
             "type": "string"
           },
           "active": {
@@ -2448,8 +2448,8 @@
             "title": "Order",
             "type": "string"
           },
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
+          "mod_count": {
+            "title": "Mod Count",
             "type": "string"
           },
           "active_topologies": {
@@ -2466,8 +2466,8 @@
       "Provider": {
         "title": "Provider",
         "required": [
-          "sys_updated_on",
-          "sys_tags",
+          "updated_on",
+          "tags",
           "name",
           "value"
         ],
@@ -2477,24 +2477,24 @@
             "title": "Icon Image",
             "type": "string"
           },
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
+          "mod_count": {
+            "title": "Mod Count",
             "type": "string"
           },
           "active": {
             "title": "Active",
             "type": "string"
           },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
+          "updated_on": {
+            "title": "Updated On",
             "type": "string"
           },
           "logo_image": {
             "title": "Logo Image",
             "type": "string"
           },
-          "sys_tags": {
-            "title": "Sys Tags",
+          "tags": {
+            "title": "Tags",
             "type": "string"
           },
           "products": {
@@ -2505,16 +2505,16 @@
             "title": "Topologies",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
+          "updated_by": {
+            "title": "Updated By",
             "type": "string"
           },
-          "sys_created_on": {
-            "title": "Sys Created On",
+          "created_on": {
+            "title": "Created On",
             "type": "string"
           },
           "name": {
@@ -2525,8 +2525,8 @@
             "title": "Value",
             "type": "string"
           },
-          "sys_created_by": {
-            "title": "Sys Created By",
+          "created_by": {
+            "title": "Created By",
             "type": "string"
           }
         },
@@ -2574,7 +2574,7 @@
       "Region": {
         "title": "Region",
         "required": [
-          "sys_tags",
+          "tags",
           "provider",
           "name",
           "location",
@@ -2582,24 +2582,24 @@
         ],
         "type": "object",
         "properties": {
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
+          "mod_count": {
+            "title": "Mod Count",
             "type": "string"
           },
           "active": {
             "title": "Active",
             "type": "string"
           },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
+          "updated_on": {
+            "title": "Updated On",
             "type": "string"
           },
-          "sys_tags": {
-            "title": "Sys Tags",
+          "tags": {
+            "title": "Tags",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
           "default": {
@@ -2610,16 +2610,16 @@
             "title": "Node Type",
             "type": "string"
           },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
+          "updated_by": {
+            "title": "Updated By",
             "type": "string"
           },
           "provider": {
             "title": "Provider",
             "type": "string"
           },
-          "sys_created_on": {
-            "title": "Sys Created On",
+          "created_on": {
+            "title": "Created On",
             "type": "string"
           },
           "name": {
@@ -2634,8 +2634,8 @@
             "title": "Region",
             "type": "string"
           },
-          "sys_created_by": {
-            "title": "Sys Created By",
+          "created_by": {
+            "title": "Created By",
             "type": "string"
           },
           "api_handle": {
@@ -2818,32 +2818,32 @@
             "title": "Ssl Serial",
             "type": "string"
           },
-          "sys_created_by": {
-            "title": "Sys Created By",
+          "created_by": {
+            "title": "Created By",
             "type": "string"
           },
-          "sys_created_on": {
-            "title": "Sys Created On",
+          "created_on": {
+            "title": "Created On",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
+          "mod_count": {
+            "title": "Mod Count",
             "type": "string"
           },
           "tier": {
             "title": "Tier",
             "type": "string"
           },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
+          "updated_by": {
+            "title": "Updated By",
             "type": "string"
           },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
+          "updated_on": {
+            "title": "Updated On",
             "type": "string"
           },
           "topology": {
@@ -2937,8 +2937,8 @@
             "title": "Visibility",
             "type": "string"
           },
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
+          "mod_count": {
+            "title": "Mod Count",
             "type": "string"
           },
           "active": {
@@ -2949,28 +2949,28 @@
             "title": "Cpu",
             "type": "string"
           },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
+          "updated_on": {
+            "title": "Updated On",
             "type": "string"
           },
-          "sys_tags": {
-            "title": "Sys Tags",
+          "tags": {
+            "title": "Tags",
             "type": "string"
           },
           "sequence": {
             "title": "Sequence",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
           "component": {
             "title": "Component",
             "type": "string"
           },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
+          "updated_by": {
+            "title": "Updated By",
             "type": "string"
           },
           "tier": {
@@ -2981,8 +2981,8 @@
             "title": "Provider",
             "type": "string"
           },
-          "sys_created_on": {
-            "title": "Sys Created On",
+          "created_on": {
+            "title": "Created On",
             "type": "string"
           },
           "name": {
@@ -2997,8 +2997,8 @@
             "title": "Value",
             "type": "string"
           },
-          "sys_created_by": {
-            "title": "Sys Created By",
+          "created_by": {
+            "title": "Created By",
             "type": "string"
           },
           "api_handle": {
@@ -3016,16 +3016,16 @@
         "title": "Tier",
         "type": "object",
         "properties": {
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
+          "updated_by": {
+            "title": "Updated By",
             "type": "string"
           },
-          "sys_created_on": {
-            "title": "Sys Created On",
+          "created_on": {
+            "title": "Created On",
             "type": "string"
           },
           "name": {
@@ -3036,24 +3036,24 @@
             "title": "Paid",
             "type": "string"
           },
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
+          "mod_count": {
+            "title": "Mod Count",
             "type": "string"
           },
           "active": {
             "title": "Active",
             "type": "string"
           },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
+          "updated_on": {
+            "title": "Updated On",
             "type": "string"
           },
-          "sys_tags": {
-            "title": "Sys Tags",
+          "tags": {
+            "title": "Tags",
             "type": "string"
           },
-          "sys_created_by": {
-            "title": "Sys Created By",
+          "created_by": {
+            "title": "Created By",
             "type": "string"
           }
         },
@@ -3084,44 +3084,44 @@
             "title": "Replica Options",
             "type": "string"
           },
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
+          "mod_count": {
+            "title": "Mod Count",
             "type": "string"
           },
           "active": {
             "title": "Active",
             "type": "string"
           },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
+          "updated_on": {
+            "title": "Updated On",
             "type": "string"
           },
           "display_name": {
             "title": "Display Name",
             "type": "string"
           },
-          "sys_tags": {
-            "title": "Sys Tags",
+          "tags": {
+            "title": "Tags",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
           "has_replicas": {
             "title": "Has Replicas",
             "type": "string"
           },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
+          "updated_by": {
+            "title": "Updated By",
             "type": "string"
           },
           "has_clustrix_frontend": {
             "title": "Has Clustrix Frontend",
             "type": "string"
           },
-          "sys_created_on": {
-            "title": "Sys Created On",
+          "created_on": {
+            "title": "Created On",
             "type": "string"
           },
           "name": {
@@ -3144,8 +3144,8 @@
             "title": "Value",
             "type": "string"
           },
-          "sys_created_by": {
-            "title": "Sys Created By",
+          "created_by": {
+            "title": "Created By",
             "type": "string"
           },
           "api_handle": {
@@ -3205,20 +3205,20 @@
             "title": "Product",
             "type": "string"
           },
-          "sys_mod_count": {
-            "title": "Sys Mod Count",
+          "mod_count": {
+            "title": "Mod Count",
             "type": "string"
           },
-          "sys_updated_on": {
-            "title": "Sys Updated On",
+          "updated_on": {
+            "title": "Updated On",
             "type": "string"
           },
           "display_name": {
             "title": "Display Name",
             "type": "string"
           },
-          "sys_tags": {
-            "title": "Sys Tags",
+          "tags": {
+            "title": "Tags",
             "type": "string"
           },
           "type": {
@@ -3233,12 +3233,12 @@
             "title": "Release Notes Url",
             "type": "string"
           },
-          "sys_id": {
-            "title": "Sys Id",
+          "_id": {
+            "title": " Id",
             "type": "string"
           },
-          "sys_updated_by": {
-            "title": "Sys Updated By",
+          "updated_by": {
+            "title": "Updated By",
             "type": "string"
           },
           "public": {
@@ -3253,8 +3253,8 @@
             "title": "Release Date",
             "type": "string"
           },
-          "sys_created_on": {
-            "title": "Sys Created On",
+          "created_on": {
+            "title": "Created On",
             "type": "string"
           },
           "parent_release": {
@@ -3265,8 +3265,8 @@
             "title": "Name",
             "type": "string"
           },
-          "sys_created_by": {
-            "title": "Sys Created By",
+          "created_by": {
+            "title": "Created By",
             "type": "string"
           }
         },
