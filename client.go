@@ -1812,7 +1812,7 @@ func (r ReadQuotasResponse) StatusCode() int {
 type ListConfigurationsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]ConfigurationResp
+	JSON200      *[]ConfigurationResponseBaseModel
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2128,7 +2128,7 @@ func (r ReadVersionsResponse) StatusCode() int {
 type ListServicesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]Service
+	JSON200      *[]ServiceOut
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2154,7 +2154,7 @@ func (r ListServicesResponse) StatusCode() int {
 type CreateServiceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Service
+	JSON200      *ServiceOut
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2208,7 +2208,7 @@ func (r DeleteServiceResponse) StatusCode() int {
 type ReadServiceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Service
+	JSON200      *ServiceOut
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
@@ -2235,7 +2235,7 @@ func (r ReadServiceResponse) StatusCode() int {
 type UpdateServiceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Service
+	JSON200      *ServiceOut
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
@@ -2732,7 +2732,7 @@ func ParseListConfigurationsResponse(rsp *http.Response) (*ListConfigurationsRes
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []ConfigurationResp
+		var dest []ConfigurationResponseBaseModel
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3408,7 +3408,7 @@ func ParseListServicesResponse(rsp *http.Response) (*ListServicesResponse, error
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Service
+		var dest []ServiceOut
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3462,7 +3462,7 @@ func ParseCreateServiceResponse(rsp *http.Response) (*CreateServiceResponse, err
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Service
+		var dest ServiceOut
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3584,7 +3584,7 @@ func ParseReadServiceResponse(rsp *http.Response) (*ReadServiceResponse, error) 
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Service
+		var dest ServiceOut
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3645,7 +3645,7 @@ func ParseUpdateServiceResponse(rsp *http.Response) (*UpdateServiceResponse, err
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Service
+		var dest ServiceOut
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

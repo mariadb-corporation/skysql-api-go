@@ -16,12 +16,19 @@ type AllowlistIPAddress struct {
 
 // GET Configuration Response
 type ConfigurationResp struct {
-	Id                    string                      `json:"_id"`
 	ConfigurationVersions *[]ConfigurationVersionResp `json:"configuration_versions,omitempty"`
 	Name                  string                      `json:"name"`
 	Number                string                      `json:"number"`
 	Public                string                      `json:"public"`
 	Topology              string                      `json:"topology"`
+}
+
+// Configuration Response Base Model
+type ConfigurationResponseBaseModel struct {
+	Name     string `json:"name"`
+	Number   string `json:"number"`
+	Public   string `json:"public"`
+	Topology string `json:"topology"`
 }
 
 // GET Configuration Response nested configuration version
@@ -40,8 +47,6 @@ type CreateConfigurationRequest struct {
 
 // Update Configuration Response
 type CreateConfigurationResp struct {
-	Id string `json:"_id"`
-
 	// GET Configuration Response nested configuration version
 	ConfigurationVersion ConfigurationVersionResp `json:"configuration_version"`
 	Name                 string                   `json:"name"`
@@ -66,28 +71,8 @@ type Message struct {
 	Details string `json:"details"`
 }
 
-// Request body to create a new MariaDB services deployed by SkySQL
-type NewService struct {
-	MaxscaleConfig *string `json:"maxscale_config,omitempty"`
-	MaxscaleProxy  *string `json:"maxscale_proxy,omitempty"`
-	Monitor        *string `json:"monitor,omitempty"`
-	Name           string  `json:"name"`
-	Provider       string  `json:"provider"`
-	Region         string  `json:"region"`
-	ReleaseVersion string  `json:"release_version"`
-	ReplRegion     *string `json:"repl_region,omitempty"`
-	Replicas       string  `json:"replicas"`
-	Size           string  `json:"size"`
-	Tier           string  `json:"tier"`
-	Topology       string  `json:"topology"`
-	TxStorage      string  `json:"tx_storage"`
-	VolumeIops     *string `json:"volume_iops,omitempty"`
-	VolumeType     *string `json:"volume_type,omitempty"`
-}
-
 // A database product, e.g. Xpand
 type Product struct {
-	Id               *string `json:"_id,omitempty"`
 	Active           *string `json:"active,omitempty"`
 	ActiveTopologies *string `json:"active_topologies,omitempty"`
 	CreatedBy        *string `json:"created_by,omitempty"`
@@ -106,7 +91,6 @@ type Product struct {
 
 // Cloud provider, e.g. AWS or GCP
 type Provider struct {
-	Id         *string `json:"_id,omitempty"`
 	Active     *string `json:"active,omitempty"`
 	CreatedBy  *string `json:"created_by,omitempty"`
 	CreatedOn  *string `json:"created_on,omitempty"`
@@ -135,7 +119,6 @@ type QuotaProgress struct {
 
 // Geographic region, as defined by the providers
 type Region struct {
-	Id        *string `json:"_id,omitempty"`
 	Active    *string `json:"active,omitempty"`
 	ApiHandle *string `json:"api_handle,omitempty"`
 	CreatedBy *string `json:"created_by,omitempty"`
@@ -152,9 +135,30 @@ type Region struct {
 	UpdatedOn *string `json:"updated_on,omitempty"`
 }
 
+// Actions that can be taken on a services in a Task
+type ServiceActions interface{}
+
+// Request body to create a new MariaDB services deployed by SkySQL
+type ServiceIn struct {
+	MaxscaleConfig *string `json:"maxscale_config,omitempty"`
+	MaxscaleProxy  *string `json:"maxscale_proxy,omitempty"`
+	Monitor        *string `json:"monitor,omitempty"`
+	Name           string  `json:"name"`
+	Provider       string  `json:"provider"`
+	Region         string  `json:"region"`
+	ReleaseVersion string  `json:"release_version"`
+	ReplRegion     *string `json:"repl_region,omitempty"`
+	Replicas       string  `json:"replicas"`
+	Size           string  `json:"size"`
+	Tier           string  `json:"tier"`
+	Topology       string  `json:"topology"`
+	TxStorage      string  `json:"tx_storage"`
+	VolumeIops     *string `json:"volume_iops,omitempty"`
+	VolumeType     *string `json:"volume_type,omitempty"`
+}
+
 // MariaDB services deployed by SkySQL
-type Service struct {
-	Id                *string `json:"_id,omitempty"`
+type ServiceOut struct {
 	ActiveReplicas    *string `json:"active_replicas,omitempty"`
 	Attributes        *string `json:"attributes,omitempty"`
 	BulkdataPort1     *string `json:"bulkdata_port_1,omitempty"`
@@ -181,11 +185,11 @@ type Service struct {
 	Number            *string `json:"number,omitempty"`
 	OperationalStatus string  `json:"operational_status"`
 	OwnedBy           *string `json:"owned_by,omitempty"`
-	Provider          string  `json:"provider"`
+	Provider          *string `json:"provider,omitempty"`
 	Proxy             *string `json:"proxy,omitempty"`
 	ReadOnlyPort      *string `json:"read_only_port,omitempty"`
 	ReadWritePort     *string `json:"read_write_port,omitempty"`
-	Region            string  `json:"region"`
+	Region            *string `json:"region,omitempty"`
 	ReleaseVersion    *string `json:"release_version,omitempty"`
 	ReplMaster        *string `json:"repl_master,omitempty"`
 	ReplMasterHostExt *string `json:"repl_master_host_ext,omitempty"`
@@ -193,22 +197,19 @@ type Service struct {
 	Replicas          *string `json:"replicas,omitempty"`
 	ReplicationStatus *string `json:"replication_status,omitempty"`
 	ReplicationType   *string `json:"replication_type,omitempty"`
-	Size              string  `json:"size"`
+	Size              *string `json:"size,omitempty"`
 	SkipSync          *string `json:"skip_sync,omitempty"`
 	SslCertificate    *string `json:"ssl_certificate,omitempty"`
 	SslExpiresOn      *string `json:"ssl_expires_on,omitempty"`
 	SslSerial         *string `json:"ssl_serial,omitempty"`
 	Tier              *string `json:"tier,omitempty"`
-	Topology          string  `json:"topology"`
-	TxStorage         string  `json:"tx_storage"`
+	Topology          *string `json:"topology,omitempty"`
+	TxStorage         *string `json:"tx_storage,omitempty"`
 	UpdatedBy         *string `json:"updated_by,omitempty"`
 	UpdatedOn         *string `json:"updated_on,omitempty"`
 	VolumeIops        *string `json:"volume_iops,omitempty"`
 	VolumeType        *string `json:"volume_type,omitempty"`
 }
-
-// Actions that can be taken on a services in a Task
-type ServiceActions interface{}
 
 // Response body for a services status
 type ServiceStatus struct {
@@ -228,7 +229,6 @@ type ServiceUpdate struct {
 
 // Node size, as defined by the providers
 type Size struct {
-	Id         *string `json:"_id,omitempty"`
 	Active     *string `json:"active,omitempty"`
 	ApiHandle  *string `json:"api_handle,omitempty"`
 	Component  string  `json:"component"`
@@ -252,7 +252,6 @@ type Size struct {
 
 // Availability tier, e.g. dedicated or shared tenancy
 type Tier struct {
-	Id        *string `json:"_id,omitempty"`
 	Active    *string `json:"active,omitempty"`
 	CreatedBy *string `json:"created_by,omitempty"`
 	CreatedOn *string `json:"created_on,omitempty"`
@@ -266,7 +265,6 @@ type Tier struct {
 
 // Cluster topology valid for a particular product, e.g. Standalone or MaxScale
 type Topology struct {
-	Id                     *string `json:"_id,omitempty"`
 	Active                 *string `json:"active,omitempty"`
 	ApiHandle              *string `json:"api_handle,omitempty"`
 	CreatedBy              *string `json:"created_by,omitempty"`
@@ -304,7 +302,6 @@ type ValidationError struct {
 
 // Database version, e.g. 10.4 or 10.5
 type Version struct {
-	Id                *string `json:"_id,omitempty"`
 	CreatedBy         *string `json:"created_by,omitempty"`
 	CreatedOn         *string `json:"created_on,omitempty"`
 	DisplayName       *string `json:"display_name,omitempty"`
@@ -380,7 +377,7 @@ type ListServicesParams struct {
 }
 
 // CreateServiceJSONBody defines parameters for CreateService.
-type CreateServiceJSONBody NewService
+type CreateServiceJSONBody ServiceIn
 
 // UpdateServiceJSONBody defines parameters for UpdateService.
 type UpdateServiceJSONBody ServiceUpdate

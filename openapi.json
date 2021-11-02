@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field in the response in the _Authorization_ header for subsequent api requests\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.59"
+    "version": "0.0.60"
   },
   "paths": {
     "/billing/quotas": {
@@ -98,7 +98,7 @@
                   "title": "Response List Configurations Configurations  Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/ConfigurationResp"
+                    "$ref": "#/components/schemas/ConfigurationResponseBaseModel"
                   }
                 }
               }
@@ -594,7 +594,7 @@
                   "title": "Response List Services Services  Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Service"
+                    "$ref": "#/components/schemas/ServiceOut"
                   }
                 }
               }
@@ -658,28 +658,28 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewService"
+                "$ref": "#/components/schemas/ServiceIn"
               },
               "examples": {
                 "standalone": {
                   "summary": "Standalone",
                   "description": "Create a new service using a standalone topology",
                   "value": {
-                    "release_version": "MariaDB Enterprise Server 10.6.4-1",
-                    "topology": "Standalone",
-                    "size": "Sky-2x4",
-                    "tx_storage": "100",
-                    "maxscale_config": "",
                     "name": "standalone-example",
-                    "region": "ca-central-1",
-                    "repl_region": "",
-                    "provider": "Amazon AWS",
-                    "replicas": "0",
-                    "volume_iops": "100",
-                    "volume_type": "io1",
-                    "monitor": "false",
+                    "maxscale_config": "",
                     "maxscale_proxy": "false",
-                    "tier": "Premium"
+                    "monitor": "false",
+                    "provider": "Amazon AWS",
+                    "region": "ca-central-1",
+                    "release_version": "MariaDB Enterprise Server 10.6.4-1",
+                    "repl_region": "",
+                    "replicas": "0",
+                    "size": "Sky-2x4",
+                    "tier": "Power",
+                    "topology": "Standalone",
+                    "tx_storage": "100",
+                    "volume_iops": "100",
+                    "volume_type": "io1"
                   }
                 }
               }
@@ -692,7 +692,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Service"
+                  "$ref": "#/components/schemas/ServiceOut"
                 }
               }
             }
@@ -777,7 +777,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Service"
+                  "$ref": "#/components/schemas/ServiceOut"
                 }
               }
             }
@@ -989,7 +989,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Service"
+                  "$ref": "#/components/schemas/ServiceOut"
                 }
               }
             }
@@ -1725,15 +1725,15 @@
               "type": "string"
             },
             "examples": {
-              "professional": {
-                "summary": "Professional",
-                "description": "Query for resources available in the professional tier.",
-                "value": "Professional"
+              "foundation": {
+                "summary": "Foundation",
+                "description": "Query for resources available in the foundation tier.",
+                "value": "Foundation"
               },
-              "premium": {
-                "summary": "Premium",
-                "description": "Query for resources available in the premium tier.",
-                "value": "Premium"
+              "power": {
+                "summary": "Power",
+                "description": "Query for resources available in the power tier.",
+                "value": "Power"
               }
             },
             "name": "tier",
@@ -2139,7 +2139,6 @@
           "name",
           "public",
           "topology",
-          "_id",
           "number"
         ],
         "type": "object",
@@ -2156,10 +2155,6 @@
             "title": "Topology",
             "type": "string"
           },
-          "_id": {
-            "title": "Internal ID",
-            "type": "string"
-          },
           "number": {
             "title": "Number",
             "type": "string"
@@ -2173,6 +2168,35 @@
           }
         },
         "description": "GET Configuration Response"
+      },
+      "ConfigurationResponseBaseModel": {
+        "title": "ConfigurationResponseBaseModel",
+        "required": [
+          "name",
+          "public",
+          "topology",
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "public": {
+            "title": "Public",
+            "type": "string"
+          },
+          "topology": {
+            "title": "Topology",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "string"
+          }
+        },
+        "description": "Configuration Response Base Model"
       },
       "ConfigurationVersionResp": {
         "title": "ConfigurationVersionResp",
@@ -2228,7 +2252,6 @@
           "name",
           "public",
           "topology",
-          "_id",
           "number",
           "configuration_version"
         ],
@@ -2244,10 +2267,6 @@
           },
           "topology": {
             "title": "Topology",
-            "type": "string"
-          },
-          "_id": {
-            "title": "Internal ID",
             "type": "string"
           },
           "number": {
@@ -2305,93 +2324,6 @@
         },
         "description": "Generic message body containing error details for failed requests"
       },
-      "NewService": {
-        "title": "NewService",
-        "required": [
-          "release_version",
-          "topology",
-          "size",
-          "tx_storage",
-          "name",
-          "region",
-          "provider",
-          "replicas",
-          "tier"
-        ],
-        "type": "object",
-        "properties": {
-          "release_version": {
-            "title": "Release Version",
-            "minLength": 1,
-            "type": "string"
-          },
-          "topology": {
-            "title": "Topology",
-            "minLength": 1,
-            "type": "string"
-          },
-          "size": {
-            "title": "Size",
-            "minLength": 1,
-            "type": "string"
-          },
-          "tx_storage": {
-            "title": "Tx Storage",
-            "minLength": 1,
-            "type": "string"
-          },
-          "maxscale_config": {
-            "title": "Maxscale Config",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "minLength": 1,
-            "type": "string"
-          },
-          "region": {
-            "title": "Region",
-            "minLength": 1,
-            "type": "string"
-          },
-          "repl_region": {
-            "title": "Repl Region",
-            "type": "string"
-          },
-          "provider": {
-            "title": "Provider",
-            "minLength": 1,
-            "type": "string"
-          },
-          "replicas": {
-            "title": "Replicas",
-            "minLength": 1,
-            "type": "string"
-          },
-          "volume_iops": {
-            "title": "Volume Iops",
-            "type": "string"
-          },
-          "volume_type": {
-            "title": "Volume Type",
-            "type": "string"
-          },
-          "monitor": {
-            "title": "Monitor",
-            "type": "string"
-          },
-          "maxscale_proxy": {
-            "title": "Maxscale Proxy",
-            "type": "string"
-          },
-          "tier": {
-            "title": "Tier",
-            "minLength": 1,
-            "type": "string"
-          }
-        },
-        "description": "Request body to create a new MariaDB services deployed by SkySQL"
-      },
       "Product": {
         "title": "Product",
         "required": [
@@ -2406,10 +2338,6 @@
           },
           "description": {
             "title": "Description",
-            "type": "string"
-          },
-          "_id": {
-            "title": "Internal ID",
             "type": "string"
           },
           "updated_by": {
@@ -2505,10 +2433,6 @@
             "title": "Topologies",
             "type": "string"
           },
-          "_id": {
-            "title": "Internal ID",
-            "type": "string"
-          },
           "updated_by": {
             "title": "Updated By",
             "type": "string"
@@ -2598,10 +2522,6 @@
             "title": "Tags",
             "type": "string"
           },
-          "_id": {
-            "title": "Internal ID",
-            "type": "string"
-          },
           "default": {
             "title": "Default",
             "type": "string"
@@ -2645,19 +2565,173 @@
         },
         "description": "Geographic region, as defined by the providers"
       },
-      "Service": {
-        "title": "Service",
+      "ServiceActions": {
+        "title": "ServiceActions",
+        "enum": [
+          "Start",
+          "Stop"
+        ],
+        "description": "Actions that can be taken on a services in a Task"
+      },
+      "ServiceIn": {
+        "title": "ServiceIn",
         "required": [
-          "install_status",
-          "operational_status",
+          "name",
           "provider",
           "region",
+          "release_version",
+          "replicas",
           "size",
+          "tier",
           "topology",
           "tx_storage"
         ],
         "type": "object",
         "properties": {
+          "name": {
+            "title": "Name",
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxscale_config": {
+            "title": "Maxscale Config",
+            "type": "string"
+          },
+          "maxscale_proxy": {
+            "title": "Maxscale Proxy",
+            "type": "string"
+          },
+          "monitor": {
+            "title": "Monitor",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "minLength": 1,
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "minLength": 1,
+            "type": "string"
+          },
+          "release_version": {
+            "title": "Release Version",
+            "minLength": 1,
+            "type": "string"
+          },
+          "repl_region": {
+            "title": "Repl Region",
+            "type": "string"
+          },
+          "replicas": {
+            "title": "Replicas",
+            "minLength": 1,
+            "type": "string"
+          },
+          "size": {
+            "title": "Size",
+            "minLength": 1,
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "minLength": 1,
+            "type": "string"
+          },
+          "topology": {
+            "title": "Topology",
+            "minLength": 1,
+            "type": "string"
+          },
+          "tx_storage": {
+            "title": "Tx Storage",
+            "minLength": 1,
+            "type": "string"
+          },
+          "volume_iops": {
+            "title": "Volume Iops",
+            "type": "string"
+          },
+          "volume_type": {
+            "title": "Volume Type",
+            "type": "string"
+          }
+        },
+        "description": "Request body to create a new MariaDB services deployed by SkySQL"
+      },
+      "ServiceOut": {
+        "title": "ServiceOut",
+        "required": [
+          "install_status",
+          "operational_status"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "maxscale_config": {
+            "title": "Maxscale Config",
+            "type": "string"
+          },
+          "maxscale_proxy": {
+            "title": "Maxscale Proxy",
+            "type": "string"
+          },
+          "monitor": {
+            "title": "Monitor",
+            "type": "string"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "region": {
+            "title": "Region",
+            "type": "string"
+          },
+          "release_version": {
+            "title": "Release Version",
+            "type": "string"
+          },
+          "repl_region": {
+            "title": "Repl Region",
+            "type": "string"
+          },
+          "replicas": {
+            "title": "Replicas",
+            "type": "string"
+          },
+          "size": {
+            "title": "Size",
+            "type": "string"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "string"
+          },
+          "topology": {
+            "title": "Topology",
+            "type": "string"
+          },
+          "tx_storage": {
+            "title": "Tx Storage",
+            "type": "string"
+          },
+          "volume_iops": {
+            "title": "Volume Iops",
+            "type": "string"
+          },
+          "volume_type": {
+            "title": "Volume Type",
+            "type": "string"
+          },
+          "owned_by": {
+            "title": "Owned By",
+            "type": "string"
+          },
           "active_replicas": {
             "title": "Active Replicas",
             "type": "string"
@@ -2722,36 +2796,12 @@
             "title": "Mac Address",
             "type": "string"
           },
-          "maxscale_config": {
-            "title": "Maxscale Config",
-            "type": "string"
-          },
-          "maxscale_proxy": {
-            "title": "Maxscale Proxy",
-            "type": "string"
-          },
-          "monitor": {
-            "title": "Monitor",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
           "number": {
             "title": "Number",
             "type": "string"
           },
           "operational_status": {
             "title": "Operational Status",
-            "type": "string"
-          },
-          "owned_by": {
-            "title": "Owned By",
-            "type": "string"
-          },
-          "provider": {
-            "title": "Provider",
             "type": "string"
           },
           "proxy": {
@@ -2766,28 +2816,12 @@
             "title": "Read Write Port",
             "type": "string"
           },
-          "region": {
-            "title": "Region",
-            "type": "string"
-          },
-          "release_version": {
-            "title": "Release Version",
-            "type": "string"
-          },
-          "repl_master": {
-            "title": "Repl Master",
-            "type": "string"
-          },
           "repl_master_host_ext": {
             "title": "Repl Master Host Ext",
             "type": "string"
           },
-          "repl_region": {
-            "title": "Repl Region",
-            "type": "string"
-          },
-          "replicas": {
-            "title": "Replicas",
+          "repl_master": {
+            "title": "Repl Master",
             "type": "string"
           },
           "replication_status": {
@@ -2796,10 +2830,6 @@
           },
           "replication_type": {
             "title": "Replication Type",
-            "type": "string"
-          },
-          "size": {
-            "title": "Size",
             "type": "string"
           },
           "skip_sync": {
@@ -2826,16 +2856,8 @@
             "title": "Created On",
             "type": "string"
           },
-          "_id": {
-            "title": "Internal ID",
-            "type": "string"
-          },
           "mod_count": {
             "title": "Mod Count",
-            "type": "string"
-          },
-          "tier": {
-            "title": "Tier",
             "type": "string"
           },
           "updated_by": {
@@ -2845,33 +2867,9 @@
           "updated_on": {
             "title": "Updated On",
             "type": "string"
-          },
-          "topology": {
-            "title": "Topology",
-            "type": "string"
-          },
-          "tx_storage": {
-            "title": "Tx Storage",
-            "type": "string"
-          },
-          "volume_iops": {
-            "title": "Volume Iops",
-            "type": "string"
-          },
-          "volume_type": {
-            "title": "Volume Type",
-            "type": "string"
           }
         },
         "description": "MariaDB services deployed by SkySQL"
-      },
-      "ServiceActions": {
-        "title": "ServiceActions",
-        "enum": [
-          "Start",
-          "Stop"
-        ],
-        "description": "Actions that can be taken on a services in a Task"
       },
       "ServiceStatus": {
         "title": "ServiceStatus",
@@ -2961,10 +2959,6 @@
             "title": "Sequence",
             "type": "string"
           },
-          "_id": {
-            "title": "Internal ID",
-            "type": "string"
-          },
           "component": {
             "title": "Component",
             "type": "string"
@@ -3016,10 +3010,6 @@
         "title": "Tier",
         "type": "object",
         "properties": {
-          "_id": {
-            "title": "Internal ID",
-            "type": "string"
-          },
           "updated_by": {
             "title": "Updated By",
             "type": "string"
@@ -3102,10 +3092,6 @@
           },
           "tags": {
             "title": "Tags",
-            "type": "string"
-          },
-          "_id": {
-            "title": "Internal ID",
             "type": "string"
           },
           "has_replicas": {
@@ -3231,10 +3217,6 @@
           },
           "release_notes_url": {
             "title": "Release Notes Url",
-            "type": "string"
-          },
-          "_id": {
-            "title": "Internal ID",
             "type": "string"
           },
           "updated_by": {
