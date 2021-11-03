@@ -7,6 +7,77 @@ const (
 	HTTPBearerScopes = "HTTPBearer.Scopes"
 )
 
+// Defines values for ServiceInProvider.
+const (
+	ServiceInProviderAmazonAWS ServiceInProvider = "Amazon AWS"
+
+	ServiceInProviderGoogleCloud ServiceInProvider = "Google Cloud"
+)
+
+// Defines values for ServiceInSslTls.
+const (
+	ServiceInSslTlsDisabled ServiceInSslTls = "Disabled"
+
+	ServiceInSslTlsEmpty ServiceInSslTls = ""
+
+	ServiceInSslTlsEnabled ServiceInSslTls = "Enabled"
+)
+
+// Defines values for ServiceInTier.
+const (
+	ServiceInTierFoundation ServiceInTier = "Foundation"
+
+	ServiceInTierPower ServiceInTier = "Power"
+)
+
+// Defines values for ServiceInTopology.
+const (
+	ServiceInTopologyColumnStore ServiceInTopology = "ColumnStore"
+
+	ServiceInTopologyColumnStoreSingleNode ServiceInTopology = "ColumnStore (Single Node)"
+
+	ServiceInTopologyPrimaryReplica ServiceInTopology = "Primary/Replica"
+
+	ServiceInTopologyStandalone ServiceInTopology = "Standalone"
+
+	ServiceInTopologyXpand ServiceInTopology = "Xpand"
+)
+
+// Defines values for ServiceInVolumeType.
+const (
+	ServiceInVolumeTypeEmpty ServiceInVolumeType = ""
+
+	ServiceInVolumeTypeGp2 ServiceInVolumeType = "gp2"
+
+	ServiceInVolumeTypeGp3 ServiceInVolumeType = "gp3"
+
+	ServiceInVolumeTypeIo1 ServiceInVolumeType = "io1"
+
+	ServiceInVolumeTypeIo2 ServiceInVolumeType = "io2"
+)
+
+// Defines values for ServiceOutSslTls.
+const (
+	ServiceOutSslTlsDisabled ServiceOutSslTls = "Disabled"
+
+	ServiceOutSslTlsEmpty ServiceOutSslTls = ""
+
+	ServiceOutSslTlsEnabled ServiceOutSslTls = "Enabled"
+)
+
+// Defines values for ServiceOutVolumeType.
+const (
+	ServiceOutVolumeTypeEmpty ServiceOutVolumeType = ""
+
+	ServiceOutVolumeTypeGp2 ServiceOutVolumeType = "gp2"
+
+	ServiceOutVolumeTypeGp3 ServiceOutVolumeType = "gp3"
+
+	ServiceOutVolumeTypeIo1 ServiceOutVolumeType = "io1"
+
+	ServiceOutVolumeTypeIo2 ServiceOutVolumeType = "io2"
+)
+
 // IP Address that has been added to the services network allowlist
 type AllowlistIPAddress struct {
 	Comment   *string `json:"comment,omitempty"`
@@ -140,76 +211,99 @@ type ServiceActions interface{}
 
 // Request body to create a new MariaDB services deployed by SkySQL
 type ServiceIn struct {
-	MaxscaleConfig *string `json:"maxscale_config,omitempty"`
-	MaxscaleProxy  *string `json:"maxscale_proxy,omitempty"`
-	Monitor        *string `json:"monitor,omitempty"`
-	Name           string  `json:"name"`
-	Provider       string  `json:"provider"`
-	Region         string  `json:"region"`
-	ReleaseVersion string  `json:"release_version"`
-	ReplRegion     *string `json:"repl_region,omitempty"`
-	Replicas       string  `json:"replicas"`
-	Size           string  `json:"size"`
-	Tier           string  `json:"tier"`
-	Topology       string  `json:"topology"`
-	TxStorage      string  `json:"tx_storage"`
-	VolumeIops     *string `json:"volume_iops,omitempty"`
-	VolumeType     *string `json:"volume_type,omitempty"`
+	MaxscaleConfig *string              `json:"maxscale_config,omitempty"`
+	MaxscaleProxy  *string              `json:"maxscale_proxy,omitempty"`
+	Monitor        *string              `json:"monitor,omitempty"`
+	Name           string               `json:"name"`
+	Provider       ServiceInProvider    `json:"provider"`
+	Region         string               `json:"region"`
+	ReleaseVersion string               `json:"release_version"`
+	ReplRegion     *string              `json:"repl_region,omitempty"`
+	Replicas       string               `json:"replicas"`
+	Size           string               `json:"size"`
+	SslTls         *ServiceInSslTls     `json:"ssl_tls,omitempty"`
+	Tier           ServiceInTier        `json:"tier"`
+	Topology       ServiceInTopology    `json:"topology"`
+	TxStorage      string               `json:"tx_storage"`
+	VolumeIops     *string              `json:"volume_iops,omitempty"`
+	VolumeType     *ServiceInVolumeType `json:"volume_type,omitempty"`
 }
+
+// ServiceInProvider defines model for ServiceIn.Provider.
+type ServiceInProvider string
+
+// ServiceInSslTls defines model for ServiceIn.SslTls.
+type ServiceInSslTls string
+
+// ServiceInTier defines model for ServiceIn.Tier.
+type ServiceInTier string
+
+// ServiceInTopology defines model for ServiceIn.Topology.
+type ServiceInTopology string
+
+// ServiceInVolumeType defines model for ServiceIn.VolumeType.
+type ServiceInVolumeType string
 
 // MariaDB services deployed by SkySQL
 type ServiceOut struct {
-	ActiveReplicas    *string `json:"active_replicas,omitempty"`
-	Attributes        *string `json:"attributes,omitempty"`
-	BulkdataPort1     *string `json:"bulkdata_port_1,omitempty"`
-	BulkdataPort2     *string `json:"bulkdata_port_2,omitempty"`
-	Cluster           *string `json:"cluster,omitempty"`
-	ColumnstoreBucket *string `json:"columnstore_bucket,omitempty"`
-	CreatedBy         *string `json:"created_by,omitempty"`
-	CreatedOn         *string `json:"created_on,omitempty"`
-	CustomConfig      *string `json:"custom_config,omitempty"`
-	DnsDomain         *string `json:"dns_domain,omitempty"`
-	FaultCount        *string `json:"fault_count,omitempty"`
-	Fqdn              *string `json:"fqdn,omitempty"`
-	GlAccount         *string `json:"gl_account,omitempty"`
-	Id                *string `json:"id,omitempty"`
-	InstallStatus     string  `json:"install_status"`
-	InstanceState     *string `json:"instance_state,omitempty"`
-	IpAddress         *string `json:"ip_address,omitempty"`
-	MacAddress        *string `json:"mac_address,omitempty"`
-	MaxscaleConfig    *string `json:"maxscale_config,omitempty"`
-	MaxscaleProxy     *string `json:"maxscale_proxy,omitempty"`
-	ModCount          *string `json:"mod_count,omitempty"`
-	Monitor           *string `json:"monitor,omitempty"`
-	Name              *string `json:"name,omitempty"`
-	Number            *string `json:"number,omitempty"`
-	OperationalStatus string  `json:"operational_status"`
-	OwnedBy           *string `json:"owned_by,omitempty"`
-	Provider          *string `json:"provider,omitempty"`
-	Proxy             *string `json:"proxy,omitempty"`
-	ReadOnlyPort      *string `json:"read_only_port,omitempty"`
-	ReadWritePort     *string `json:"read_write_port,omitempty"`
-	Region            *string `json:"region,omitempty"`
-	ReleaseVersion    *string `json:"release_version,omitempty"`
-	ReplMaster        *string `json:"repl_master,omitempty"`
-	ReplMasterHostExt *string `json:"repl_master_host_ext,omitempty"`
-	ReplRegion        *string `json:"repl_region,omitempty"`
-	Replicas          *string `json:"replicas,omitempty"`
-	ReplicationStatus *string `json:"replication_status,omitempty"`
-	ReplicationType   *string `json:"replication_type,omitempty"`
-	Size              *string `json:"size,omitempty"`
-	SkipSync          *string `json:"skip_sync,omitempty"`
-	SslCertificate    *string `json:"ssl_certificate,omitempty"`
-	SslExpiresOn      *string `json:"ssl_expires_on,omitempty"`
-	SslSerial         *string `json:"ssl_serial,omitempty"`
-	Tier              *string `json:"tier,omitempty"`
-	Topology          *string `json:"topology,omitempty"`
-	TxStorage         *string `json:"tx_storage,omitempty"`
-	UpdatedBy         *string `json:"updated_by,omitempty"`
-	UpdatedOn         *string `json:"updated_on,omitempty"`
-	VolumeIops        *string `json:"volume_iops,omitempty"`
-	VolumeType        *string `json:"volume_type,omitempty"`
+	ActiveReplicas    *string               `json:"active_replicas,omitempty"`
+	Attributes        *string               `json:"attributes,omitempty"`
+	BulkdataPort1     *string               `json:"bulkdata_port_1,omitempty"`
+	BulkdataPort2     *string               `json:"bulkdata_port_2,omitempty"`
+	Cluster           *string               `json:"cluster,omitempty"`
+	ColumnstoreBucket *string               `json:"columnstore_bucket,omitempty"`
+	CreatedBy         *string               `json:"created_by,omitempty"`
+	CreatedOn         *string               `json:"created_on,omitempty"`
+	CustomConfig      *string               `json:"custom_config,omitempty"`
+	DnsDomain         *string               `json:"dns_domain,omitempty"`
+	FaultCount        *string               `json:"fault_count,omitempty"`
+	Fqdn              *string               `json:"fqdn,omitempty"`
+	GlAccount         *string               `json:"gl_account,omitempty"`
+	Id                *string               `json:"id,omitempty"`
+	InstallStatus     string                `json:"install_status"`
+	InstanceState     *string               `json:"instance_state,omitempty"`
+	IpAddress         *string               `json:"ip_address,omitempty"`
+	MacAddress        *string               `json:"mac_address,omitempty"`
+	MaxscaleConfig    *string               `json:"maxscale_config,omitempty"`
+	MaxscaleProxy     *string               `json:"maxscale_proxy,omitempty"`
+	ModCount          *string               `json:"mod_count,omitempty"`
+	Monitor           *string               `json:"monitor,omitempty"`
+	Name              *string               `json:"name,omitempty"`
+	Number            *string               `json:"number,omitempty"`
+	OperationalStatus string                `json:"operational_status"`
+	OwnedBy           *string               `json:"owned_by,omitempty"`
+	Provider          *string               `json:"provider,omitempty"`
+	Proxy             *string               `json:"proxy,omitempty"`
+	ReadOnlyPort      *string               `json:"read_only_port,omitempty"`
+	ReadWritePort     *string               `json:"read_write_port,omitempty"`
+	Region            *string               `json:"region,omitempty"`
+	ReleaseVersion    *string               `json:"release_version,omitempty"`
+	ReplMaster        *string               `json:"repl_master,omitempty"`
+	ReplMasterHostExt *string               `json:"repl_master_host_ext,omitempty"`
+	ReplRegion        *string               `json:"repl_region,omitempty"`
+	Replicas          *string               `json:"replicas,omitempty"`
+	ReplicationStatus *string               `json:"replication_status,omitempty"`
+	ReplicationType   *string               `json:"replication_type,omitempty"`
+	Size              *string               `json:"size,omitempty"`
+	SkipSync          *string               `json:"skip_sync,omitempty"`
+	SslCertificate    *string               `json:"ssl_certificate,omitempty"`
+	SslExpiresOn      *string               `json:"ssl_expires_on,omitempty"`
+	SslSerial         *string               `json:"ssl_serial,omitempty"`
+	SslTls            *ServiceOutSslTls     `json:"ssl_tls,omitempty"`
+	Tier              *string               `json:"tier,omitempty"`
+	Topology          *string               `json:"topology,omitempty"`
+	TxStorage         *string               `json:"tx_storage,omitempty"`
+	UpdatedBy         *string               `json:"updated_by,omitempty"`
+	UpdatedOn         *string               `json:"updated_on,omitempty"`
+	VolumeIops        *string               `json:"volume_iops,omitempty"`
+	VolumeType        *ServiceOutVolumeType `json:"volume_type,omitempty"`
 }
+
+// ServiceOutSslTls defines model for ServiceOut.SslTls.
+type ServiceOutSslTls string
+
+// ServiceOutVolumeType defines model for ServiceOut.VolumeType.
+type ServiceOutVolumeType string
 
 // Response body for a services status
 type ServiceStatus struct {
