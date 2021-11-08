@@ -344,17 +344,10 @@ type Size struct {
 	Visibility string  `json:"visibility"`
 }
 
-// Availability tier, e.g. dedicated or shared tenancy
-type Tier struct {
-	Active    *string `json:"active,omitempty"`
-	CreatedBy *string `json:"created_by,omitempty"`
-	CreatedOn *string `json:"created_on,omitempty"`
-	ModCount  *string `json:"mod_count,omitempty"`
-	Name      *string `json:"name,omitempty"`
-	Paid      *string `json:"paid,omitempty"`
-	Tags      *string `json:"tags,omitempty"`
-	UpdatedBy *string `json:"updated_by,omitempty"`
-	UpdatedOn *string `json:"updated_on,omitempty"`
+// Availability tier, e.g. Power, Foundation, etc.
+type TierResponse struct {
+	Name *string `json:"name,omitempty"`
+	Paid *string `json:"paid,omitempty"`
 }
 
 // Cluster topology valid for a particular product, e.g. Standalone or MaxScale

@@ -2050,7 +2050,7 @@ func (r ReadSizesResponse) StatusCode() int {
 type ReadTiersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]Tier
+	JSON200      *[]TierResponse
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -3246,7 +3246,7 @@ func ParseReadTiersResponse(rsp *http.Response) (*ReadTiersResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Tier
+		var dest []TierResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
