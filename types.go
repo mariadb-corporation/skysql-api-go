@@ -351,27 +351,13 @@ type TierResponse struct {
 }
 
 // Cluster topology valid for a particular product, e.g. Standalone or MaxScale
-type Topology struct {
-	Active                 *string `json:"active,omitempty"`
-	ApiHandle              *string `json:"api_handle,omitempty"`
-	CreatedBy              *string `json:"created_by,omitempty"`
-	CreatedOn              *string `json:"created_on,omitempty"`
-	DisplayName            *string `json:"display_name,omitempty"`
-	HasClustrixFrontend    *string `json:"has_clustrix_frontend,omitempty"`
-	HasReplicas            *string `json:"has_replicas,omitempty"`
-	MariadbCronbackEnabled *string `json:"mariadb_cronback_enabled,omitempty"`
-	MaxscaleSupported      *string `json:"maxscale_supported,omitempty"`
-	ModCount               *string `json:"mod_count,omitempty"`
-	Name                   string  `json:"name"`
-	OperatorReplicaMinimum *string `json:"operator_replica_minimum,omitempty"`
-	Paid                   *string `json:"paid,omitempty"`
-	Product                string  `json:"product"`
-	ReplicaLabel           *string `json:"replica_label,omitempty"`
-	ReplicaOptions         *string `json:"replica_options,omitempty"`
-	Tags                   *string `json:"tags,omitempty"`
-	UpdatedBy              *string `json:"updated_by,omitempty"`
-	UpdatedOn              *string `json:"updated_on,omitempty"`
-	Value                  string  `json:"value"`
+type TopologyResponse struct {
+	Active            *string `json:"active,omitempty"`
+	MaxscaleSupported *string `json:"maxscale_supported,omitempty"`
+	Name              string  `json:"name"`
+	Product           string  `json:"product"`
+	ReplicaLabel      *string `json:"replica_label,omitempty"`
+	ReplicaOptions    *string `json:"replica_options,omitempty"`
 }
 
 // Request body to update a configuration
