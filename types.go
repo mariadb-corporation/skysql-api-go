@@ -146,7 +146,6 @@ type Message struct {
 type Product struct {
 	Active           *string `json:"active,omitempty"`
 	ActiveTopologies *string `json:"active_topologies,omitempty"`
-	CreatedBy        *string `json:"created_by,omitempty"`
 	CreatedOn        *string `json:"created_on,omitempty"`
 	DefaultTopology  *string `json:"default_topology,omitempty"`
 	Description      *string `json:"description,omitempty"`
@@ -155,24 +154,19 @@ type Product struct {
 	Name             string  `json:"name"`
 	Order            *string `json:"order,omitempty"`
 	ShortDescription *string `json:"short_description,omitempty"`
-	Tags             string  `json:"tags"`
-	UpdatedBy        *string `json:"updated_by,omitempty"`
 	UpdatedOn        *string `json:"updated_on,omitempty"`
 }
 
 // Cloud provider, e.g. AWS or GCP
 type Provider struct {
 	Active     *string `json:"active,omitempty"`
-	CreatedBy  *string `json:"created_by,omitempty"`
 	CreatedOn  *string `json:"created_on,omitempty"`
 	IconImage  *string `json:"icon_image,omitempty"`
 	LogoImage  *string `json:"logo_image,omitempty"`
 	ModCount   *string `json:"mod_count,omitempty"`
 	Name       string  `json:"name"`
 	Products   *string `json:"products,omitempty"`
-	Tags       string  `json:"tags"`
 	Topologies *string `json:"topologies,omitempty"`
-	UpdatedBy  *string `json:"updated_by,omitempty"`
 	UpdatedOn  string  `json:"updated_on"`
 	Value      string  `json:"value"`
 }
@@ -192,7 +186,6 @@ type QuotaProgress struct {
 type Region struct {
 	Active    *string `json:"active,omitempty"`
 	ApiHandle *string `json:"api_handle,omitempty"`
-	CreatedBy *string `json:"created_by,omitempty"`
 	CreatedOn *string `json:"created_on,omitempty"`
 	Default   *string `json:"default,omitempty"`
 	Location  string  `json:"location"`
@@ -201,8 +194,6 @@ type Region struct {
 	NodeType  *string `json:"node_type,omitempty"`
 	Provider  string  `json:"provider"`
 	Region    string  `json:"region"`
-	Tags      string  `json:"tags"`
-	UpdatedBy *string `json:"updated_by,omitempty"`
 	UpdatedOn *string `json:"updated_on,omitempty"`
 }
 
@@ -327,7 +318,6 @@ type Size struct {
 	ApiHandle  *string `json:"api_handle,omitempty"`
 	Component  string  `json:"component"`
 	Cpu        *string `json:"cpu,omitempty"`
-	CreatedBy  *string `json:"created_by,omitempty"`
 	CreatedOn  *string `json:"created_on,omitempty"`
 	ModCount   *string `json:"mod_count,omitempty"`
 	Name       string  `json:"name"`
@@ -336,49 +326,26 @@ type Size struct {
 	Provider   string  `json:"provider"`
 	Ram        *string `json:"ram,omitempty"`
 	Sequence   *string `json:"sequence,omitempty"`
-	Tags       *string `json:"tags,omitempty"`
 	Tier       string  `json:"tier"`
-	UpdatedBy  *string `json:"updated_by,omitempty"`
 	UpdatedOn  *string `json:"updated_on,omitempty"`
 	Value      string  `json:"value"`
 	Visibility string  `json:"visibility"`
 }
 
-// Availability tier, e.g. dedicated or shared tenancy
-type Tier struct {
-	Active    *string `json:"active,omitempty"`
-	CreatedBy *string `json:"created_by,omitempty"`
-	CreatedOn *string `json:"created_on,omitempty"`
-	ModCount  *string `json:"mod_count,omitempty"`
-	Name      *string `json:"name,omitempty"`
-	Paid      *string `json:"paid,omitempty"`
-	Tags      *string `json:"tags,omitempty"`
-	UpdatedBy *string `json:"updated_by,omitempty"`
-	UpdatedOn *string `json:"updated_on,omitempty"`
+// Availability tier, e.g. Power, Foundation, etc.
+type TierResponse struct {
+	Name *string `json:"name,omitempty"`
+	Paid *string `json:"paid,omitempty"`
 }
 
 // Cluster topology valid for a particular product, e.g. Standalone or MaxScale
-type Topology struct {
-	Active                 *string `json:"active,omitempty"`
-	ApiHandle              *string `json:"api_handle,omitempty"`
-	CreatedBy              *string `json:"created_by,omitempty"`
-	CreatedOn              *string `json:"created_on,omitempty"`
-	DisplayName            *string `json:"display_name,omitempty"`
-	HasClustrixFrontend    *string `json:"has_clustrix_frontend,omitempty"`
-	HasReplicas            *string `json:"has_replicas,omitempty"`
-	MariadbCronbackEnabled *string `json:"mariadb_cronback_enabled,omitempty"`
-	MaxscaleSupported      *string `json:"maxscale_supported,omitempty"`
-	ModCount               *string `json:"mod_count,omitempty"`
-	Name                   string  `json:"name"`
-	OperatorReplicaMinimum *string `json:"operator_replica_minimum,omitempty"`
-	Paid                   *string `json:"paid,omitempty"`
-	Product                string  `json:"product"`
-	ReplicaLabel           *string `json:"replica_label,omitempty"`
-	ReplicaOptions         *string `json:"replica_options,omitempty"`
-	Tags                   *string `json:"tags,omitempty"`
-	UpdatedBy              *string `json:"updated_by,omitempty"`
-	UpdatedOn              *string `json:"updated_on,omitempty"`
-	Value                  string  `json:"value"`
+type TopologyResponse struct {
+	Active            *string `json:"active,omitempty"`
+	MaxscaleSupported *string `json:"maxscale_supported,omitempty"`
+	Name              string  `json:"name"`
+	Product           string  `json:"product"`
+	ReplicaLabel      *string `json:"replica_label,omitempty"`
+	ReplicaOptions    *string `json:"replica_options,omitempty"`
 }
 
 // Request body to update a configuration
@@ -396,7 +363,6 @@ type ValidationError struct {
 
 // Database version, e.g. 10.4 or 10.5
 type Version struct {
-	CreatedBy         *string `json:"created_by,omitempty"`
 	CreatedOn         *string `json:"created_on,omitempty"`
 	DisplayName       *string `json:"display_name,omitempty"`
 	EnterpriseVersion *string `json:"enterprise_version,omitempty"`
@@ -408,9 +374,7 @@ type Version struct {
 	Public            *string `json:"public,omitempty"`
 	ReleaseDate       *string `json:"release_date,omitempty"`
 	ReleaseNotesUrl   *string `json:"release_notes_url,omitempty"`
-	Tags              *string `json:"tags,omitempty"`
 	Type              *string `json:"type,omitempty"`
-	UpdatedBy         *string `json:"updated_by,omitempty"`
 	UpdatedOn         *string `json:"updated_on,omitempty"`
 }
 
