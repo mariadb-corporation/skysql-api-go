@@ -2155,8 +2155,10 @@ type CreateServiceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *ServiceOut
+	JSON400      *UnmetExpectationDetail
 	JSON401      *Message
 	JSON403      *Message
+	JSON404      *Message
 	JSON422      *HTTPValidationError
 	JSON502      *Message
 }
@@ -3468,6 +3470,13 @@ func ParseCreateServiceResponse(rsp *http.Response) (*CreateServiceResponse, err
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest UnmetExpectationDetail
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3481,6 +3490,13 @@ func ParseCreateServiceResponse(rsp *http.Response) (*CreateServiceResponse, err
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest HTTPValidationError
