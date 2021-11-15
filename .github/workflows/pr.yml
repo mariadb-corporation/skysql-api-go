@@ -3,6 +3,7 @@ on: pull_request
 jobs:
   pr-check:
       name: Check pull request labels
+      timeout-minutes: 5
       runs-on: ubuntu-latest
       steps:
         - uses: actions/checkout@v2
