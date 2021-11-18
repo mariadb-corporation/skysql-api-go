@@ -9,7 +9,15 @@ const (
 
 // Defines values for ServiceInProvider.
 const (
+	ServiceInProviderAWS ServiceInProvider = "AWS"
+
+	ServiceInProviderAmazon ServiceInProvider = "Amazon"
+
 	ServiceInProviderAmazonAWS ServiceInProvider = "Amazon AWS"
+
+	ServiceInProviderGCP ServiceInProvider = "GCP"
+
+	ServiceInProviderGoogle ServiceInProvider = "Google"
 
 	ServiceInProviderGoogleCloud ServiceInProvider = "Google Cloud"
 )
@@ -139,7 +147,7 @@ type IPAddress struct {
 
 // Generic message body containing error details for failed requests
 type Message struct {
-	Details string `json:"details"`
+	Detail string `json:"detail"`
 }
 
 // A database product, e.g. Xpand
@@ -183,18 +191,13 @@ type QuotaProgress struct {
 }
 
 // Geographic region, as defined by the providers
-type Region struct {
-	Active    *string `json:"active,omitempty"`
-	ApiHandle *string `json:"api_handle,omitempty"`
+type RegionResponse struct {
 	CreatedOn *string `json:"created_on,omitempty"`
 	Default   *string `json:"default,omitempty"`
-	Location  string  `json:"location"`
-	ModCount  *string `json:"mod_count,omitempty"`
 	Name      string  `json:"name"`
 	NodeType  *string `json:"node_type,omitempty"`
 	Provider  string  `json:"provider"`
 	Region    string  `json:"region"`
-	UpdatedOn *string `json:"updated_on,omitempty"`
 }
 
 // Actions that can be taken on a services in a Task
@@ -238,7 +241,6 @@ type ServiceInVolumeType string
 // MariaDB services deployed by SkySQL
 type ServiceOut struct {
 	ActiveReplicas    *string               `json:"active_replicas,omitempty"`
-	Attributes        *string               `json:"attributes,omitempty"`
 	BulkdataPort1     *string               `json:"bulkdata_port_1,omitempty"`
 	BulkdataPort2     *string               `json:"bulkdata_port_2,omitempty"`
 	Cluster           *string               `json:"cluster,omitempty"`
@@ -313,22 +315,14 @@ type ServiceUpdate struct {
 }
 
 // Node size, as defined by the providers
-type Size struct {
-	Active     *string `json:"active,omitempty"`
-	ApiHandle  *string `json:"api_handle,omitempty"`
-	Component  string  `json:"component"`
+type SizeResponse struct {
 	Cpu        *string `json:"cpu,omitempty"`
 	CreatedOn  *string `json:"created_on,omitempty"`
-	ModCount   *string `json:"mod_count,omitempty"`
 	Name       string  `json:"name"`
-	NodePool   string  `json:"node_pool"`
 	Product    string  `json:"product"`
 	Provider   string  `json:"provider"`
 	Ram        *string `json:"ram,omitempty"`
-	Sequence   *string `json:"sequence,omitempty"`
 	Tier       string  `json:"tier"`
-	UpdatedOn  *string `json:"updated_on,omitempty"`
-	Value      string  `json:"value"`
 	Visibility string  `json:"visibility"`
 }
 
@@ -346,6 +340,18 @@ type TopologyResponse struct {
 	Product           string  `json:"product"`
 	ReplicaLabel      *string `json:"replica_label,omitempty"`
 	ReplicaOptions    *string `json:"replica_options,omitempty"`
+}
+
+// Message details containing unmet expectations from failed specs
+type UnmetExpectationDetail struct {
+	// Message body with details regarding failed specifications
+	Detail UnmetExpectationMessage `json:"detail"`
+}
+
+// Message body with details regarding failed specifications
+type UnmetExpectationMessage struct {
+	Description       string  `json:"description"`
+	UnmetExpectations *string `json:"unmet_expectations,omitempty"`
 }
 
 // Request body to update a configuration
@@ -420,9 +426,12 @@ type ReadTiersParams struct {
 
 // ReadTopologiesParams defines parameters for ReadTopologies.
 type ReadTopologiesParams struct {
-	Product string `json:"product"`
-	Limit   *int   `json:"limit,omitempty"`
+	Product ReadTopologiesParamsProduct `json:"product"`
+	Limit   *int                        `json:"limit,omitempty"`
 }
+
+// ReadTopologiesParamsProduct defines parameters for ReadTopologies.
+type ReadTopologiesParamsProduct string
 
 // ReadVersionsParams defines parameters for ReadVersions.
 type ReadVersionsParams struct {
@@ -431,7 +440,8 @@ type ReadVersionsParams struct {
 
 // ListServicesParams defines parameters for ListServices.
 type ListServicesParams struct {
-	Limit *int `json:"limit,omitempty"`
+	Name  *string `json:"name,omitempty"`
+	Limit *int    `json:"limit,omitempty"`
 }
 
 // CreateServiceJSONBody defines parameters for CreateService.
