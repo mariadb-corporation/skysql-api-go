@@ -9,7 +9,15 @@ const (
 
 // Defines values for ServiceInProvider.
 const (
+	ServiceInProviderAWS ServiceInProvider = "AWS"
+
+	ServiceInProviderAmazon ServiceInProvider = "Amazon"
+
 	ServiceInProviderAmazonAWS ServiceInProvider = "Amazon AWS"
+
+	ServiceInProviderGCP ServiceInProvider = "GCP"
+
+	ServiceInProviderGoogle ServiceInProvider = "Google"
 
 	ServiceInProviderGoogleCloud ServiceInProvider = "Google Cloud"
 )
