@@ -2012,7 +2012,7 @@ func (r ReadProvidersResponse) StatusCode() int {
 type ReadRegionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]Region
+	JSON200      *[]RegionResponse
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2038,7 +2038,7 @@ func (r ReadRegionsResponse) StatusCode() int {
 type ReadSizesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]Size
+	JSON200      *[]SizeResponse
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -3139,7 +3139,7 @@ func ParseReadRegionsResponse(rsp *http.Response) (*ReadRegionsResponse, error) 
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Region
+		var dest []RegionResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3193,7 +3193,7 @@ func ParseReadSizesResponse(rsp *http.Response) (*ReadSizesResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Size
+		var dest []SizeResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

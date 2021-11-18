@@ -191,19 +191,13 @@ type QuotaProgress struct {
 }
 
 // Geographic region, as defined by the providers
-type Region struct {
-	Active             *string `json:"active,omitempty"`
-	ApiHandle          *string `json:"api_handle,omitempty"`
-	CreatedOn          *string `json:"created_on,omitempty"`
-	Default            *string `json:"default,omitempty"`
-	Location           string  `json:"location"`
-	ModCount           *string `json:"mod_count,omitempty"`
-	Name               string  `json:"name"`
-	NodeType           *string `json:"node_type,omitempty"`
-	Provider           string  `json:"provider"`
-	Region             string  `json:"region"`
-	TrialTierSupported *string `json:"trial_tier_supported,omitempty"`
-	UpdatedOn          *string `json:"updated_on,omitempty"`
+type RegionResponse struct {
+	CreatedOn *string `json:"created_on,omitempty"`
+	Default   *string `json:"default,omitempty"`
+	Name      string  `json:"name"`
+	NodeType  *string `json:"node_type,omitempty"`
+	Provider  string  `json:"provider"`
+	Region    string  `json:"region"`
 }
 
 // Actions that can be taken on a services in a Task
@@ -321,22 +315,14 @@ type ServiceUpdate struct {
 }
 
 // Node size, as defined by the providers
-type Size struct {
-	Active     *string `json:"active,omitempty"`
-	ApiHandle  *string `json:"api_handle,omitempty"`
-	Component  string  `json:"component"`
-	Cpu        string  `json:"cpu"`
+type SizeResponse struct {
+	Cpu        *string `json:"cpu,omitempty"`
 	CreatedOn  *string `json:"created_on,omitempty"`
-	ModCount   *string `json:"mod_count,omitempty"`
 	Name       string  `json:"name"`
-	NodePool   string  `json:"node_pool"`
 	Product    string  `json:"product"`
 	Provider   string  `json:"provider"`
-	Ram        string  `json:"ram"`
-	Sequence   *string `json:"sequence,omitempty"`
+	Ram        *string `json:"ram,omitempty"`
 	Tier       string  `json:"tier"`
-	UpdatedOn  *string `json:"updated_on,omitempty"`
-	Value      string  `json:"value"`
 	Visibility string  `json:"visibility"`
 }
 

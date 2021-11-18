@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field from the response in the _Authorization_ header for `Bearer` auth in subsequent api requests.\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.74"
+    "version": "0.0.75"
   },
   "paths": {
     "/billing/quotas": {
@@ -1683,7 +1683,7 @@
                   "title": "Response Read Regions Offering Regions Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Region"
+                    "$ref": "#/components/schemas/RegionResponse"
                   }
                 }
               }
@@ -1831,7 +1831,7 @@
                   "title": "Response Read Sizes Offering Sizes Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Size"
+                    "$ref": "#/components/schemas/SizeResponse"
                   }
                 }
               }
@@ -2543,28 +2543,15 @@
         },
         "description": "A quota progress response"
       },
-      "Region": {
-        "title": "Region",
+      "RegionResponse": {
+        "title": "RegionResponse",
         "required": [
           "provider",
           "name",
-          "location",
           "region"
         ],
         "type": "object",
         "properties": {
-          "mod_count": {
-            "title": "Mod Count",
-            "type": "string"
-          },
-          "active": {
-            "title": "Active",
-            "type": "string"
-          },
-          "updated_on": {
-            "title": "Updated On",
-            "type": "string"
-          },
           "default": {
             "title": "Default",
             "type": "string"
@@ -2585,20 +2572,8 @@
             "title": "Name",
             "type": "string"
           },
-          "location": {
-            "title": "Location",
-            "type": "string"
-          },
           "region": {
             "title": "Region",
-            "type": "string"
-          },
-          "api_handle": {
-            "title": "Api Handle",
-            "type": "string"
-          },
-          "trial_tier_supported": {
-            "title": "Trial Tier Supported",
             "type": "string"
           }
         },
@@ -2996,19 +2971,14 @@
         },
         "description": "Request body to update a services - currently limited to name only"
       },
-      "Size": {
-        "title": "Size",
+      "SizeResponse": {
+        "title": "SizeResponse",
         "required": [
           "product",
           "visibility",
-          "cpu",
-          "component",
           "tier",
           "provider",
-          "name",
-          "node_pool",
-          "value",
-          "ram"
+          "name"
         ],
         "type": "object",
         "properties": {
@@ -3020,28 +2990,8 @@
             "title": "Visibility",
             "type": "string"
           },
-          "mod_count": {
-            "title": "Mod Count",
-            "type": "string"
-          },
-          "active": {
-            "title": "Active",
-            "type": "string"
-          },
           "cpu": {
             "title": "Cpu",
-            "type": "string"
-          },
-          "updated_on": {
-            "title": "Updated On",
-            "type": "string"
-          },
-          "sequence": {
-            "title": "Sequence",
-            "type": "string"
-          },
-          "component": {
-            "title": "Component",
             "type": "string"
           },
           "tier": {
@@ -3058,18 +3008,6 @@
           },
           "name": {
             "title": "Name",
-            "type": "string"
-          },
-          "node_pool": {
-            "title": "Node Pool",
-            "type": "string"
-          },
-          "value": {
-            "title": "Value",
-            "type": "string"
-          },
-          "api_handle": {
-            "title": "Api Handle",
             "type": "string"
           },
           "ram": {
