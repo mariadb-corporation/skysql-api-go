@@ -446,7 +446,8 @@ type ReadVersionsParams struct {
 
 // ListServicesParams defines parameters for ListServices.
 type ListServicesParams struct {
-	Limit *int `json:"limit,omitempty"`
+	Name  *string `json:"name,omitempty"`
+	Limit *int    `json:"limit,omitempty"`
 }
 
 // CreateServiceJSONBody defines parameters for CreateService.
