@@ -90,9 +90,6 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// RedirectToDocumentation request
-	RedirectToDocumentation(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// ReadQuotas request
 	ReadQuotas(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -173,18 +170,6 @@ type ClientInterface interface {
 	UpdateStatusWithBody(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateStatus(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-}
-
-func (c *Client) RedirectToDocumentation(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewRedirectToDocumentationRequest(c.Server)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
 }
 
 func (c *Client) ReadQuotas(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -533,33 +518,6 @@ func (c *Client) UpdateStatus(ctx context.Context, serviceId string, body Update
 		return nil, err
 	}
 	return c.Client.Do(req)
-}
-
-// NewRedirectToDocumentationRequest generates requests for RedirectToDocumentation
-func NewRedirectToDocumentationRequest(server string) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
 }
 
 // NewReadQuotasRequest generates requests for ReadQuotas
@@ -1693,9 +1651,6 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// RedirectToDocumentation request
-	RedirectToDocumentationWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*RedirectToDocumentationResponse, error)
-
 	// ReadQuotas request
 	ReadQuotasWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ReadQuotasResponse, error)
 
@@ -1776,27 +1731,6 @@ type ClientWithResponsesInterface interface {
 	UpdateStatusWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
 
 	UpdateStatusWithResponse(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
-}
-
-type RedirectToDocumentationResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-}
-
-// Status returns HTTPResponse.Status
-func (r RedirectToDocumentationResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r RedirectToDocumentationResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
 }
 
 type ReadQuotasResponse struct {
@@ -2398,15 +2332,6 @@ func (r UpdateStatusResponse) StatusCode() int {
 	return 0
 }
 
-// RedirectToDocumentationWithResponse request returning *RedirectToDocumentationResponse
-func (c *ClientWithResponses) RedirectToDocumentationWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*RedirectToDocumentationResponse, error) {
-	rsp, err := c.RedirectToDocumentation(ctx, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseRedirectToDocumentationResponse(rsp)
-}
-
 // ReadQuotasWithResponse request returning *ReadQuotasResponse
 func (c *ClientWithResponses) ReadQuotasWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ReadQuotasResponse, error) {
 	rsp, err := c.ReadQuotas(ctx, reqEditors...)
@@ -2660,22 +2585,6 @@ func (c *ClientWithResponses) UpdateStatusWithResponse(ctx context.Context, serv
 		return nil, err
 	}
 	return ParseUpdateStatusResponse(rsp)
-}
-
-// ParseRedirectToDocumentationResponse parses an HTTP response from a RedirectToDocumentationWithResponse call
-func ParseRedirectToDocumentationResponse(rsp *http.Response) (*RedirectToDocumentationResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &RedirectToDocumentationResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	return response, nil
 }
 
 // ParseReadQuotasResponse parses an HTTP response from a ReadQuotasWithResponse call
