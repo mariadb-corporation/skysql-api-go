@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field from the response in the _Authorization_ header for `Bearer` auth in subsequent api requests.\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.76"
+    "version": "0.0.77"
   },
   "paths": {
     "/billing/quotas": {
@@ -170,7 +170,7 @@
                   "description": "Example configuration demonstrating how to tweak database parameters",
                   "value": {
                     "name": "interactive-timeout",
-                    "topology": "Standalone",
+                    "topology": "Single Node Transactions",
                     "config_json": {
                       "variables": {
                         "interactive_timeout": {
@@ -666,7 +666,7 @@
               },
               "examples": {
                 "standalone": {
-                  "summary": "Standalone",
+                  "summary": "Single Node Transactions",
                   "description": "Create a new service using a standalone topology",
                   "value": {
                     "name": "standalone-example",
@@ -680,7 +680,7 @@
                     "replicas": "0",
                     "size": "Sky-2x4",
                     "tier": "Power",
-                    "topology": "Standalone",
+                    "topology": "Single Node Transactions",
                     "tx_storage": "100",
                     "volume_iops": "100",
                     "volume_type": "io1",
@@ -1467,7 +1467,7 @@
           "Offering"
         ],
         "summary": "Read Products",
-        "description": "Retrieve a list of available database products to choose from (e.g.\nTransactional, Analytical, Xpand, …)",
+        "description": "Retrieve a list of available database products to choose from",
         "operationId": "read_products",
         "parameters": [
           {
@@ -1552,7 +1552,7 @@
           "Offering"
         ],
         "summary": "Read Providers",
-        "description": "Retrieve a list of available cloud providers in which to host the\ndatabase (e.g. AWS, GCP, …)",
+        "description": "Retrieve a list of available cloud providers in which to host the\ndatabase",
         "operationId": "read_providers",
         "parameters": [
           {
@@ -1637,14 +1637,13 @@
           "Offering"
         ],
         "summary": "Read Regions",
-        "description": "Retrieve a list of available geographic regions into which a database cluster\nmay be deployed (e.g. us-east-2, eu-central-1, …)",
+        "description": "Retrieve a list of available geographic regions into which a database cluster\nmay be deployed",
         "operationId": "read_regions",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Provider",
-              "type": "string"
+              "$ref": "#/components/schemas/SnowProviders"
             },
             "examples": {
               "amazon": {
@@ -1750,6 +1749,10 @@
             "required": true,
             "schema": {
               "title": "Product",
+              "enum": [
+                "Transactions",
+                "Analytics"
+              ],
               "type": "string"
             },
             "examples": {
@@ -1770,8 +1773,7 @@
           {
             "required": true,
             "schema": {
-              "title": "Provider",
-              "type": "string"
+              "$ref": "#/components/schemas/SnowProviders"
             },
             "examples": {
               "amazon": {
@@ -1792,6 +1794,10 @@
             "required": true,
             "schema": {
               "title": "Tier",
+              "enum": [
+                "Foundation",
+                "Power"
+              ],
               "type": "string"
             },
             "examples": {
@@ -1891,7 +1897,7 @@
           "Offering"
         ],
         "summary": "Read Tiers",
-        "description": "Retrieve a list of available tiers in which a service may be created\n(e.g. Power, Foundation, …)",
+        "description": "Retrieve a list of available tiers in which a service may be created",
         "operationId": "read_tiers",
         "parameters": [
           {
@@ -1976,7 +1982,7 @@
           "Offering"
         ],
         "summary": "Read Topologies",
-        "description": "Retrieve a list of valid topologies for a specified product which may be deployed\n(e.g. Transactional + MaxScale, Analytical-Standalone + ColumnStore Single Node)",
+        "description": "Retrieve a list of valid topologies for a specified product which may be deployed",
         "operationId": "read_topologies",
         "parameters": [
           {
@@ -2086,7 +2092,7 @@
           "Offering"
         ],
         "summary": "Read Versions",
-        "description": "Retrieve a list of valid database versions which may be chosen for database\ndeployment (e.g. 10.4, 10.5, …)",
+        "description": "Retrieve a list of valid database versions which may be chosen for database\ndeployment",
         "operationId": "read_versions",
         "parameters": [
           {
@@ -2605,16 +2611,7 @@
             "type": "string"
           },
           "provider": {
-            "title": "Provider",
-            "enum": [
-              "Amazon",
-              "Amazon AWS",
-              "AWS",
-              "Google",
-              "Google Cloud",
-              "GCP"
-            ],
-            "type": "string"
+            "$ref": "#/components/schemas/SnowProviders"
           },
           "region": {
             "title": "Region",
@@ -2651,11 +2648,11 @@
           "topology": {
             "title": "Topology",
             "enum": [
-              "Standalone",
-              "Primary/Replica",
-              "Xpand",
-              "ColumnStore (Single Node)",
-              "ColumnStore"
+              "Single Node Transactions",
+              "Read Scalable Transactions",
+              "Read/Write Scalable Transactions",
+              "Multi-Node Analytics",
+              "Single Node Analytics"
             ],
             "type": "string"
           },
@@ -2963,7 +2960,8 @@
           "visibility",
           "tier",
           "provider",
-          "name"
+          "name",
+          "sequence"
         ],
         "type": "object",
         "properties": {
@@ -2998,9 +2996,28 @@
           "ram": {
             "title": "Ram",
             "type": "string"
+          },
+          "sequence": {
+            "title": "Sequence",
+            "type": "string"
           }
         },
         "description": "Node size, as defined by the providers"
+      },
+      "SnowProviders": {
+        "title": "SnowProviders",
+        "enum": [
+          "Amazon",
+          "Amazon AWS",
+          "AWS",
+          "aws",
+          "Google",
+          "Google Cloud",
+          "GCP",
+          "gcp"
+        ],
+        "type": "string",
+        "description": "Providers configured in snow"
       },
       "TierResponse": {
         "title": "TierResponse",

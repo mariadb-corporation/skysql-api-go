@@ -7,21 +7,6 @@ const (
 	HTTPBearerScopes = "HTTPBearer.Scopes"
 )
 
-// Defines values for ServiceInProvider.
-const (
-	ServiceInProviderAWS ServiceInProvider = "AWS"
-
-	ServiceInProviderAmazon ServiceInProvider = "Amazon"
-
-	ServiceInProviderAmazonAWS ServiceInProvider = "Amazon AWS"
-
-	ServiceInProviderGCP ServiceInProvider = "GCP"
-
-	ServiceInProviderGoogle ServiceInProvider = "Google"
-
-	ServiceInProviderGoogleCloud ServiceInProvider = "Google Cloud"
-)
-
 // Defines values for ServiceInSslTls.
 const (
 	ServiceInSslTlsDisabled ServiceInSslTls = "Disabled"
@@ -40,15 +25,15 @@ const (
 
 // Defines values for ServiceInTopology.
 const (
-	ServiceInTopologyColumnStore ServiceInTopology = "ColumnStore"
+	ServiceInTopologyMultiNodeAnalytics ServiceInTopology = "Multi-Node Analytics"
 
-	ServiceInTopologyColumnStoreSingleNode ServiceInTopology = "ColumnStore (Single Node)"
+	ServiceInTopologyReadScalableTransactions ServiceInTopology = "Read Scalable Transactions"
 
-	ServiceInTopologyPrimaryReplica ServiceInTopology = "Primary/Replica"
+	ServiceInTopologyReadWriteScalableTransactions ServiceInTopology = "Read/Write Scalable Transactions"
 
-	ServiceInTopologyStandalone ServiceInTopology = "Standalone"
+	ServiceInTopologySingleNodeAnalytics ServiceInTopology = "Single Node Analytics"
 
-	ServiceInTopologyXpand ServiceInTopology = "Xpand"
+	ServiceInTopologySingleNodeTransactions ServiceInTopology = "Single Node Transactions"
 )
 
 // Defines values for ServiceInVolumeType.
@@ -84,6 +69,25 @@ const (
 	ServiceOutVolumeTypeIo1 ServiceOutVolumeType = "io1"
 
 	ServiceOutVolumeTypeIo2 ServiceOutVolumeType = "io2"
+)
+
+// Defines values for SnowProviders.
+const (
+	SnowProvidersAWS SnowProviders = "AWS"
+
+	SnowProvidersAmazon SnowProviders = "Amazon"
+
+	SnowProvidersAmazonAWS SnowProviders = "Amazon AWS"
+
+	SnowProvidersAws SnowProviders = "aws"
+
+	SnowProvidersGCP SnowProviders = "GCP"
+
+	SnowProvidersGcp SnowProviders = "gcp"
+
+	SnowProvidersGoogle SnowProviders = "Google"
+
+	SnowProvidersGoogleCloud SnowProviders = "Google Cloud"
 )
 
 // IP Address that has been added to the services network allowlist
@@ -205,11 +209,13 @@ type ServiceActions interface{}
 
 // Request body to create a new MariaDB services deployed by SkySQL
 type ServiceIn struct {
-	MaxscaleConfig *string              `json:"maxscale_config,omitempty"`
-	MaxscaleProxy  *string              `json:"maxscale_proxy,omitempty"`
-	Monitor        *string              `json:"monitor,omitempty"`
-	Name           string               `json:"name"`
-	Provider       ServiceInProvider    `json:"provider"`
+	MaxscaleConfig *string `json:"maxscale_config,omitempty"`
+	MaxscaleProxy  *string `json:"maxscale_proxy,omitempty"`
+	Monitor        *string `json:"monitor,omitempty"`
+	Name           string  `json:"name"`
+
+	// Providers configured in snow
+	Provider       SnowProviders        `json:"provider"`
 	Region         string               `json:"region"`
 	ReleaseVersion string               `json:"release_version"`
 	ReplRegion     *string              `json:"repl_region,omitempty"`
@@ -222,9 +228,6 @@ type ServiceIn struct {
 	VolumeIops     *string              `json:"volume_iops,omitempty"`
 	VolumeType     *ServiceInVolumeType `json:"volume_type,omitempty"`
 }
-
-// ServiceInProvider defines model for ServiceIn.Provider.
-type ServiceInProvider string
 
 // ServiceInSslTls defines model for ServiceIn.SslTls.
 type ServiceInSslTls string
@@ -322,9 +325,13 @@ type SizeResponse struct {
 	Product    string  `json:"product"`
 	Provider   string  `json:"provider"`
 	Ram        *string `json:"ram,omitempty"`
+	Sequence   string  `json:"sequence"`
 	Tier       string  `json:"tier"`
 	Visibility string  `json:"visibility"`
 }
+
+// Providers configured in snow
+type SnowProviders string
 
 // Availability tier, e.g. Power, Foundation, etc.
 type TierResponse struct {
@@ -407,17 +414,23 @@ type ReadProvidersParams struct {
 
 // ReadRegionsParams defines parameters for ReadRegions.
 type ReadRegionsParams struct {
-	Provider string `json:"provider"`
-	Limit    *int   `json:"limit,omitempty"`
+	Provider SnowProviders `json:"provider"`
+	Limit    *int          `json:"limit,omitempty"`
 }
 
 // ReadSizesParams defines parameters for ReadSizes.
 type ReadSizesParams struct {
-	Product  string `json:"product"`
-	Provider string `json:"provider"`
-	Tier     string `json:"tier"`
-	Limit    *int   `json:"limit,omitempty"`
+	Product  ReadSizesParamsProduct `json:"product"`
+	Provider SnowProviders          `json:"provider"`
+	Tier     ReadSizesParamsTier    `json:"tier"`
+	Limit    *int                   `json:"limit,omitempty"`
 }
+
+// ReadSizesParamsProduct defines parameters for ReadSizes.
+type ReadSizesParamsProduct string
+
+// ReadSizesParamsTier defines parameters for ReadSizes.
+type ReadSizesParamsTier string
 
 // ReadTiersParams defines parameters for ReadTiers.
 type ReadTiersParams struct {
