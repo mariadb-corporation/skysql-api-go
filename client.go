@@ -163,6 +163,9 @@ type ClientInterface interface {
 
 	AddAllowedAddress(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// RetrieveDefaultCredentials request
+	RetrieveDefaultCredentials(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ReadStatus request
 	ReadStatus(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -474,6 +477,18 @@ func (c *Client) AddAllowedAddressWithBody(ctx context.Context, serviceId string
 
 func (c *Client) AddAllowedAddress(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAddAllowedAddressRequest(c.Server, serviceId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RetrieveDefaultCredentials(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRetrieveDefaultCredentialsRequest(c.Server, serviceId)
 	if err != nil {
 		return nil, err
 	}
@@ -1527,6 +1542,40 @@ func NewAddAllowedAddressRequestWithBody(server string, serviceId string, conten
 	return req, nil
 }
 
+// NewRetrieveDefaultCredentialsRequest generates requests for RetrieveDefaultCredentials
+func NewRetrieveDefaultCredentialsRequest(server string, serviceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s/security/credentials", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewReadStatusRequest generates requests for ReadStatus
 func NewReadStatusRequest(server string, serviceId string) (*http.Request, error) {
 	var err error
@@ -1723,6 +1772,9 @@ type ClientWithResponsesInterface interface {
 	AddAllowedAddressWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
 
 	AddAllowedAddressWithResponse(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
+
+	// RetrieveDefaultCredentials request
+	RetrieveDefaultCredentialsWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*RetrieveDefaultCredentialsResponse, error)
 
 	// ReadStatus request
 	ReadStatusWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*ReadStatusResponse, error)
@@ -2281,6 +2333,34 @@ func (r AddAllowedAddressResponse) StatusCode() int {
 	return 0
 }
 
+type RetrieveDefaultCredentialsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *DefaultCredentials
+	JSON401      *Message
+	JSON403      *Message
+	JSON404      *Message
+	JSON409      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r RetrieveDefaultCredentialsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RetrieveDefaultCredentialsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ReadStatusResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -2559,6 +2639,15 @@ func (c *ClientWithResponses) AddAllowedAddressWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseAddAllowedAddressResponse(rsp)
+}
+
+// RetrieveDefaultCredentialsWithResponse request returning *RetrieveDefaultCredentialsResponse
+func (c *ClientWithResponses) RetrieveDefaultCredentialsWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*RetrieveDefaultCredentialsResponse, error) {
+	rsp, err := c.RetrieveDefaultCredentials(ctx, serviceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRetrieveDefaultCredentialsResponse(rsp)
 }
 
 // ReadStatusWithResponse request returning *ReadStatusResponse
@@ -3715,6 +3804,74 @@ func ParseAddAllowedAddressResponse(rsp *http.Response) (*AddAllowedAddressRespo
 			return nil, err
 		}
 		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRetrieveDefaultCredentialsResponse parses an HTTP response from a RetrieveDefaultCredentialsWithResponse call
+func ParseRetrieveDefaultCredentialsResponse(rsp *http.Response) (*RetrieveDefaultCredentialsResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RetrieveDefaultCredentialsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DefaultCredentials
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
 		var dest HTTPValidationError
