@@ -138,6 +138,13 @@ type CreateConfigurationResp struct {
 	Topology             string                   `json:"topology"`
 }
 
+// A credential issued for initial connection to a database,
+// intended to be immediately replaced by the user
+type DefaultCredentials struct {
+	Password string `json:"password"`
+	Username string `json:"username"`
+}
+
 // HTTPValidationError defines model for HTTPValidationError.
 type HTTPValidationError struct {
 	Detail *[]ValidationError `json:"detail,omitempty"`
