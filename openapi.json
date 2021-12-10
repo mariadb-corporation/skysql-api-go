@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field from the response in the _Authorization_ header for `Bearer` auth in subsequent api requests.\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.82"
+    "version": "0.0.83"
   },
   "paths": {
     "/billing/quotas": {
@@ -665,25 +665,23 @@
                 "$ref": "#/components/schemas/ServiceIn"
               },
               "examples": {
-                "standalone": {
-                  "summary": "Single Node Transactions",
-                  "description": "Create a new service using a standalone topology",
+                "standalone-power": {
+                  "summary": "Single Node Transactions Power Tier",
+                  "description": "Create a new service using a single node transactions topology in Power tier",
                   "value": {
-                    "name": "standalone-example",
+                    "name": "single-node-example",
                     "maxscale_config": "",
                     "maxscale_proxy": "false",
                     "monitor": "false",
                     "provider": "Amazon AWS",
                     "region": "ca-central-1",
                     "release_version": "MariaDB Enterprise Server 10.6.4-1",
-                    "repl_region": "",
                     "replicas": "0",
                     "size": "Sky-2x4",
                     "tier": "Power",
                     "topology": "Single Node Transactions",
                     "tx_storage": "100",
                     "volume_iops": "100",
-                    "volume_type": "io1",
                     "ssl_tls": "Enabled"
                   }
                 }
@@ -2740,10 +2738,6 @@
             "minLength": 1,
             "type": "string"
           },
-          "repl_region": {
-            "title": "Repl Region",
-            "type": "string"
-          },
           "replicas": {
             "title": "Replicas",
             "minLength": 1,
@@ -2780,18 +2774,8 @@
           },
           "volume_iops": {
             "title": "Volume Iops",
-            "type": "string"
-          },
-          "volume_type": {
-            "title": "Volume Type",
-            "enum": [
-              "gp2",
-              "gp3",
-              "io1",
-              "io2",
-              ""
-            ],
-            "type": "string"
+            "type": "string",
+            "default": "100"
           },
           "ssl_tls": {
             "title": "Ssl Tls",
@@ -2807,10 +2791,6 @@
       },
       "ServiceOut": {
         "title": "ServiceOut",
-        "required": [
-          "install_status",
-          "operational_status"
-        ],
         "type": "object",
         "properties": {
           "name": {
@@ -2841,10 +2821,6 @@
             "title": "Release Version",
             "type": "string"
           },
-          "repl_region": {
-            "title": "Repl Region",
-            "type": "string"
-          },
           "replicas": {
             "title": "Replicas",
             "type": "string"
@@ -2867,18 +2843,8 @@
           },
           "volume_iops": {
             "title": "Volume Iops",
-            "type": "string"
-          },
-          "volume_type": {
-            "title": "Volume Type",
-            "enum": [
-              "gp2",
-              "gp3",
-              "io1",
-              "io2",
-              ""
-            ],
-            "type": "string"
+            "type": "string",
+            "default": "100"
           },
           "ssl_tls": {
             "title": "Ssl Tls",
@@ -2893,76 +2859,32 @@
             "title": "Owned By",
             "type": "string"
           },
-          "active_replicas": {
-            "title": "Active Replicas",
-            "type": "string"
-          },
-          "bulkdata_port_1": {
-            "title": "Bulkdata Port 1",
-            "type": "string"
-          },
-          "bulkdata_port_2": {
-            "title": "Bulkdata Port 2",
+          "volume_type": {
+            "title": "Volume Type",
             "type": "string"
           },
           "cluster": {
             "title": "Cluster",
             "type": "string"
           },
-          "columnstore_bucket": {
-            "title": "Columnstore Bucket",
-            "type": "string"
-          },
           "custom_config": {
             "title": "Custom Config",
-            "type": "string"
-          },
-          "dns_domain": {
-            "title": "Dns Domain",
-            "type": "string"
-          },
-          "fault_count": {
-            "title": "Fault Count",
             "type": "string"
           },
           "fqdn": {
             "title": "Fqdn",
             "type": "string"
           },
-          "gl_account": {
-            "title": "Gl Account",
-            "type": "string"
-          },
           "id": {
             "title": "Id",
-            "type": "string"
-          },
-          "install_status": {
-            "title": "Install Status",
-            "type": "string"
-          },
-          "instance_state": {
-            "title": "Instance State",
             "type": "string"
           },
           "ip_address": {
             "title": "Ip Address",
             "type": "string"
           },
-          "mac_address": {
-            "title": "Mac Address",
-            "type": "string"
-          },
           "number": {
             "title": "Number",
-            "type": "string"
-          },
-          "operational_status": {
-            "title": "Operational Status",
-            "type": "string"
-          },
-          "proxy": {
-            "title": "Proxy",
             "type": "string"
           },
           "read_only_port": {
@@ -2973,60 +2895,12 @@
             "title": "Read Write Port",
             "type": "string"
           },
-          "repl_master_host_ext": {
-            "title": "Repl Master Host Ext",
-            "type": "string"
-          },
-          "repl_master": {
-            "title": "Repl Master",
-            "type": "string"
-          },
-          "replication_status": {
-            "title": "Replication Status",
-            "type": "string"
-          },
-          "replication_type": {
-            "title": "Replication Type",
-            "type": "string"
-          },
-          "skip_sync": {
-            "title": "Skip Sync",
-            "type": "string"
-          },
           "ssl_certificate": {
             "title": "Ssl Certificate",
             "type": "string"
-          },
-          "ssl_expires_on": {
-            "title": "Ssl Expires On",
-            "type": "string"
-          },
-          "ssl_serial": {
-            "title": "Ssl Serial",
-            "type": "string"
-          },
-          "created_by": {
-            "title": "Created By",
-            "type": "string"
-          },
-          "created_on": {
-            "title": "Created On",
-            "type": "string"
-          },
-          "mod_count": {
-            "title": "Mod Count",
-            "type": "string"
-          },
-          "updated_by": {
-            "title": "Updated By",
-            "type": "string"
-          },
-          "updated_on": {
-            "title": "Updated On",
-            "type": "string"
           }
         },
-        "description": "MariaDB services deployed by SkySQL"
+        "description": "Base class for Service responses"
       },
       "ServiceStatus": {
         "title": "ServiceStatus",
