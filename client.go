@@ -102,15 +102,15 @@ type ClientInterface interface {
 	CreateConfiguration(ctx context.Context, body CreateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteConfiguration request
-	DeleteConfiguration(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteConfiguration(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReadConfiguration request
-	ReadConfiguration(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ReadConfiguration(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateConfiguration request with any body
-	UpdateConfigurationWithBody(ctx context.Context, configurationNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateConfigurationWithBody(ctx context.Context, configurationIdentifier string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateConfiguration(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateConfiguration(ctx context.Context, configurationIdentifier string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReadProducts request
 	ReadProducts(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -223,8 +223,8 @@ func (c *Client) CreateConfiguration(ctx context.Context, body CreateConfigurati
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteConfiguration(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteConfigurationRequest(c.Server, configurationNumber)
+func (c *Client) DeleteConfiguration(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteConfigurationRequest(c.Server, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -235,8 +235,8 @@ func (c *Client) DeleteConfiguration(ctx context.Context, configurationNumber st
 	return c.Client.Do(req)
 }
 
-func (c *Client) ReadConfiguration(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewReadConfigurationRequest(c.Server, configurationNumber)
+func (c *Client) ReadConfiguration(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadConfigurationRequest(c.Server, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -247,8 +247,8 @@ func (c *Client) ReadConfiguration(ctx context.Context, configurationNumber stri
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateConfigurationWithBody(ctx context.Context, configurationNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateConfigurationRequestWithBody(c.Server, configurationNumber, contentType, body)
+func (c *Client) UpdateConfigurationWithBody(ctx context.Context, configurationIdentifier string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateConfigurationRequestWithBody(c.Server, configurationIdentifier, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -259,8 +259,8 @@ func (c *Client) UpdateConfigurationWithBody(ctx context.Context, configurationN
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateConfiguration(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateConfigurationRequest(c.Server, configurationNumber, body)
+func (c *Client) UpdateConfiguration(ctx context.Context, configurationIdentifier string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateConfigurationRequest(c.Server, configurationIdentifier, body)
 	if err != nil {
 		return nil, err
 	}
@@ -650,12 +650,12 @@ func NewCreateConfigurationRequestWithBody(server string, contentType string, bo
 }
 
 // NewDeleteConfigurationRequest generates requests for DeleteConfiguration
-func NewDeleteConfigurationRequest(server string, configurationNumber string) (*http.Request, error) {
+func NewDeleteConfigurationRequest(server string, configurationIdentifier string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_number", runtime.ParamLocationPath, configurationNumber)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_identifier", runtime.ParamLocationPath, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -684,12 +684,12 @@ func NewDeleteConfigurationRequest(server string, configurationNumber string) (*
 }
 
 // NewReadConfigurationRequest generates requests for ReadConfiguration
-func NewReadConfigurationRequest(server string, configurationNumber string) (*http.Request, error) {
+func NewReadConfigurationRequest(server string, configurationIdentifier string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_number", runtime.ParamLocationPath, configurationNumber)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_identifier", runtime.ParamLocationPath, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -718,23 +718,23 @@ func NewReadConfigurationRequest(server string, configurationNumber string) (*ht
 }
 
 // NewUpdateConfigurationRequest calls the generic UpdateConfiguration builder with application/json body
-func NewUpdateConfigurationRequest(server string, configurationNumber string, body UpdateConfigurationJSONRequestBody) (*http.Request, error) {
+func NewUpdateConfigurationRequest(server string, configurationIdentifier string, body UpdateConfigurationJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateConfigurationRequestWithBody(server, configurationNumber, "application/json", bodyReader)
+	return NewUpdateConfigurationRequestWithBody(server, configurationIdentifier, "application/json", bodyReader)
 }
 
 // NewUpdateConfigurationRequestWithBody generates requests for UpdateConfiguration with any type of body
-func NewUpdateConfigurationRequestWithBody(server string, configurationNumber string, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateConfigurationRequestWithBody(server string, configurationIdentifier string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_number", runtime.ParamLocationPath, configurationNumber)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_identifier", runtime.ParamLocationPath, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -1712,15 +1712,15 @@ type ClientWithResponsesInterface interface {
 	CreateConfigurationWithResponse(ctx context.Context, body CreateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateConfigurationResponse, error)
 
 	// DeleteConfiguration request
-	DeleteConfigurationWithResponse(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*DeleteConfigurationResponse, error)
+	DeleteConfigurationWithResponse(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*DeleteConfigurationResponse, error)
 
 	// ReadConfiguration request
-	ReadConfigurationWithResponse(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*ReadConfigurationResponse, error)
+	ReadConfigurationWithResponse(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*ReadConfigurationResponse, error)
 
 	// UpdateConfiguration request with any body
-	UpdateConfigurationWithBodyWithResponse(ctx context.Context, configurationNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
+	UpdateConfigurationWithBodyWithResponse(ctx context.Context, configurationIdentifier string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
 
-	UpdateConfigurationWithResponse(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
+	UpdateConfigurationWithResponse(ctx context.Context, configurationIdentifier string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
 
 	// ReadProducts request
 	ReadProductsWithResponse(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*ReadProductsResponse, error)
@@ -2448,8 +2448,8 @@ func (c *ClientWithResponses) CreateConfigurationWithResponse(ctx context.Contex
 }
 
 // DeleteConfigurationWithResponse request returning *DeleteConfigurationResponse
-func (c *ClientWithResponses) DeleteConfigurationWithResponse(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*DeleteConfigurationResponse, error) {
-	rsp, err := c.DeleteConfiguration(ctx, configurationNumber, reqEditors...)
+func (c *ClientWithResponses) DeleteConfigurationWithResponse(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*DeleteConfigurationResponse, error) {
+	rsp, err := c.DeleteConfiguration(ctx, configurationIdentifier, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -2457,8 +2457,8 @@ func (c *ClientWithResponses) DeleteConfigurationWithResponse(ctx context.Contex
 }
 
 // ReadConfigurationWithResponse request returning *ReadConfigurationResponse
-func (c *ClientWithResponses) ReadConfigurationWithResponse(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*ReadConfigurationResponse, error) {
-	rsp, err := c.ReadConfiguration(ctx, configurationNumber, reqEditors...)
+func (c *ClientWithResponses) ReadConfigurationWithResponse(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*ReadConfigurationResponse, error) {
+	rsp, err := c.ReadConfiguration(ctx, configurationIdentifier, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -2466,16 +2466,16 @@ func (c *ClientWithResponses) ReadConfigurationWithResponse(ctx context.Context,
 }
 
 // UpdateConfigurationWithBodyWithResponse request with arbitrary body returning *UpdateConfigurationResponse
-func (c *ClientWithResponses) UpdateConfigurationWithBodyWithResponse(ctx context.Context, configurationNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error) {
-	rsp, err := c.UpdateConfigurationWithBody(ctx, configurationNumber, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateConfigurationWithBodyWithResponse(ctx context.Context, configurationIdentifier string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error) {
+	rsp, err := c.UpdateConfigurationWithBody(ctx, configurationIdentifier, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateConfigurationResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateConfigurationWithResponse(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error) {
-	rsp, err := c.UpdateConfiguration(ctx, configurationNumber, body, reqEditors...)
+func (c *ClientWithResponses) UpdateConfigurationWithResponse(ctx context.Context, configurationIdentifier string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error) {
+	rsp, err := c.UpdateConfiguration(ctx, configurationIdentifier, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
