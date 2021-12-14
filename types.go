@@ -67,8 +67,8 @@ const (
 // IP Address that has been added to the services network allowlist
 type AllowlistIPAddress struct {
 	Comment   *string `json:"comment,omitempty"`
-	Database  string  `json:"database"`
 	IpAddress string  `json:"ip_address"`
+	ServiceId string  `json:"service_id"`
 }
 
 // GET Configuration Response

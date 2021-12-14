@@ -1865,6 +1865,7 @@ func (r CreateConfigurationResponse) StatusCode() int {
 type DeleteConfigurationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *Message
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
@@ -2182,6 +2183,7 @@ func (r CreateServiceResponse) StatusCode() int {
 type DeleteServiceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *Message
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
@@ -2263,6 +2265,7 @@ func (r UpdateServiceResponse) StatusCode() int {
 type RemoveAllowedAddressResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *Message
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2311,6 +2314,7 @@ func (r ListAllowedAddressesResponse) StatusCode() int {
 type AddAllowedAddressResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *AllowlistIPAddress
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2390,6 +2394,7 @@ func (r ReadStatusResponse) StatusCode() int {
 type UpdateStatusResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *ServiceStatus
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2845,6 +2850,13 @@ func ParseDeleteConfigurationResponse(rsp *http.Response) (*DeleteConfigurationR
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3528,6 +3540,13 @@ func ParseDeleteServiceResponse(rsp *http.Response) (*DeleteServiceResponse, err
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3711,6 +3730,13 @@ func ParseRemoveAllowedAddressResponse(rsp *http.Response) (*RemoveAllowedAddres
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3791,6 +3817,13 @@ func ParseAddAllowedAddressResponse(rsp *http.Response) (*AddAllowedAddressRespo
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AllowlistIPAddress
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3960,6 +3993,13 @@ func ParseUpdateStatusResponse(rsp *http.Response) (*UpdateStatusResponse, error
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ServiceStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
