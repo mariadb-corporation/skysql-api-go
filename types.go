@@ -219,7 +219,6 @@ type ServiceInTopology string
 
 // Base class for Service responses
 type ServiceOut struct {
-	Cluster        *string           `json:"cluster,omitempty"`
 	CustomConfig   *string           `json:"custom_config,omitempty"`
 	Fqdn           *string           `json:"fqdn,omitempty"`
 	Id             *string           `json:"id,omitempty"`
@@ -237,13 +236,11 @@ type ServiceOut struct {
 	ReleaseVersion *string           `json:"release_version,omitempty"`
 	Replicas       *string           `json:"replicas,omitempty"`
 	Size           *string           `json:"size,omitempty"`
-	SslCertificate *string           `json:"ssl_certificate,omitempty"`
 	SslTls         *ServiceOutSslTls `json:"ssl_tls,omitempty"`
 	Tier           *string           `json:"tier,omitempty"`
 	Topology       *string           `json:"topology,omitempty"`
 	TxStorage      *string           `json:"tx_storage,omitempty"`
 	VolumeIops     *string           `json:"volume_iops,omitempty"`
-	VolumeType     *string           `json:"volume_type,omitempty"`
 }
 
 // ServiceOutSslTls defines model for ServiceOut.SslTls.
