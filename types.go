@@ -25,11 +25,11 @@ const (
 
 // Defines values for ServiceInTopology.
 const (
+	ServiceInTopologyDistributedTransactions ServiceInTopology = "Distributed Transactions"
+
 	ServiceInTopologyMultiNodeAnalytics ServiceInTopology = "Multi-Node Analytics"
 
-	ServiceInTopologyReadScalableTransactions ServiceInTopology = "Read Scalable Transactions"
-
-	ServiceInTopologyReadWriteScalableTransactions ServiceInTopology = "Read/Write Scalable Transactions"
+	ServiceInTopologyReplicatedTransactions ServiceInTopology = "Replicated Transactions"
 
 	ServiceInTopologySingleNodeAnalytics ServiceInTopology = "Single Node Analytics"
 
