@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field from the response in the _Authorization_ header for `Bearer` auth in subsequent api requests.\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.93"
+    "version": "0.0.94"
   },
   "paths": {
     "/billing/quotas": {
@@ -1607,14 +1607,14 @@
         ]
       }
     },
-    "/offering/products": {
+    "/offering/service_types": {
       "get": {
         "tags": [
           "Offering"
         ],
-        "summary": "Read Products",
-        "description": "Retrieve a list of available database products to choose from",
-        "operationId": "read_products",
+        "summary": "Read Service Types",
+        "description": "Retrieve a list of available database service types to choose from (e.g.\nTransactions, Analytics, …)",
+        "operationId": "read_service_types",
         "parameters": [
           {
             "required": false,
@@ -1635,10 +1635,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response Read Products Offering Products Get",
+                  "title": "Response Read Service Types Offering Service Types Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Product"
+                    "$ref": "#/components/schemas/ServiceType"
                   }
                 }
               }
@@ -1894,7 +1894,7 @@
           {
             "required": true,
             "schema": {
-              "title": "Product",
+              "title": "Service Type",
               "enum": [
                 "Transactions",
                 "Analytics"
@@ -1913,7 +1913,7 @@
                 "value": "Analytics"
               }
             },
-            "name": "product",
+            "name": "service_type",
             "in": "query"
           },
           {
@@ -2128,13 +2128,13 @@
           "Offering"
         ],
         "summary": "Read Topologies",
-        "description": "Retrieve a list of valid topologies for a specified product which may be deployed",
+        "description": "Retrieve a list of valid topologies for a specified service_type which may be deployed",
         "operationId": "read_topologies",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Product",
+              "title": "Service Type",
               "enum": [
                 "Transactions",
                 "Analytics"
@@ -2153,7 +2153,7 @@
                 "value": "Analytics"
               }
             },
-            "name": "product",
+            "name": "service_type",
             "in": "query"
           },
           {
@@ -2554,53 +2554,6 @@
         },
         "description": "Generic message body containing error details for failed requests"
       },
-      "Product": {
-        "title": "Product",
-        "type": "object",
-        "properties": {
-          "short_description": {
-            "title": "Short Description",
-            "type": "string"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "updated_on": {
-            "title": "Updated On",
-            "type": "string"
-          },
-          "created_on": {
-            "title": "Created On",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "active": {
-            "title": "Active",
-            "type": "string"
-          },
-          "order": {
-            "title": "Order",
-            "type": "string"
-          },
-          "mod_count": {
-            "title": "Mod Count",
-            "type": "string"
-          },
-          "active_topologies": {
-            "title": "Active Topologies",
-            "type": "string"
-          },
-          "default_topology": {
-            "title": "Default Topology",
-            "type": "string"
-          }
-        },
-        "description": "A database product, e.g. Xpand"
-      },
       "Provider": {
         "title": "Provider",
         "required": [
@@ -2630,8 +2583,8 @@
             "title": "Logo Image",
             "type": "string"
           },
-          "products": {
-            "title": "Products",
+          "service_types": {
+            "title": "Service Types",
             "type": "string"
           },
           "topologies": {
@@ -2960,6 +2913,49 @@
         },
         "description": "Request body to update a service"
       },
+      "ServiceType": {
+        "title": "ServiceType",
+        "type": "object",
+        "properties": {
+          "short_description": {
+            "title": "Short Description",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "updated_on": {
+            "title": "Updated On",
+            "type": "string"
+          },
+          "created_on": {
+            "title": "Created On",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "order": {
+            "title": "Order",
+            "type": "string"
+          },
+          "mod_count": {
+            "title": "Mod Count",
+            "type": "string"
+          },
+          "active_topologies": {
+            "title": "Active Topologies",
+            "type": "string"
+          },
+          "default_topology": {
+            "title": "Default Topology",
+            "type": "string"
+          }
+        },
+        "description": "A database service type, e.g. Distributed Transactions"
+      },
       "ServiceUpdate": {
         "title": "ServiceUpdate",
         "required": [
@@ -2978,7 +2974,7 @@
       "Size": {
         "title": "Size",
         "required": [
-          "product",
+          "service_type",
           "visibility",
           "tier",
           "provider",
@@ -2987,8 +2983,8 @@
         ],
         "type": "object",
         "properties": {
-          "product": {
-            "title": "Product",
+          "service_type": {
+            "title": "Service Type",
             "type": "string"
           },
           "visibility": {
@@ -3059,7 +3055,7 @@
       "Topology": {
         "title": "Topology",
         "required": [
-          "product"
+          "service_type"
         ],
         "type": "object",
         "properties": {
@@ -3067,8 +3063,8 @@
             "title": "Maxscale Supported",
             "type": "string"
           },
-          "product": {
-            "title": "Product",
+          "service_type": {
+            "title": "Service Type",
             "type": "string"
           },
           "replica_options": {
@@ -3168,8 +3164,8 @@
         "title": "Version",
         "type": "object",
         "properties": {
-          "product": {
-            "title": "Product",
+          "service_type": {
+            "title": "Service Type",
             "type": "string"
           },
           "mod_count": {
@@ -3180,8 +3176,8 @@
             "title": "Updated On",
             "type": "string"
           },
-          "display_name": {
-            "title": "Display Name",
+          "name": {
+            "title": "Name",
             "type": "string"
           },
           "type": {
@@ -3214,10 +3210,6 @@
           },
           "parent_release": {
             "title": "Parent Release",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
             "type": "string"
           }
         },

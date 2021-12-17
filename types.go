@@ -135,32 +135,18 @@ type Message struct {
 	Detail string `json:"detail"`
 }
 
-// A database product, e.g. Xpand
-type Product struct {
-	Active           *string `json:"active,omitempty"`
-	ActiveTopologies *string `json:"active_topologies,omitempty"`
-	CreatedOn        *string `json:"created_on,omitempty"`
-	DefaultTopology  *string `json:"default_topology,omitempty"`
-	Description      *string `json:"description,omitempty"`
-	ModCount         *string `json:"mod_count,omitempty"`
-	Name             *string `json:"name,omitempty"`
-	Order            *string `json:"order,omitempty"`
-	ShortDescription *string `json:"short_description,omitempty"`
-	UpdatedOn        *string `json:"updated_on,omitempty"`
-}
-
 // Cloud provider, e.g. AWS or GCP
 type Provider struct {
-	Active     *string `json:"active,omitempty"`
-	CreatedOn  *string `json:"created_on,omitempty"`
-	IconImage  *string `json:"icon_image,omitempty"`
-	LogoImage  *string `json:"logo_image,omitempty"`
-	ModCount   *string `json:"mod_count,omitempty"`
-	Name       string  `json:"name"`
-	Products   *string `json:"products,omitempty"`
-	Topologies *string `json:"topologies,omitempty"`
-	UpdatedOn  string  `json:"updated_on"`
-	Value      string  `json:"value"`
+	Active       *string `json:"active,omitempty"`
+	CreatedOn    *string `json:"created_on,omitempty"`
+	IconImage    *string `json:"icon_image,omitempty"`
+	LogoImage    *string `json:"logo_image,omitempty"`
+	ModCount     *string `json:"mod_count,omitempty"`
+	Name         string  `json:"name"`
+	ServiceTypes *string `json:"service_types,omitempty"`
+	Topologies   *string `json:"topologies,omitempty"`
+	UpdatedOn    string  `json:"updated_on"`
+	Value        string  `json:"value"`
 }
 
 // A quota progress response
@@ -256,6 +242,19 @@ type ServiceStatusUpdate struct {
 	Action ServiceActions `json:"action"`
 }
 
+// A database service type, e.g. Distributed Transactions
+type ServiceType struct {
+	ActiveTopologies *string `json:"active_topologies,omitempty"`
+	CreatedOn        *string `json:"created_on,omitempty"`
+	DefaultTopology  *string `json:"default_topology,omitempty"`
+	Description      *string `json:"description,omitempty"`
+	ModCount         *string `json:"mod_count,omitempty"`
+	Name             *string `json:"name,omitempty"`
+	Order            *string `json:"order,omitempty"`
+	ShortDescription *string `json:"short_description,omitempty"`
+	UpdatedOn        *string `json:"updated_on,omitempty"`
+}
+
 // Request body to update a services - currently limited to name only
 type ServiceUpdate struct {
 	Name string `json:"name"`
@@ -263,15 +262,15 @@ type ServiceUpdate struct {
 
 // Node size, as defined by the providers
 type Size struct {
-	Cpu        *string `json:"cpu,omitempty"`
-	CreatedOn  *string `json:"created_on,omitempty"`
-	Name       string  `json:"name"`
-	Product    string  `json:"product"`
-	Provider   string  `json:"provider"`
-	Ram        *string `json:"ram,omitempty"`
-	Sequence   string  `json:"sequence"`
-	Tier       string  `json:"tier"`
-	Visibility string  `json:"visibility"`
+	Cpu         *string `json:"cpu,omitempty"`
+	CreatedOn   *string `json:"created_on,omitempty"`
+	Name        string  `json:"name"`
+	Provider    string  `json:"provider"`
+	Ram         *string `json:"ram,omitempty"`
+	Sequence    string  `json:"sequence"`
+	ServiceType string  `json:"service_type"`
+	Tier        string  `json:"tier"`
+	Visibility  string  `json:"visibility"`
 }
 
 // Providers configured in snow
@@ -288,9 +287,9 @@ type Topology struct {
 	Active            *string `json:"active,omitempty"`
 	MaxscaleSupported *string `json:"maxscale_supported,omitempty"`
 	Name              *string `json:"name,omitempty"`
-	Product           string  `json:"product"`
 	ReplicaLabel      *string `json:"replica_label,omitempty"`
 	ReplicaOptions    *string `json:"replica_options,omitempty"`
+	ServiceType       string  `json:"service_type"`
 }
 
 // Message details containing unmet expectations from failed specs
@@ -321,16 +320,15 @@ type ValidationError struct {
 // Database version, e.g. 10.4 or 10.5
 type Version struct {
 	CreatedOn         *string `json:"created_on,omitempty"`
-	DisplayName       *string `json:"display_name,omitempty"`
 	EnterpriseVersion *string `json:"enterprise_version,omitempty"`
 	ModCount          *string `json:"mod_count,omitempty"`
 	Name              *string `json:"name,omitempty"`
 	ParentRelease     *string `json:"parent_release,omitempty"`
-	Product           *string `json:"product,omitempty"`
 	Provider          *string `json:"provider,omitempty"`
 	Public            *string `json:"public,omitempty"`
 	ReleaseDate       *string `json:"release_date,omitempty"`
 	ReleaseNotesUrl   *string `json:"release_notes_url,omitempty"`
+	ServiceType       *string `json:"service_type,omitempty"`
 	Type              *string `json:"type,omitempty"`
 	UpdatedOn         *string `json:"updated_on,omitempty"`
 }
@@ -346,11 +344,6 @@ type CreateConfigurationJSONBody CreateConfigurationRequest
 // UpdateConfigurationJSONBody defines parameters for UpdateConfiguration.
 type UpdateConfigurationJSONBody UpdateConfigurationRequest
 
-// ReadProductsParams defines parameters for ReadProducts.
-type ReadProductsParams struct {
-	Limit *int `json:"limit,omitempty"`
-}
-
 // ReadProvidersParams defines parameters for ReadProviders.
 type ReadProvidersParams struct {
 	Limit *int `json:"limit,omitempty"`
@@ -362,16 +355,21 @@ type ReadRegionsParams struct {
 	Limit    *int          `json:"limit,omitempty"`
 }
 
-// ReadSizesParams defines parameters for ReadSizes.
-type ReadSizesParams struct {
-	Product  ReadSizesParamsProduct `json:"product"`
-	Provider SnowProviders          `json:"provider"`
-	Tier     ReadSizesParamsTier    `json:"tier"`
-	Limit    *int                   `json:"limit,omitempty"`
+// ReadServiceTypesParams defines parameters for ReadServiceTypes.
+type ReadServiceTypesParams struct {
+	Limit *int `json:"limit,omitempty"`
 }
 
-// ReadSizesParamsProduct defines parameters for ReadSizes.
-type ReadSizesParamsProduct string
+// ReadSizesParams defines parameters for ReadSizes.
+type ReadSizesParams struct {
+	ServiceType ReadSizesParamsServiceType `json:"service_type"`
+	Provider    SnowProviders              `json:"provider"`
+	Tier        ReadSizesParamsTier        `json:"tier"`
+	Limit       *int                       `json:"limit,omitempty"`
+}
+
+// ReadSizesParamsServiceType defines parameters for ReadSizes.
+type ReadSizesParamsServiceType string
 
 // ReadSizesParamsTier defines parameters for ReadSizes.
 type ReadSizesParamsTier string
@@ -383,12 +381,12 @@ type ReadTiersParams struct {
 
 // ReadTopologiesParams defines parameters for ReadTopologies.
 type ReadTopologiesParams struct {
-	Product ReadTopologiesParamsProduct `json:"product"`
-	Limit   *int                        `json:"limit,omitempty"`
+	ServiceType ReadTopologiesParamsServiceType `json:"service_type"`
+	Limit       *int                            `json:"limit,omitempty"`
 }
 
-// ReadTopologiesParamsProduct defines parameters for ReadTopologies.
-type ReadTopologiesParamsProduct string
+// ReadTopologiesParamsServiceType defines parameters for ReadTopologies.
+type ReadTopologiesParamsServiceType string
 
 // ReadVersionsParams defines parameters for ReadVersions.
 type ReadVersionsParams struct {
