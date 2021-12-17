@@ -142,9 +142,8 @@ type Product struct {
 	CreatedOn        *string `json:"created_on,omitempty"`
 	DefaultTopology  *string `json:"default_topology,omitempty"`
 	Description      *string `json:"description,omitempty"`
-	DisplayName      *string `json:"display_name,omitempty"`
 	ModCount         *string `json:"mod_count,omitempty"`
-	Name             string  `json:"name"`
+	Name             *string `json:"name,omitempty"`
 	Order            *string `json:"order,omitempty"`
 	ShortDescription *string `json:"short_description,omitempty"`
 	UpdatedOn        *string `json:"updated_on,omitempty"`
@@ -176,7 +175,7 @@ type QuotaProgress struct {
 }
 
 // Geographic region, as defined by the providers
-type RegionResponse struct {
+type Region struct {
 	CreatedOn *string `json:"created_on,omitempty"`
 	Default   *string `json:"default,omitempty"`
 	Name      string  `json:"name"`
@@ -263,7 +262,7 @@ type ServiceUpdate struct {
 }
 
 // Node size, as defined by the providers
-type SizeResponse struct {
+type Size struct {
 	Cpu        *string `json:"cpu,omitempty"`
 	CreatedOn  *string `json:"created_on,omitempty"`
 	Name       string  `json:"name"`
@@ -279,16 +278,16 @@ type SizeResponse struct {
 type SnowProviders string
 
 // Availability tier, e.g. Power, Foundation, etc.
-type TierResponse struct {
+type Tier struct {
 	Name *string `json:"name,omitempty"`
 	Paid *string `json:"paid,omitempty"`
 }
 
 // Cluster topology valid for a particular product, e.g. Standalone or MaxScale
-type TopologyResponse struct {
+type Topology struct {
 	Active            *string `json:"active,omitempty"`
 	MaxscaleSupported *string `json:"maxscale_supported,omitempty"`
-	Name              string  `json:"name"`
+	Name              *string `json:"name,omitempty"`
 	Product           string  `json:"product"`
 	ReplicaLabel      *string `json:"replica_label,omitempty"`
 	ReplicaOptions    *string `json:"replica_options,omitempty"`

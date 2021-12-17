@@ -1999,7 +1999,7 @@ func (r ReadProvidersResponse) StatusCode() int {
 type ReadRegionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]RegionResponse
+	JSON200      *[]Region
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2025,7 +2025,7 @@ func (r ReadRegionsResponse) StatusCode() int {
 type ReadSizesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]SizeResponse
+	JSON200      *[]Size
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2051,7 +2051,7 @@ func (r ReadSizesResponse) StatusCode() int {
 type ReadTiersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]TierResponse
+	JSON200      *[]Tier
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2077,7 +2077,7 @@ func (r ReadTiersResponse) StatusCode() int {
 type ReadTopologiesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]TopologyResponse
+	JSON200      *[]Topology
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -3149,7 +3149,7 @@ func ParseReadRegionsResponse(rsp *http.Response) (*ReadRegionsResponse, error) 
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []RegionResponse
+		var dest []Region
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3203,7 +3203,7 @@ func ParseReadSizesResponse(rsp *http.Response) (*ReadSizesResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []SizeResponse
+		var dest []Size
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3257,7 +3257,7 @@ func ParseReadTiersResponse(rsp *http.Response) (*ReadTiersResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []TierResponse
+		var dest []Tier
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3311,7 +3311,7 @@ func ParseReadTopologiesResponse(rsp *http.Response) (*ReadTopologiesResponse, e
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []TopologyResponse
+		var dest []Topology
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
