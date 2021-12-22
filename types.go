@@ -204,9 +204,11 @@ type ServiceInTopology string
 
 // Base class for Service responses
 type ServiceOut struct {
+	CreatedOn      *string           `json:"created_on,omitempty"`
 	CustomConfig   *string           `json:"custom_config,omitempty"`
 	Fqdn           *string           `json:"fqdn,omitempty"`
 	Id             *string           `json:"id,omitempty"`
+	InstallStatus  *string           `json:"install_status,omitempty"`
 	IpAddress      *string           `json:"ip_address,omitempty"`
 	MaxscaleConfig *string           `json:"maxscale_config,omitempty"`
 	MaxscaleProxy  *string           `json:"maxscale_proxy,omitempty"`
@@ -225,6 +227,7 @@ type ServiceOut struct {
 	Tier           *string           `json:"tier,omitempty"`
 	Topology       *string           `json:"topology,omitempty"`
 	TxStorage      *string           `json:"tx_storage,omitempty"`
+	UpdatedOn      *string           `json:"updated_on,omitempty"`
 	VolumeIops     *string           `json:"volume_iops,omitempty"`
 }
 
