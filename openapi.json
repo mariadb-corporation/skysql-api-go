@@ -3,7 +3,7 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field from the response in the _Authorization_ header for `Bearer` auth in subsequent api requests.\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.78"
+    "version": "0.0.95"
   },
   "paths": {
     "/billing/quotas": {
@@ -73,7 +73,7 @@
           "Configurations"
         ],
         "summary": "List Configurations",
-        "description": "Retrieve a list of configurations owned by the current user",
+        "description": "Retrieve a list of custom configurations owned by the current user",
         "operationId": "list_configurations",
         "parameters": [
           {
@@ -156,7 +156,7 @@
           "Configurations"
         ],
         "summary": "Create Configuration",
-        "description": "Launch a new configuration cluster for the current user",
+        "description": "Launch a new custom configuration for the current user",
         "operationId": "create_configuration",
         "requestBody": {
           "content": {
@@ -246,29 +246,34 @@
         ]
       }
     },
-    "/configurations/{configuration_number}": {
+    "/configurations/{configuration_identifier}": {
       "get": {
         "tags": [
           "Configurations"
         ],
         "summary": "Read Configuration",
-        "description": "Retrieve status and metadata for the specified configuration",
+        "description": "Retrieve status and metadata for the specified custom configuration",
         "operationId": "read_configuration",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Configuration Number",
+              "title": "Configuration Identifier",
               "type": "string"
             },
             "examples": {
               "number": {
-                "summary": "Number",
-                "description": "The identifier for a custom configuration",
+                "summary": "Configuration Number",
+                "description": "The number for a custom configuration",
                 "value": "CFG0000000"
+              },
+              "name": {
+                "summary": "Configuration Name",
+                "description": "The name for a custom configuration",
+                "value": "My Custom Configuration"
               }
             },
-            "name": "configuration_number",
+            "name": "configuration_identifier",
             "in": "path"
           }
         ],
@@ -345,29 +350,41 @@
           "Configurations"
         ],
         "summary": "Delete Configuration",
-        "description": "Delete the specified configuration and its associated data",
+        "description": "Delete the specified custom configuration and its associated data",
         "operationId": "delete_configuration",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Configuration Number",
+              "title": "Configuration Identifier",
               "type": "string"
             },
             "examples": {
               "number": {
-                "summary": "Number",
-                "description": "The identifier for a custom configuration",
+                "summary": "Configuration Number",
+                "description": "The number for a custom configuration",
                 "value": "CFG0000000"
+              },
+              "name": {
+                "summary": "Configuration Name",
+                "description": "The name for a custom configuration",
+                "value": "My Custom Configuration"
               }
             },
-            "name": "configuration_number",
+            "name": "configuration_identifier",
             "in": "path"
           }
         ],
         "responses": {
-          "204": {
-            "description": "Successful Response"
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
           },
           "409": {
             "description": "Conflict",
@@ -441,23 +458,28 @@
           "Configurations"
         ],
         "summary": "Update Configuration",
-        "description": "Update an existing configuration cluster, (e.g. provision more IOPS, change node type)",
+        "description": "Update an existing custom configuration (e.g. provision more IOPS, change node type)",
         "operationId": "update_configuration",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Configuration Number",
+              "title": "Configuration Identifier",
               "type": "string"
             },
             "examples": {
               "number": {
-                "summary": "Number",
-                "description": "The identifier for a custom configuration",
+                "summary": "Configuration Number",
+                "description": "The number for a custom configuration",
                 "value": "CFG0000000"
+              },
+              "name": {
+                "summary": "Configuration Name",
+                "description": "The name for a custom configuration",
+                "value": "My Custom Configuration"
               }
             },
-            "name": "configuration_number",
+            "name": "configuration_identifier",
             "in": "path"
           }
         ],
@@ -665,25 +687,23 @@
                 "$ref": "#/components/schemas/ServiceIn"
               },
               "examples": {
-                "standalone": {
-                  "summary": "Single Node Transactions",
-                  "description": "Create a new service using a standalone topology",
+                "standalone-power": {
+                  "summary": "Single Node Transactions Power Tier",
+                  "description": "Create a new service using a single node transactions topology in Power tier",
                   "value": {
-                    "name": "standalone-example",
+                    "name": "single-node-example",
                     "maxscale_config": "",
                     "maxscale_proxy": "false",
                     "monitor": "false",
                     "provider": "Amazon AWS",
                     "region": "ca-central-1",
                     "release_version": "MariaDB Enterprise Server 10.6.4-1",
-                    "repl_region": "",
                     "replicas": "0",
                     "size": "Sky-2x4",
                     "tier": "Power",
                     "topology": "Single Node Transactions",
                     "tx_storage": "100",
                     "volume_iops": "100",
-                    "volume_type": "io1",
                     "ssl_tls": "Enabled"
                   }
                 }
@@ -890,8 +910,15 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Successful Response"
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
           },
           "409": {
             "description": "Conflict",
@@ -965,7 +992,7 @@
           "Services"
         ],
         "summary": "Update Service",
-        "description": "Update an existing service name",
+        "description": "Update an existing service name. Valid names may only contain lowercase letters,\ndigits and hyphens up to 24 characters in length.",
         "operationId": "update_service",
         "parameters": [
           {
@@ -1174,8 +1201,15 @@
           "required": true
         },
         "responses": {
-          "204": {
-            "description": "Successful Response"
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllowlistIPAddress"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1253,8 +1287,15 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Successful Response"
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1508,8 +1549,15 @@
           "required": true
         },
         "responses": {
-          "204": {
-            "description": "Successful Response"
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceStatus"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized",
@@ -1559,14 +1607,14 @@
         ]
       }
     },
-    "/offering/products": {
+    "/offering/service_types": {
       "get": {
         "tags": [
           "Offering"
         ],
-        "summary": "Read Products",
-        "description": "Retrieve a list of available database products to choose from",
-        "operationId": "read_products",
+        "summary": "Read Service Types",
+        "description": "Retrieve a list of available database service types to choose from (e.g.\nTransactions, Analytics, …)",
+        "operationId": "read_service_types",
         "parameters": [
           {
             "required": false,
@@ -1587,10 +1635,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response Read Products Offering Products Get",
+                  "title": "Response Read Service Types Offering Service Types Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Product"
+                    "$ref": "#/components/schemas/ServiceType"
                   }
                 }
               }
@@ -1780,7 +1828,7 @@
                   "title": "Response Read Regions Offering Regions Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/RegionResponse"
+                    "$ref": "#/components/schemas/Region"
                   }
                 }
               }
@@ -1846,7 +1894,7 @@
           {
             "required": true,
             "schema": {
-              "title": "Product",
+              "title": "Service Type",
               "enum": [
                 "Transactions",
                 "Analytics"
@@ -1865,7 +1913,7 @@
                 "value": "Analytics"
               }
             },
-            "name": "product",
+            "name": "service_type",
             "in": "query"
           },
           {
@@ -1935,7 +1983,7 @@
                   "title": "Response Read Sizes Offering Sizes Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/SizeResponse"
+                    "$ref": "#/components/schemas/Size"
                   }
                 }
               }
@@ -2020,7 +2068,7 @@
                   "title": "Response Read Tiers Offering Tiers Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TierResponse"
+                    "$ref": "#/components/schemas/Tier"
                   }
                 }
               }
@@ -2080,13 +2128,13 @@
           "Offering"
         ],
         "summary": "Read Topologies",
-        "description": "Retrieve a list of valid topologies for a specified product which may be deployed",
+        "description": "Retrieve a list of valid topologies for a specified service_type which may be deployed",
         "operationId": "read_topologies",
         "parameters": [
           {
             "required": true,
             "schema": {
-              "title": "Product",
+              "title": "Service Type",
               "enum": [
                 "Transactions",
                 "Analytics"
@@ -2105,7 +2153,7 @@
                 "value": "Analytics"
               }
             },
-            "name": "product",
+            "name": "service_type",
             "in": "query"
           },
           {
@@ -2130,7 +2178,7 @@
                   "title": "Response Read Topologies Offering Topologies Get",
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/TopologyResponse"
+                    "$ref": "#/components/schemas/Topology"
                   }
                 }
               }
@@ -2276,7 +2324,7 @@
         "title": "AllowlistIPAddress",
         "required": [
           "ip_address",
-          "database"
+          "service_id"
         ],
         "type": "object",
         "properties": {
@@ -2288,8 +2336,8 @@
             "title": "Ip Address",
             "type": "string"
           },
-          "database": {
-            "title": "Database",
+          "service_id": {
+            "title": "Service Id",
             "minLength": 1,
             "type": "string"
           }
@@ -2506,60 +2554,6 @@
         },
         "description": "Generic message body containing error details for failed requests"
       },
-      "Product": {
-        "title": "Product",
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "short_description": {
-            "title": "Short Description",
-            "type": "string"
-          },
-          "description": {
-            "title": "Description",
-            "type": "string"
-          },
-          "updated_on": {
-            "title": "Updated On",
-            "type": "string"
-          },
-          "created_on": {
-            "title": "Created On",
-            "type": "string"
-          },
-          "display_name": {
-            "title": "Display Name",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
-            "type": "string"
-          },
-          "active": {
-            "title": "Active",
-            "type": "string"
-          },
-          "order": {
-            "title": "Order",
-            "type": "string"
-          },
-          "mod_count": {
-            "title": "Mod Count",
-            "type": "string"
-          },
-          "active_topologies": {
-            "title": "Active Topologies",
-            "type": "string"
-          },
-          "default_topology": {
-            "title": "Default Topology",
-            "type": "string"
-          }
-        },
-        "description": "A database product, e.g. Xpand"
-      },
       "Provider": {
         "title": "Provider",
         "required": [
@@ -2589,8 +2583,8 @@
             "title": "Logo Image",
             "type": "string"
           },
-          "products": {
-            "title": "Products",
+          "service_types": {
+            "title": "Service Types",
             "type": "string"
           },
           "topologies": {
@@ -2651,8 +2645,8 @@
         },
         "description": "A quota progress response"
       },
-      "RegionResponse": {
-        "title": "RegionResponse",
+      "Region": {
+        "title": "Region",
         "required": [
           "provider",
           "name",
@@ -2740,10 +2734,6 @@
             "minLength": 1,
             "type": "string"
           },
-          "repl_region": {
-            "title": "Repl Region",
-            "type": "string"
-          },
           "replicas": {
             "title": "Replicas",
             "minLength": 1,
@@ -2766,8 +2756,8 @@
             "title": "Topology",
             "enum": [
               "Single Node Transactions",
-              "Read Scalable Transactions",
-              "Read/Write Scalable Transactions",
+              "Replicated Transactions",
+              "Distributed Transactions",
               "Multi-Node Analytics",
               "Single Node Analytics"
             ],
@@ -2780,18 +2770,8 @@
           },
           "volume_iops": {
             "title": "Volume Iops",
-            "type": "string"
-          },
-          "volume_type": {
-            "title": "Volume Type",
-            "enum": [
-              "gp2",
-              "gp3",
-              "io1",
-              "io2",
-              ""
-            ],
-            "type": "string"
+            "type": "string",
+            "default": "100"
           },
           "ssl_tls": {
             "title": "Ssl Tls",
@@ -2807,10 +2787,6 @@
       },
       "ServiceOut": {
         "title": "ServiceOut",
-        "required": [
-          "install_status",
-          "operational_status"
-        ],
         "type": "object",
         "properties": {
           "name": {
@@ -2841,10 +2817,6 @@
             "title": "Release Version",
             "type": "string"
           },
-          "repl_region": {
-            "title": "Repl Region",
-            "type": "string"
-          },
           "replicas": {
             "title": "Replicas",
             "type": "string"
@@ -2867,18 +2839,8 @@
           },
           "volume_iops": {
             "title": "Volume Iops",
-            "type": "string"
-          },
-          "volume_type": {
-            "title": "Volume Type",
-            "enum": [
-              "gp2",
-              "gp3",
-              "io1",
-              "io2",
-              ""
-            ],
-            "type": "string"
+            "type": "string",
+            "default": "100"
           },
           "ssl_tls": {
             "title": "Ssl Tls",
@@ -2893,76 +2855,28 @@
             "title": "Owned By",
             "type": "string"
           },
-          "active_replicas": {
-            "title": "Active Replicas",
-            "type": "string"
-          },
-          "bulkdata_port_1": {
-            "title": "Bulkdata Port 1",
-            "type": "string"
-          },
-          "bulkdata_port_2": {
-            "title": "Bulkdata Port 2",
-            "type": "string"
-          },
-          "cluster": {
-            "title": "Cluster",
-            "type": "string"
-          },
-          "columnstore_bucket": {
-            "title": "Columnstore Bucket",
+          "id": {
+            "title": "Id",
             "type": "string"
           },
           "custom_config": {
             "title": "Custom Config",
             "type": "string"
           },
-          "dns_domain": {
-            "title": "Dns Domain",
-            "type": "string"
-          },
-          "fault_count": {
-            "title": "Fault Count",
-            "type": "string"
-          },
           "fqdn": {
             "title": "Fqdn",
-            "type": "string"
-          },
-          "gl_account": {
-            "title": "Gl Account",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
             "type": "string"
           },
           "install_status": {
             "title": "Install Status",
             "type": "string"
           },
-          "instance_state": {
-            "title": "Instance State",
-            "type": "string"
-          },
           "ip_address": {
             "title": "Ip Address",
             "type": "string"
           },
-          "mac_address": {
-            "title": "Mac Address",
-            "type": "string"
-          },
           "number": {
             "title": "Number",
-            "type": "string"
-          },
-          "operational_status": {
-            "title": "Operational Status",
-            "type": "string"
-          },
-          "proxy": {
-            "title": "Proxy",
             "type": "string"
           },
           "read_only_port": {
@@ -2973,52 +2887,8 @@
             "title": "Read Write Port",
             "type": "string"
           },
-          "repl_master_host_ext": {
-            "title": "Repl Master Host Ext",
-            "type": "string"
-          },
-          "repl_master": {
-            "title": "Repl Master",
-            "type": "string"
-          },
-          "replication_status": {
-            "title": "Replication Status",
-            "type": "string"
-          },
-          "replication_type": {
-            "title": "Replication Type",
-            "type": "string"
-          },
-          "skip_sync": {
-            "title": "Skip Sync",
-            "type": "string"
-          },
-          "ssl_certificate": {
-            "title": "Ssl Certificate",
-            "type": "string"
-          },
-          "ssl_expires_on": {
-            "title": "Ssl Expires On",
-            "type": "string"
-          },
-          "ssl_serial": {
-            "title": "Ssl Serial",
-            "type": "string"
-          },
-          "created_by": {
-            "title": "Created By",
-            "type": "string"
-          },
           "created_on": {
             "title": "Created On",
-            "type": "string"
-          },
-          "mod_count": {
-            "title": "Mod Count",
-            "type": "string"
-          },
-          "updated_by": {
-            "title": "Updated By",
             "type": "string"
           },
           "updated_on": {
@@ -3026,7 +2896,7 @@
             "type": "string"
           }
         },
-        "description": "MariaDB services deployed by SkySQL"
+        "description": "Base class for Service responses"
       },
       "ServiceStatus": {
         "title": "ServiceStatus",
@@ -3055,6 +2925,49 @@
         },
         "description": "Request body to update a service"
       },
+      "ServiceType": {
+        "title": "ServiceType",
+        "type": "object",
+        "properties": {
+          "short_description": {
+            "title": "Short Description",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "updated_on": {
+            "title": "Updated On",
+            "type": "string"
+          },
+          "created_on": {
+            "title": "Created On",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "order": {
+            "title": "Order",
+            "type": "string"
+          },
+          "mod_count": {
+            "title": "Mod Count",
+            "type": "string"
+          },
+          "active_topologies": {
+            "title": "Active Topologies",
+            "type": "string"
+          },
+          "default_topology": {
+            "title": "Default Topology",
+            "type": "string"
+          }
+        },
+        "description": "A database service type, e.g. Distributed Transactions"
+      },
       "ServiceUpdate": {
         "title": "ServiceUpdate",
         "required": [
@@ -3070,10 +2983,10 @@
         },
         "description": "Request body to update a services - currently limited to name only"
       },
-      "SizeResponse": {
-        "title": "SizeResponse",
+      "Size": {
+        "title": "Size",
         "required": [
-          "product",
+          "service_type",
           "visibility",
           "tier",
           "provider",
@@ -3082,8 +2995,8 @@
         ],
         "type": "object",
         "properties": {
-          "product": {
-            "title": "Product",
+          "service_type": {
+            "title": "Service Type",
             "type": "string"
           },
           "visibility": {
@@ -3136,8 +3049,8 @@
         "type": "string",
         "description": "Providers configured in snow"
       },
-      "TierResponse": {
-        "title": "TierResponse",
+      "Tier": {
+        "title": "Tier",
         "type": "object",
         "properties": {
           "name": {
@@ -3151,11 +3064,10 @@
         },
         "description": "Availability tier, e.g. Power, Foundation, etc."
       },
-      "TopologyResponse": {
-        "title": "TopologyResponse",
+      "Topology": {
+        "title": "Topology",
         "required": [
-          "product",
-          "name"
+          "service_type"
         ],
         "type": "object",
         "properties": {
@@ -3163,8 +3075,8 @@
             "title": "Maxscale Supported",
             "type": "string"
           },
-          "product": {
-            "title": "Product",
+          "service_type": {
+            "title": "Service Type",
             "type": "string"
           },
           "replica_options": {
@@ -3264,8 +3176,8 @@
         "title": "Version",
         "type": "object",
         "properties": {
-          "product": {
-            "title": "Product",
+          "service_type": {
+            "title": "Service Type",
             "type": "string"
           },
           "mod_count": {
@@ -3276,8 +3188,8 @@
             "title": "Updated On",
             "type": "string"
           },
-          "display_name": {
-            "title": "Display Name",
+          "name": {
+            "title": "Name",
             "type": "string"
           },
           "type": {
@@ -3310,10 +3222,6 @@
           },
           "parent_release": {
             "title": "Parent Release",
-            "type": "string"
-          },
-          "name": {
-            "title": "Name",
             "type": "string"
           }
         },

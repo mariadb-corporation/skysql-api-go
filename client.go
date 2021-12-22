@@ -102,24 +102,24 @@ type ClientInterface interface {
 	CreateConfiguration(ctx context.Context, body CreateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteConfiguration request
-	DeleteConfiguration(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteConfiguration(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReadConfiguration request
-	ReadConfiguration(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ReadConfiguration(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateConfiguration request with any body
-	UpdateConfigurationWithBody(ctx context.Context, configurationNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateConfigurationWithBody(ctx context.Context, configurationIdentifier string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateConfiguration(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
-
-	// ReadProducts request
-	ReadProducts(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateConfiguration(ctx context.Context, configurationIdentifier string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReadProviders request
 	ReadProviders(ctx context.Context, params *ReadProvidersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReadRegions request
 	ReadRegions(ctx context.Context, params *ReadRegionsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReadServiceTypes request
+	ReadServiceTypes(ctx context.Context, params *ReadServiceTypesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReadSizes request
 	ReadSizes(ctx context.Context, params *ReadSizesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -223,8 +223,8 @@ func (c *Client) CreateConfiguration(ctx context.Context, body CreateConfigurati
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteConfiguration(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewDeleteConfigurationRequest(c.Server, configurationNumber)
+func (c *Client) DeleteConfiguration(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteConfigurationRequest(c.Server, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -235,8 +235,8 @@ func (c *Client) DeleteConfiguration(ctx context.Context, configurationNumber st
 	return c.Client.Do(req)
 }
 
-func (c *Client) ReadConfiguration(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewReadConfigurationRequest(c.Server, configurationNumber)
+func (c *Client) ReadConfiguration(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadConfigurationRequest(c.Server, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -247,8 +247,8 @@ func (c *Client) ReadConfiguration(ctx context.Context, configurationNumber stri
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateConfigurationWithBody(ctx context.Context, configurationNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateConfigurationRequestWithBody(c.Server, configurationNumber, contentType, body)
+func (c *Client) UpdateConfigurationWithBody(ctx context.Context, configurationIdentifier string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateConfigurationRequestWithBody(c.Server, configurationIdentifier, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -259,20 +259,8 @@ func (c *Client) UpdateConfigurationWithBody(ctx context.Context, configurationN
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateConfiguration(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewUpdateConfigurationRequest(c.Server, configurationNumber, body)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
-}
-
-func (c *Client) ReadProducts(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewReadProductsRequest(c.Server, params)
+func (c *Client) UpdateConfiguration(ctx context.Context, configurationIdentifier string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateConfigurationRequest(c.Server, configurationIdentifier, body)
 	if err != nil {
 		return nil, err
 	}
@@ -297,6 +285,18 @@ func (c *Client) ReadProviders(ctx context.Context, params *ReadProvidersParams,
 
 func (c *Client) ReadRegions(ctx context.Context, params *ReadRegionsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewReadRegionsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReadServiceTypes(ctx context.Context, params *ReadServiceTypesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadServiceTypesRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -650,12 +650,12 @@ func NewCreateConfigurationRequestWithBody(server string, contentType string, bo
 }
 
 // NewDeleteConfigurationRequest generates requests for DeleteConfiguration
-func NewDeleteConfigurationRequest(server string, configurationNumber string) (*http.Request, error) {
+func NewDeleteConfigurationRequest(server string, configurationIdentifier string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_number", runtime.ParamLocationPath, configurationNumber)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_identifier", runtime.ParamLocationPath, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -684,12 +684,12 @@ func NewDeleteConfigurationRequest(server string, configurationNumber string) (*
 }
 
 // NewReadConfigurationRequest generates requests for ReadConfiguration
-func NewReadConfigurationRequest(server string, configurationNumber string) (*http.Request, error) {
+func NewReadConfigurationRequest(server string, configurationIdentifier string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_number", runtime.ParamLocationPath, configurationNumber)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_identifier", runtime.ParamLocationPath, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -718,23 +718,23 @@ func NewReadConfigurationRequest(server string, configurationNumber string) (*ht
 }
 
 // NewUpdateConfigurationRequest calls the generic UpdateConfiguration builder with application/json body
-func NewUpdateConfigurationRequest(server string, configurationNumber string, body UpdateConfigurationJSONRequestBody) (*http.Request, error) {
+func NewUpdateConfigurationRequest(server string, configurationIdentifier string, body UpdateConfigurationJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewUpdateConfigurationRequestWithBody(server, configurationNumber, "application/json", bodyReader)
+	return NewUpdateConfigurationRequestWithBody(server, configurationIdentifier, "application/json", bodyReader)
 }
 
 // NewUpdateConfigurationRequestWithBody generates requests for UpdateConfiguration with any type of body
-func NewUpdateConfigurationRequestWithBody(server string, configurationNumber string, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateConfigurationRequestWithBody(server string, configurationIdentifier string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
 
-	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_number", runtime.ParamLocationPath, configurationNumber)
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "configuration_identifier", runtime.ParamLocationPath, configurationIdentifier)
 	if err != nil {
 		return nil, err
 	}
@@ -760,53 +760,6 @@ func NewUpdateConfigurationRequestWithBody(server string, configurationNumber st
 	}
 
 	req.Header.Add("Content-Type", contentType)
-
-	return req, nil
-}
-
-// NewReadProductsRequest generates requests for ReadProducts
-func NewReadProductsRequest(server string, params *ReadProductsParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/offering/products")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	queryValues := queryURL.Query()
-
-	if params.Limit != nil {
-
-		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
-				}
-			}
-		}
-
-	}
-
-	queryURL.RawQuery = queryValues.Encode()
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
 
 	return req, nil
 }
@@ -917,6 +870,53 @@ func NewReadRegionsRequest(server string, params *ReadRegionsParams) (*http.Requ
 	return req, nil
 }
 
+// NewReadServiceTypesRequest generates requests for ReadServiceTypes
+func NewReadServiceTypesRequest(server string, params *ReadServiceTypesParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/offering/service_types")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	queryValues := queryURL.Query()
+
+	if params.Limit != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewReadSizesRequest generates requests for ReadSizes
 func NewReadSizesRequest(server string, params *ReadSizesParams) (*http.Request, error) {
 	var err error
@@ -938,7 +938,7 @@ func NewReadSizesRequest(server string, params *ReadSizesParams) (*http.Request,
 
 	queryValues := queryURL.Query()
 
-	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "product", runtime.ParamLocationQuery, params.Product); err != nil {
+	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "service_type", runtime.ParamLocationQuery, params.ServiceType); err != nil {
 		return nil, err
 	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 		return nil, err
@@ -1068,7 +1068,7 @@ func NewReadTopologiesRequest(server string, params *ReadTopologiesParams) (*htt
 
 	queryValues := queryURL.Query()
 
-	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "product", runtime.ParamLocationQuery, params.Product); err != nil {
+	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "service_type", runtime.ParamLocationQuery, params.ServiceType); err != nil {
 		return nil, err
 	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 		return nil, err
@@ -1712,24 +1712,24 @@ type ClientWithResponsesInterface interface {
 	CreateConfigurationWithResponse(ctx context.Context, body CreateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateConfigurationResponse, error)
 
 	// DeleteConfiguration request
-	DeleteConfigurationWithResponse(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*DeleteConfigurationResponse, error)
+	DeleteConfigurationWithResponse(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*DeleteConfigurationResponse, error)
 
 	// ReadConfiguration request
-	ReadConfigurationWithResponse(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*ReadConfigurationResponse, error)
+	ReadConfigurationWithResponse(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*ReadConfigurationResponse, error)
 
 	// UpdateConfiguration request with any body
-	UpdateConfigurationWithBodyWithResponse(ctx context.Context, configurationNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
+	UpdateConfigurationWithBodyWithResponse(ctx context.Context, configurationIdentifier string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
 
-	UpdateConfigurationWithResponse(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
-
-	// ReadProducts request
-	ReadProductsWithResponse(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*ReadProductsResponse, error)
+	UpdateConfigurationWithResponse(ctx context.Context, configurationIdentifier string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error)
 
 	// ReadProviders request
 	ReadProvidersWithResponse(ctx context.Context, params *ReadProvidersParams, reqEditors ...RequestEditorFn) (*ReadProvidersResponse, error)
 
 	// ReadRegions request
 	ReadRegionsWithResponse(ctx context.Context, params *ReadRegionsParams, reqEditors ...RequestEditorFn) (*ReadRegionsResponse, error)
+
+	// ReadServiceTypes request
+	ReadServiceTypesWithResponse(ctx context.Context, params *ReadServiceTypesParams, reqEditors ...RequestEditorFn) (*ReadServiceTypesResponse, error)
 
 	// ReadSizes request
 	ReadSizesWithResponse(ctx context.Context, params *ReadSizesParams, reqEditors ...RequestEditorFn) (*ReadSizesResponse, error)
@@ -1865,6 +1865,7 @@ func (r CreateConfigurationResponse) StatusCode() int {
 type DeleteConfigurationResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *Message
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
@@ -1943,32 +1944,6 @@ func (r UpdateConfigurationResponse) StatusCode() int {
 	return 0
 }
 
-type ReadProductsResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *[]Product
-	JSON401      *Message
-	JSON403      *Message
-	JSON422      *HTTPValidationError
-	JSON502      *Message
-}
-
-// Status returns HTTPResponse.Status
-func (r ReadProductsResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r ReadProductsResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
-}
-
 type ReadProvidersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1998,7 +1973,7 @@ func (r ReadProvidersResponse) StatusCode() int {
 type ReadRegionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]RegionResponse
+	JSON200      *[]Region
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2021,10 +1996,36 @@ func (r ReadRegionsResponse) StatusCode() int {
 	return 0
 }
 
+type ReadServiceTypesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]ServiceType
+	JSON401      *Message
+	JSON403      *Message
+	JSON422      *HTTPValidationError
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r ReadServiceTypesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReadServiceTypesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type ReadSizesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]SizeResponse
+	JSON200      *[]Size
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2050,7 +2051,7 @@ func (r ReadSizesResponse) StatusCode() int {
 type ReadTiersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]TierResponse
+	JSON200      *[]Tier
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2076,7 +2077,7 @@ func (r ReadTiersResponse) StatusCode() int {
 type ReadTopologiesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *[]TopologyResponse
+	JSON200      *[]Topology
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2182,6 +2183,7 @@ func (r CreateServiceResponse) StatusCode() int {
 type DeleteServiceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *Message
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
@@ -2263,6 +2265,7 @@ func (r UpdateServiceResponse) StatusCode() int {
 type RemoveAllowedAddressResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *Message
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2311,6 +2314,7 @@ func (r ListAllowedAddressesResponse) StatusCode() int {
 type AddAllowedAddressResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *AllowlistIPAddress
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2390,6 +2394,7 @@ func (r ReadStatusResponse) StatusCode() int {
 type UpdateStatusResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *ServiceStatus
 	JSON401      *Message
 	JSON403      *Message
 	JSON422      *HTTPValidationError
@@ -2448,8 +2453,8 @@ func (c *ClientWithResponses) CreateConfigurationWithResponse(ctx context.Contex
 }
 
 // DeleteConfigurationWithResponse request returning *DeleteConfigurationResponse
-func (c *ClientWithResponses) DeleteConfigurationWithResponse(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*DeleteConfigurationResponse, error) {
-	rsp, err := c.DeleteConfiguration(ctx, configurationNumber, reqEditors...)
+func (c *ClientWithResponses) DeleteConfigurationWithResponse(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*DeleteConfigurationResponse, error) {
+	rsp, err := c.DeleteConfiguration(ctx, configurationIdentifier, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -2457,8 +2462,8 @@ func (c *ClientWithResponses) DeleteConfigurationWithResponse(ctx context.Contex
 }
 
 // ReadConfigurationWithResponse request returning *ReadConfigurationResponse
-func (c *ClientWithResponses) ReadConfigurationWithResponse(ctx context.Context, configurationNumber string, reqEditors ...RequestEditorFn) (*ReadConfigurationResponse, error) {
-	rsp, err := c.ReadConfiguration(ctx, configurationNumber, reqEditors...)
+func (c *ClientWithResponses) ReadConfigurationWithResponse(ctx context.Context, configurationIdentifier string, reqEditors ...RequestEditorFn) (*ReadConfigurationResponse, error) {
+	rsp, err := c.ReadConfiguration(ctx, configurationIdentifier, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -2466,29 +2471,20 @@ func (c *ClientWithResponses) ReadConfigurationWithResponse(ctx context.Context,
 }
 
 // UpdateConfigurationWithBodyWithResponse request with arbitrary body returning *UpdateConfigurationResponse
-func (c *ClientWithResponses) UpdateConfigurationWithBodyWithResponse(ctx context.Context, configurationNumber string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error) {
-	rsp, err := c.UpdateConfigurationWithBody(ctx, configurationNumber, contentType, body, reqEditors...)
+func (c *ClientWithResponses) UpdateConfigurationWithBodyWithResponse(ctx context.Context, configurationIdentifier string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error) {
+	rsp, err := c.UpdateConfigurationWithBody(ctx, configurationIdentifier, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateConfigurationResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateConfigurationWithResponse(ctx context.Context, configurationNumber string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error) {
-	rsp, err := c.UpdateConfiguration(ctx, configurationNumber, body, reqEditors...)
+func (c *ClientWithResponses) UpdateConfigurationWithResponse(ctx context.Context, configurationIdentifier string, body UpdateConfigurationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateConfigurationResponse, error) {
+	rsp, err := c.UpdateConfiguration(ctx, configurationIdentifier, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
 	return ParseUpdateConfigurationResponse(rsp)
-}
-
-// ReadProductsWithResponse request returning *ReadProductsResponse
-func (c *ClientWithResponses) ReadProductsWithResponse(ctx context.Context, params *ReadProductsParams, reqEditors ...RequestEditorFn) (*ReadProductsResponse, error) {
-	rsp, err := c.ReadProducts(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseReadProductsResponse(rsp)
 }
 
 // ReadProvidersWithResponse request returning *ReadProvidersResponse
@@ -2507,6 +2503,15 @@ func (c *ClientWithResponses) ReadRegionsWithResponse(ctx context.Context, param
 		return nil, err
 	}
 	return ParseReadRegionsResponse(rsp)
+}
+
+// ReadServiceTypesWithResponse request returning *ReadServiceTypesResponse
+func (c *ClientWithResponses) ReadServiceTypesWithResponse(ctx context.Context, params *ReadServiceTypesParams, reqEditors ...RequestEditorFn) (*ReadServiceTypesResponse, error) {
+	rsp, err := c.ReadServiceTypes(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReadServiceTypesResponse(rsp)
 }
 
 // ReadSizesWithResponse request returning *ReadSizesResponse
@@ -2845,6 +2850,13 @@ func ParseDeleteConfigurationResponse(rsp *http.Response) (*DeleteConfigurationR
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3014,60 +3026,6 @@ func ParseUpdateConfigurationResponse(rsp *http.Response) (*UpdateConfigurationR
 	return response, nil
 }
 
-// ParseReadProductsResponse parses an HTTP response from a ReadProductsWithResponse call
-func ParseReadProductsResponse(rsp *http.Response) (*ReadProductsResponse, error) {
-	bodyBytes, err := ioutil.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &ReadProductsResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Product
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON401 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON403 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON422 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
-		var dest Message
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON502 = &dest
-
-	}
-
-	return response, nil
-}
-
 // ParseReadProvidersResponse parses an HTTP response from a ReadProvidersWithResponse call
 func ParseReadProvidersResponse(rsp *http.Response) (*ReadProvidersResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
@@ -3137,7 +3095,61 @@ func ParseReadRegionsResponse(rsp *http.Response) (*ReadRegionsResponse, error) 
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []RegionResponse
+		var dest []Region
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReadServiceTypesResponse parses an HTTP response from a ReadServiceTypesWithResponse call
+func ParseReadServiceTypesResponse(rsp *http.Response) (*ReadServiceTypesResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReadServiceTypesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []ServiceType
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3191,7 +3203,7 @@ func ParseReadSizesResponse(rsp *http.Response) (*ReadSizesResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []SizeResponse
+		var dest []Size
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3245,7 +3257,7 @@ func ParseReadTiersResponse(rsp *http.Response) (*ReadTiersResponse, error) {
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []TierResponse
+		var dest []Tier
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3299,7 +3311,7 @@ func ParseReadTopologiesResponse(rsp *http.Response) (*ReadTopologiesResponse, e
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []TopologyResponse
+		var dest []Topology
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3528,6 +3540,13 @@ func ParseDeleteServiceResponse(rsp *http.Response) (*DeleteServiceResponse, err
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3711,6 +3730,13 @@ func ParseRemoveAllowedAddressResponse(rsp *http.Response) (*RemoveAllowedAddres
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3791,6 +3817,13 @@ func ParseAddAllowedAddressResponse(rsp *http.Response) (*AddAllowedAddressRespo
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AllowlistIPAddress
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
@@ -3960,6 +3993,13 @@ func ParseUpdateStatusResponse(rsp *http.Response) (*UpdateStatusResponse, error
 	}
 
 	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ServiceStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
 		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

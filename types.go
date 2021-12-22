@@ -25,28 +25,15 @@ const (
 
 // Defines values for ServiceInTopology.
 const (
+	ServiceInTopologyDistributedTransactions ServiceInTopology = "Distributed Transactions"
+
 	ServiceInTopologyMultiNodeAnalytics ServiceInTopology = "Multi-Node Analytics"
 
-	ServiceInTopologyReadScalableTransactions ServiceInTopology = "Read Scalable Transactions"
-
-	ServiceInTopologyReadWriteScalableTransactions ServiceInTopology = "Read/Write Scalable Transactions"
+	ServiceInTopologyReplicatedTransactions ServiceInTopology = "Replicated Transactions"
 
 	ServiceInTopologySingleNodeAnalytics ServiceInTopology = "Single Node Analytics"
 
 	ServiceInTopologySingleNodeTransactions ServiceInTopology = "Single Node Transactions"
-)
-
-// Defines values for ServiceInVolumeType.
-const (
-	ServiceInVolumeTypeEmpty ServiceInVolumeType = ""
-
-	ServiceInVolumeTypeGp2 ServiceInVolumeType = "gp2"
-
-	ServiceInVolumeTypeGp3 ServiceInVolumeType = "gp3"
-
-	ServiceInVolumeTypeIo1 ServiceInVolumeType = "io1"
-
-	ServiceInVolumeTypeIo2 ServiceInVolumeType = "io2"
 )
 
 // Defines values for ServiceOutSslTls.
@@ -56,19 +43,6 @@ const (
 	ServiceOutSslTlsEmpty ServiceOutSslTls = ""
 
 	ServiceOutSslTlsEnabled ServiceOutSslTls = "Enabled"
-)
-
-// Defines values for ServiceOutVolumeType.
-const (
-	ServiceOutVolumeTypeEmpty ServiceOutVolumeType = ""
-
-	ServiceOutVolumeTypeGp2 ServiceOutVolumeType = "gp2"
-
-	ServiceOutVolumeTypeGp3 ServiceOutVolumeType = "gp3"
-
-	ServiceOutVolumeTypeIo1 ServiceOutVolumeType = "io1"
-
-	ServiceOutVolumeTypeIo2 ServiceOutVolumeType = "io2"
 )
 
 // Defines values for SnowProviders.
@@ -93,8 +67,8 @@ const (
 // IP Address that has been added to the services network allowlist
 type AllowlistIPAddress struct {
 	Comment   *string `json:"comment,omitempty"`
-	Database  string  `json:"database"`
 	IpAddress string  `json:"ip_address"`
+	ServiceId string  `json:"service_id"`
 }
 
 // GET Configuration Response
@@ -161,33 +135,18 @@ type Message struct {
 	Detail string `json:"detail"`
 }
 
-// A database product, e.g. Xpand
-type Product struct {
-	Active           *string `json:"active,omitempty"`
-	ActiveTopologies *string `json:"active_topologies,omitempty"`
-	CreatedOn        *string `json:"created_on,omitempty"`
-	DefaultTopology  *string `json:"default_topology,omitempty"`
-	Description      *string `json:"description,omitempty"`
-	DisplayName      *string `json:"display_name,omitempty"`
-	ModCount         *string `json:"mod_count,omitempty"`
-	Name             string  `json:"name"`
-	Order            *string `json:"order,omitempty"`
-	ShortDescription *string `json:"short_description,omitempty"`
-	UpdatedOn        *string `json:"updated_on,omitempty"`
-}
-
 // Cloud provider, e.g. AWS or GCP
 type Provider struct {
-	Active     *string `json:"active,omitempty"`
-	CreatedOn  *string `json:"created_on,omitempty"`
-	IconImage  *string `json:"icon_image,omitempty"`
-	LogoImage  *string `json:"logo_image,omitempty"`
-	ModCount   *string `json:"mod_count,omitempty"`
-	Name       string  `json:"name"`
-	Products   *string `json:"products,omitempty"`
-	Topologies *string `json:"topologies,omitempty"`
-	UpdatedOn  string  `json:"updated_on"`
-	Value      string  `json:"value"`
+	Active       *string `json:"active,omitempty"`
+	CreatedOn    *string `json:"created_on,omitempty"`
+	IconImage    *string `json:"icon_image,omitempty"`
+	LogoImage    *string `json:"logo_image,omitempty"`
+	ModCount     *string `json:"mod_count,omitempty"`
+	Name         string  `json:"name"`
+	ServiceTypes *string `json:"service_types,omitempty"`
+	Topologies   *string `json:"topologies,omitempty"`
+	UpdatedOn    string  `json:"updated_on"`
+	Value        string  `json:"value"`
 }
 
 // A quota progress response
@@ -202,7 +161,7 @@ type QuotaProgress struct {
 }
 
 // Geographic region, as defined by the providers
-type RegionResponse struct {
+type Region struct {
 	CreatedOn *string `json:"created_on,omitempty"`
 	Default   *string `json:"default,omitempty"`
 	Name      string  `json:"name"`
@@ -222,18 +181,16 @@ type ServiceIn struct {
 	Name           string  `json:"name"`
 
 	// Providers configured in snow
-	Provider       SnowProviders        `json:"provider"`
-	Region         string               `json:"region"`
-	ReleaseVersion string               `json:"release_version"`
-	ReplRegion     *string              `json:"repl_region,omitempty"`
-	Replicas       string               `json:"replicas"`
-	Size           string               `json:"size"`
-	SslTls         *ServiceInSslTls     `json:"ssl_tls,omitempty"`
-	Tier           ServiceInTier        `json:"tier"`
-	Topology       ServiceInTopology    `json:"topology"`
-	TxStorage      string               `json:"tx_storage"`
-	VolumeIops     *string              `json:"volume_iops,omitempty"`
-	VolumeType     *ServiceInVolumeType `json:"volume_type,omitempty"`
+	Provider       SnowProviders     `json:"provider"`
+	Region         string            `json:"region"`
+	ReleaseVersion string            `json:"release_version"`
+	Replicas       string            `json:"replicas"`
+	Size           string            `json:"size"`
+	SslTls         *ServiceInSslTls  `json:"ssl_tls,omitempty"`
+	Tier           ServiceInTier     `json:"tier"`
+	Topology       ServiceInTopology `json:"topology"`
+	TxStorage      string            `json:"tx_storage"`
+	VolumeIops     *string           `json:"volume_iops,omitempty"`
 }
 
 // ServiceInSslTls defines model for ServiceIn.SslTls.
@@ -245,68 +202,37 @@ type ServiceInTier string
 // ServiceInTopology defines model for ServiceIn.Topology.
 type ServiceInTopology string
 
-// ServiceInVolumeType defines model for ServiceIn.VolumeType.
-type ServiceInVolumeType string
-
-// MariaDB services deployed by SkySQL
+// Base class for Service responses
 type ServiceOut struct {
-	ActiveReplicas    *string               `json:"active_replicas,omitempty"`
-	BulkdataPort1     *string               `json:"bulkdata_port_1,omitempty"`
-	BulkdataPort2     *string               `json:"bulkdata_port_2,omitempty"`
-	Cluster           *string               `json:"cluster,omitempty"`
-	ColumnstoreBucket *string               `json:"columnstore_bucket,omitempty"`
-	CreatedBy         *string               `json:"created_by,omitempty"`
-	CreatedOn         *string               `json:"created_on,omitempty"`
-	CustomConfig      *string               `json:"custom_config,omitempty"`
-	DnsDomain         *string               `json:"dns_domain,omitempty"`
-	FaultCount        *string               `json:"fault_count,omitempty"`
-	Fqdn              *string               `json:"fqdn,omitempty"`
-	GlAccount         *string               `json:"gl_account,omitempty"`
-	Id                *string               `json:"id,omitempty"`
-	InstallStatus     string                `json:"install_status"`
-	InstanceState     *string               `json:"instance_state,omitempty"`
-	IpAddress         *string               `json:"ip_address,omitempty"`
-	MacAddress        *string               `json:"mac_address,omitempty"`
-	MaxscaleConfig    *string               `json:"maxscale_config,omitempty"`
-	MaxscaleProxy     *string               `json:"maxscale_proxy,omitempty"`
-	ModCount          *string               `json:"mod_count,omitempty"`
-	Monitor           *string               `json:"monitor,omitempty"`
-	Name              *string               `json:"name,omitempty"`
-	Number            *string               `json:"number,omitempty"`
-	OperationalStatus string                `json:"operational_status"`
-	OwnedBy           *string               `json:"owned_by,omitempty"`
-	Provider          *string               `json:"provider,omitempty"`
-	Proxy             *string               `json:"proxy,omitempty"`
-	ReadOnlyPort      *string               `json:"read_only_port,omitempty"`
-	ReadWritePort     *string               `json:"read_write_port,omitempty"`
-	Region            *string               `json:"region,omitempty"`
-	ReleaseVersion    *string               `json:"release_version,omitempty"`
-	ReplMaster        *string               `json:"repl_master,omitempty"`
-	ReplMasterHostExt *string               `json:"repl_master_host_ext,omitempty"`
-	ReplRegion        *string               `json:"repl_region,omitempty"`
-	Replicas          *string               `json:"replicas,omitempty"`
-	ReplicationStatus *string               `json:"replication_status,omitempty"`
-	ReplicationType   *string               `json:"replication_type,omitempty"`
-	Size              *string               `json:"size,omitempty"`
-	SkipSync          *string               `json:"skip_sync,omitempty"`
-	SslCertificate    *string               `json:"ssl_certificate,omitempty"`
-	SslExpiresOn      *string               `json:"ssl_expires_on,omitempty"`
-	SslSerial         *string               `json:"ssl_serial,omitempty"`
-	SslTls            *ServiceOutSslTls     `json:"ssl_tls,omitempty"`
-	Tier              *string               `json:"tier,omitempty"`
-	Topology          *string               `json:"topology,omitempty"`
-	TxStorage         *string               `json:"tx_storage,omitempty"`
-	UpdatedBy         *string               `json:"updated_by,omitempty"`
-	UpdatedOn         *string               `json:"updated_on,omitempty"`
-	VolumeIops        *string               `json:"volume_iops,omitempty"`
-	VolumeType        *ServiceOutVolumeType `json:"volume_type,omitempty"`
+	CreatedOn      *string           `json:"created_on,omitempty"`
+	CustomConfig   *string           `json:"custom_config,omitempty"`
+	Fqdn           *string           `json:"fqdn,omitempty"`
+	Id             *string           `json:"id,omitempty"`
+	InstallStatus  *string           `json:"install_status,omitempty"`
+	IpAddress      *string           `json:"ip_address,omitempty"`
+	MaxscaleConfig *string           `json:"maxscale_config,omitempty"`
+	MaxscaleProxy  *string           `json:"maxscale_proxy,omitempty"`
+	Monitor        *string           `json:"monitor,omitempty"`
+	Name           *string           `json:"name,omitempty"`
+	Number         *string           `json:"number,omitempty"`
+	OwnedBy        *string           `json:"owned_by,omitempty"`
+	Provider       *string           `json:"provider,omitempty"`
+	ReadOnlyPort   *string           `json:"read_only_port,omitempty"`
+	ReadWritePort  *string           `json:"read_write_port,omitempty"`
+	Region         *string           `json:"region,omitempty"`
+	ReleaseVersion *string           `json:"release_version,omitempty"`
+	Replicas       *string           `json:"replicas,omitempty"`
+	Size           *string           `json:"size,omitempty"`
+	SslTls         *ServiceOutSslTls `json:"ssl_tls,omitempty"`
+	Tier           *string           `json:"tier,omitempty"`
+	Topology       *string           `json:"topology,omitempty"`
+	TxStorage      *string           `json:"tx_storage,omitempty"`
+	UpdatedOn      *string           `json:"updated_on,omitempty"`
+	VolumeIops     *string           `json:"volume_iops,omitempty"`
 }
 
 // ServiceOutSslTls defines model for ServiceOut.SslTls.
 type ServiceOutSslTls string
-
-// ServiceOutVolumeType defines model for ServiceOut.VolumeType.
-type ServiceOutVolumeType string
 
 // Response body for a services status
 type ServiceStatus struct {
@@ -319,41 +245,54 @@ type ServiceStatusUpdate struct {
 	Action ServiceActions `json:"action"`
 }
 
+// A database service type, e.g. Distributed Transactions
+type ServiceType struct {
+	ActiveTopologies *string `json:"active_topologies,omitempty"`
+	CreatedOn        *string `json:"created_on,omitempty"`
+	DefaultTopology  *string `json:"default_topology,omitempty"`
+	Description      *string `json:"description,omitempty"`
+	ModCount         *string `json:"mod_count,omitempty"`
+	Name             *string `json:"name,omitempty"`
+	Order            *string `json:"order,omitempty"`
+	ShortDescription *string `json:"short_description,omitempty"`
+	UpdatedOn        *string `json:"updated_on,omitempty"`
+}
+
 // Request body to update a services - currently limited to name only
 type ServiceUpdate struct {
 	Name string `json:"name"`
 }
 
 // Node size, as defined by the providers
-type SizeResponse struct {
-	Cpu        *string `json:"cpu,omitempty"`
-	CreatedOn  *string `json:"created_on,omitempty"`
-	Name       string  `json:"name"`
-	Product    string  `json:"product"`
-	Provider   string  `json:"provider"`
-	Ram        *string `json:"ram,omitempty"`
-	Sequence   string  `json:"sequence"`
-	Tier       string  `json:"tier"`
-	Visibility string  `json:"visibility"`
+type Size struct {
+	Cpu         *string `json:"cpu,omitempty"`
+	CreatedOn   *string `json:"created_on,omitempty"`
+	Name        string  `json:"name"`
+	Provider    string  `json:"provider"`
+	Ram         *string `json:"ram,omitempty"`
+	Sequence    string  `json:"sequence"`
+	ServiceType string  `json:"service_type"`
+	Tier        string  `json:"tier"`
+	Visibility  string  `json:"visibility"`
 }
 
 // Providers configured in snow
 type SnowProviders string
 
 // Availability tier, e.g. Power, Foundation, etc.
-type TierResponse struct {
+type Tier struct {
 	Name *string `json:"name,omitempty"`
 	Paid *string `json:"paid,omitempty"`
 }
 
 // Cluster topology valid for a particular product, e.g. Standalone or MaxScale
-type TopologyResponse struct {
+type Topology struct {
 	Active            *string `json:"active,omitempty"`
 	MaxscaleSupported *string `json:"maxscale_supported,omitempty"`
-	Name              string  `json:"name"`
-	Product           string  `json:"product"`
+	Name              *string `json:"name,omitempty"`
 	ReplicaLabel      *string `json:"replica_label,omitempty"`
 	ReplicaOptions    *string `json:"replica_options,omitempty"`
+	ServiceType       string  `json:"service_type"`
 }
 
 // Message details containing unmet expectations from failed specs
@@ -384,16 +323,15 @@ type ValidationError struct {
 // Database version, e.g. 10.4 or 10.5
 type Version struct {
 	CreatedOn         *string `json:"created_on,omitempty"`
-	DisplayName       *string `json:"display_name,omitempty"`
 	EnterpriseVersion *string `json:"enterprise_version,omitempty"`
 	ModCount          *string `json:"mod_count,omitempty"`
 	Name              *string `json:"name,omitempty"`
 	ParentRelease     *string `json:"parent_release,omitempty"`
-	Product           *string `json:"product,omitempty"`
 	Provider          *string `json:"provider,omitempty"`
 	Public            *string `json:"public,omitempty"`
 	ReleaseDate       *string `json:"release_date,omitempty"`
 	ReleaseNotesUrl   *string `json:"release_notes_url,omitempty"`
+	ServiceType       *string `json:"service_type,omitempty"`
 	Type              *string `json:"type,omitempty"`
 	UpdatedOn         *string `json:"updated_on,omitempty"`
 }
@@ -409,11 +347,6 @@ type CreateConfigurationJSONBody CreateConfigurationRequest
 // UpdateConfigurationJSONBody defines parameters for UpdateConfiguration.
 type UpdateConfigurationJSONBody UpdateConfigurationRequest
 
-// ReadProductsParams defines parameters for ReadProducts.
-type ReadProductsParams struct {
-	Limit *int `json:"limit,omitempty"`
-}
-
 // ReadProvidersParams defines parameters for ReadProviders.
 type ReadProvidersParams struct {
 	Limit *int `json:"limit,omitempty"`
@@ -425,16 +358,21 @@ type ReadRegionsParams struct {
 	Limit    *int          `json:"limit,omitempty"`
 }
 
-// ReadSizesParams defines parameters for ReadSizes.
-type ReadSizesParams struct {
-	Product  ReadSizesParamsProduct `json:"product"`
-	Provider SnowProviders          `json:"provider"`
-	Tier     ReadSizesParamsTier    `json:"tier"`
-	Limit    *int                   `json:"limit,omitempty"`
+// ReadServiceTypesParams defines parameters for ReadServiceTypes.
+type ReadServiceTypesParams struct {
+	Limit *int `json:"limit,omitempty"`
 }
 
-// ReadSizesParamsProduct defines parameters for ReadSizes.
-type ReadSizesParamsProduct string
+// ReadSizesParams defines parameters for ReadSizes.
+type ReadSizesParams struct {
+	ServiceType ReadSizesParamsServiceType `json:"service_type"`
+	Provider    SnowProviders              `json:"provider"`
+	Tier        ReadSizesParamsTier        `json:"tier"`
+	Limit       *int                       `json:"limit,omitempty"`
+}
+
+// ReadSizesParamsServiceType defines parameters for ReadSizes.
+type ReadSizesParamsServiceType string
 
 // ReadSizesParamsTier defines parameters for ReadSizes.
 type ReadSizesParamsTier string
@@ -446,12 +384,12 @@ type ReadTiersParams struct {
 
 // ReadTopologiesParams defines parameters for ReadTopologies.
 type ReadTopologiesParams struct {
-	Product ReadTopologiesParamsProduct `json:"product"`
-	Limit   *int                        `json:"limit,omitempty"`
+	ServiceType ReadTopologiesParamsServiceType `json:"service_type"`
+	Limit       *int                            `json:"limit,omitempty"`
 }
 
-// ReadTopologiesParamsProduct defines parameters for ReadTopologies.
-type ReadTopologiesParamsProduct string
+// ReadTopologiesParamsServiceType defines parameters for ReadTopologies.
+type ReadTopologiesParamsServiceType string
 
 // ReadVersionsParams defines parameters for ReadVersions.
 type ReadVersionsParams struct {
