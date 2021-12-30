@@ -894,7 +894,7 @@ func NewReadServiceTypesRequest(server string, params *ReadServiceTypesParams) (
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/offering/service_types")
+	operationPath := fmt.Sprintf("/offering/service-types")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
