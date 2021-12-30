@@ -7,6 +7,13 @@ const (
 	HTTPBearerScopes = "HTTPBearer.Scopes"
 )
 
+// Defines values for AllowlistStatuses.
+const (
+	AllowlistStatusesEnforcing AllowlistStatuses = "Enforcing"
+
+	AllowlistStatusesUpdating AllowlistStatuses = "Updating"
+)
+
 // Defines values for ServiceInSslTls.
 const (
 	ServiceInSslTlsDisabled ServiceInSslTls = "Disabled"
@@ -70,6 +77,15 @@ type AllowlistIPAddress struct {
 	IpAddress string  `json:"ip_address"`
 	ServiceId string  `json:"service_id"`
 }
+
+// Status of the service allowlist to indicate if address changes are provisioning
+type AllowlistStatus struct {
+	// Possible statuses for the allowlist
+	Status AllowlistStatuses `json:"status"`
+}
+
+// Possible statuses for the allowlist
+type AllowlistStatuses string
 
 // GET Configuration Response
 type ConfigurationResp struct {

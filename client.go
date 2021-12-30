@@ -163,6 +163,9 @@ type ClientInterface interface {
 
 	AddAllowedAddress(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ReadAllowlistStatus request
+	ReadAllowlistStatus(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// RetrieveDefaultCredentials request
 	RetrieveDefaultCredentials(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -477,6 +480,18 @@ func (c *Client) AddAllowedAddressWithBody(ctx context.Context, serviceId string
 
 func (c *Client) AddAllowedAddress(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAddAllowedAddressRequest(c.Server, serviceId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReadAllowlistStatus(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReadAllowlistStatusRequest(c.Server, serviceId)
 	if err != nil {
 		return nil, err
 	}
@@ -1387,7 +1402,7 @@ func NewRemoveAllowedAddressRequest(server string, serviceId string, params *Rem
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1441,7 +1456,7 @@ func NewListAllowedAddressesRequest(server string, serviceId string, params *Lis
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1522,7 +1537,7 @@ func NewAddAllowedAddressRequestWithBody(server string, serviceId string, conten
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1538,6 +1553,40 @@ func NewAddAllowedAddressRequestWithBody(server string, serviceId string, conten
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewReadAllowlistStatusRequest generates requests for ReadAllowlistStatus
+func NewReadAllowlistStatusRequest(server string, serviceId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "service_id", runtime.ParamLocationPath, serviceId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist/status", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -1772,6 +1821,9 @@ type ClientWithResponsesInterface interface {
 	AddAllowedAddressWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
 
 	AddAllowedAddressWithResponse(ctx context.Context, serviceId string, body AddAllowedAddressJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAllowedAddressResponse, error)
+
+	// ReadAllowlistStatus request
+	ReadAllowlistStatusWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*ReadAllowlistStatusResponse, error)
 
 	// RetrieveDefaultCredentials request
 	RetrieveDefaultCredentialsWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*RetrieveDefaultCredentialsResponse, error)
@@ -2337,6 +2389,29 @@ func (r AddAllowedAddressResponse) StatusCode() int {
 	return 0
 }
 
+type ReadAllowlistStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *AllowlistStatus
+	JSON422      *HTTPValidationError
+}
+
+// Status returns HTTPResponse.Status
+func (r ReadAllowlistStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReadAllowlistStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type RetrieveDefaultCredentialsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -2644,6 +2719,15 @@ func (c *ClientWithResponses) AddAllowedAddressWithResponse(ctx context.Context,
 		return nil, err
 	}
 	return ParseAddAllowedAddressResponse(rsp)
+}
+
+// ReadAllowlistStatusWithResponse request returning *ReadAllowlistStatusResponse
+func (c *ClientWithResponses) ReadAllowlistStatusWithResponse(ctx context.Context, serviceId string, reqEditors ...RequestEditorFn) (*ReadAllowlistStatusResponse, error) {
+	rsp, err := c.ReadAllowlistStatus(ctx, serviceId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReadAllowlistStatusResponse(rsp)
 }
 
 // RetrieveDefaultCredentialsWithResponse request returning *RetrieveDefaultCredentialsResponse
@@ -3851,6 +3935,39 @@ func ParseAddAllowedAddressResponse(rsp *http.Response) (*AddAllowedAddressRespo
 			return nil, err
 		}
 		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReadAllowlistStatusResponse parses an HTTP response from a ReadAllowlistStatusWithResponse call
+func ParseReadAllowlistStatusResponse(rsp *http.Response) (*ReadAllowlistStatusResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReadAllowlistStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AllowlistStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
+		var dest HTTPValidationError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON422 = &dest
 
 	}
 
