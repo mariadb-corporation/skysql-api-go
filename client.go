@@ -176,6 +176,9 @@ type ClientInterface interface {
 	UpdateStatusWithBody(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	UpdateStatus(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RetrieveApiVersion request
+	RetrieveApiVersion(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) ReadQuotas(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -550,6 +553,18 @@ func (c *Client) UpdateStatus(ctx context.Context, serviceId string, body Update
 	return c.Client.Do(req)
 }
 
+func (c *Client) RetrieveApiVersion(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRetrieveApiVersionRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // NewReadQuotasRequest generates requests for ReadQuotas
 func NewReadQuotasRequest(server string) (*http.Request, error) {
 	var err error
@@ -816,6 +831,22 @@ func NewReadProvidersRequest(server string, params *ReadProvidersParams) (*http.
 
 	}
 
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
 	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -875,6 +906,22 @@ func NewReadRegionsRequest(server string, params *ReadRegionsParams) (*http.Requ
 
 	}
 
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
 	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -909,6 +956,22 @@ func NewReadServiceTypesRequest(server string, params *ReadServiceTypesParams) (
 	if params.Limit != nil {
 
 		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
 			return nil, err
 		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 			return nil, err
@@ -1005,6 +1068,22 @@ func NewReadSizesRequest(server string, params *ReadSizesParams) (*http.Request,
 
 	}
 
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
 	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -1039,6 +1118,22 @@ func NewReadTiersRequest(server string, params *ReadTiersParams) (*http.Request,
 	if params.Limit != nil {
 
 		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
 			return nil, err
 		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 			return nil, err
@@ -1111,6 +1206,22 @@ func NewReadTopologiesRequest(server string, params *ReadTopologiesParams) (*htt
 
 	}
 
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
 	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -1145,6 +1256,22 @@ func NewReadVersionsRequest(server string, params *ReadVersionsParams) (*http.Re
 	if params.Limit != nil {
 
 		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
 			return nil, err
 		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 			return nil, err
@@ -1208,6 +1335,22 @@ func NewListServicesRequest(server string, params *ListServicesParams) (*http.Re
 	if params.Limit != nil {
 
 		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.Offset != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "offset", runtime.ParamLocationQuery, *params.Offset); err != nil {
 			return nil, err
 		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 			return nil, err
@@ -1706,6 +1849,33 @@ func NewUpdateStatusRequestWithBody(server string, serviceId string, contentType
 	return req, nil
 }
 
+// NewRetrieveApiVersionRequest generates requests for RetrieveApiVersion
+func NewRetrieveApiVersionRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/version")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -1835,6 +2005,9 @@ type ClientWithResponsesInterface interface {
 	UpdateStatusWithBodyWithResponse(ctx context.Context, serviceId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
 
 	UpdateStatusWithResponse(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
+
+	// RetrieveApiVersion request
+	RetrieveApiVersionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*RetrieveApiVersionResponse, error)
 }
 
 type ReadQuotasResponse struct {
@@ -2492,6 +2665,28 @@ func (r UpdateStatusResponse) StatusCode() int {
 	return 0
 }
 
+type RetrieveApiVersionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *interface{}
+}
+
+// Status returns HTTPResponse.Status
+func (r RetrieveApiVersionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RetrieveApiVersionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // ReadQuotasWithResponse request returning *ReadQuotasResponse
 func (c *ClientWithResponses) ReadQuotasWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ReadQuotasResponse, error) {
 	rsp, err := c.ReadQuotas(ctx, reqEditors...)
@@ -2763,6 +2958,15 @@ func (c *ClientWithResponses) UpdateStatusWithResponse(ctx context.Context, serv
 		return nil, err
 	}
 	return ParseUpdateStatusResponse(rsp)
+}
+
+// RetrieveApiVersionWithResponse request returning *RetrieveApiVersionResponse
+func (c *ClientWithResponses) RetrieveApiVersionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*RetrieveApiVersionResponse, error) {
+	rsp, err := c.RetrieveApiVersion(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRetrieveApiVersionResponse(rsp)
 }
 
 // ParseReadQuotasResponse parses an HTTP response from a ReadQuotasWithResponse call
@@ -4144,6 +4348,32 @@ func ParseUpdateStatusResponse(rsp *http.Response) (*UpdateStatusResponse, error
 			return nil, err
 		}
 		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRetrieveApiVersionResponse parses an HTTP response from a RetrieveApiVersionWithResponse call
+func ParseRetrieveApiVersionResponse(rsp *http.Response) (*RetrieveApiVersionResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RetrieveApiVersionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest interface{}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	}
 
