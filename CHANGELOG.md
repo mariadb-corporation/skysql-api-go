@@ -1,3 +1,15 @@
+# v0.0.23 (Wed Jan 12 2022)
+
+#### 📝 Documentation
+
+- Add Apache license and technical preview blurb [#27](https://github.com/mariadb-corporation/skysql-api-go/pull/27) ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+#### Authors: 1
+
+- Don Mayo ([@mariadb-DonMayo](https://github.com/mariadb-DonMayo))
+
+---
+
 # v0.0.22 (Thu Dec 30 2021)
 
 #### 🚀 Enhancement
