@@ -1,4 +1,6 @@
-# SkySQL API Golang SDK
+# MariaDB SkySQL DBaaS API Golang SDK
+
+> The MariaDB SkySQL DBaaS API Golang SDK is a Technical Preview. Software in Tech Preview should not be used for production workloads.
 
 This project contains a golang client generated from the OpenAPI specification for the SkySQL API created [deepmap/oapi-codegen](https://github.com/deepmap/oapi-codegen).
 
