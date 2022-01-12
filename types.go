@@ -365,18 +365,21 @@ type UpdateConfigurationJSONBody UpdateConfigurationRequest
 
 // ReadProvidersParams defines parameters for ReadProviders.
 type ReadProvidersParams struct {
-	Limit *int `json:"limit,omitempty"`
+	Limit  *int `json:"limit,omitempty"`
+	Offset *int `json:"offset,omitempty"`
 }
 
 // ReadRegionsParams defines parameters for ReadRegions.
 type ReadRegionsParams struct {
 	Provider SnowProviders `json:"provider"`
 	Limit    *int          `json:"limit,omitempty"`
+	Offset   *int          `json:"offset,omitempty"`
 }
 
 // ReadServiceTypesParams defines parameters for ReadServiceTypes.
 type ReadServiceTypesParams struct {
-	Limit *int `json:"limit,omitempty"`
+	Limit  *int `json:"limit,omitempty"`
+	Offset *int `json:"offset,omitempty"`
 }
 
 // ReadSizesParams defines parameters for ReadSizes.
@@ -385,6 +388,7 @@ type ReadSizesParams struct {
 	Provider    SnowProviders              `json:"provider"`
 	Tier        ReadSizesParamsTier        `json:"tier"`
 	Limit       *int                       `json:"limit,omitempty"`
+	Offset      *int                       `json:"offset,omitempty"`
 }
 
 // ReadSizesParamsServiceType defines parameters for ReadSizes.
@@ -395,13 +399,15 @@ type ReadSizesParamsTier string
 
 // ReadTiersParams defines parameters for ReadTiers.
 type ReadTiersParams struct {
-	Limit *int `json:"limit,omitempty"`
+	Limit  *int `json:"limit,omitempty"`
+	Offset *int `json:"offset,omitempty"`
 }
 
 // ReadTopologiesParams defines parameters for ReadTopologies.
 type ReadTopologiesParams struct {
 	ServiceType ReadTopologiesParamsServiceType `json:"service_type"`
 	Limit       *int                            `json:"limit,omitempty"`
+	Offset      *int                            `json:"offset,omitempty"`
 }
 
 // ReadTopologiesParamsServiceType defines parameters for ReadTopologies.
@@ -409,13 +415,15 @@ type ReadTopologiesParamsServiceType string
 
 // ReadVersionsParams defines parameters for ReadVersions.
 type ReadVersionsParams struct {
-	Limit *int `json:"limit,omitempty"`
+	Limit  *int `json:"limit,omitempty"`
+	Offset *int `json:"offset,omitempty"`
 }
 
 // ListServicesParams defines parameters for ListServices.
 type ListServicesParams struct {
-	Name  *string `json:"name,omitempty"`
-	Limit *int    `json:"limit,omitempty"`
+	Name   *string `json:"name,omitempty"`
+	Limit  *int    `json:"limit,omitempty"`
+	Offset *int    `json:"offset,omitempty"`
 }
 
 // CreateServiceJSONBody defines parameters for CreateService.
