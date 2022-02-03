@@ -601,7 +601,7 @@ func NewListConfigurationsRequest(server string, params *ListConfigurationsParam
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/configurations/")
+	operationPath := fmt.Sprintf("/configurations")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -659,7 +659,7 @@ func NewCreateConfigurationRequestWithBody(server string, contentType string, bo
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/configurations/")
+	operationPath := fmt.Sprintf("/configurations")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1304,7 +1304,7 @@ func NewListServicesRequest(server string, params *ListServicesParams) (*http.Re
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/")
+	operationPath := fmt.Sprintf("/services")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1394,7 +1394,7 @@ func NewCreateServiceRequestWithBody(server string, contentType string, body io.
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/")
+	operationPath := fmt.Sprintf("/services")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1545,7 +1545,7 @@ func NewRemoveAllowedAddressRequest(server string, serviceId string, params *Rem
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1599,7 +1599,7 @@ func NewListAllowedAddressesRequest(server string, serviceId string, params *Lis
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1680,7 +1680,7 @@ func NewAddAllowedAddressRequestWithBody(server string, serviceId string, conten
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1784,7 +1784,7 @@ func NewReadStatusRequest(server string, serviceId string) (*http.Request, error
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/status/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/status", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1829,7 +1829,7 @@ func NewUpdateStatusRequestWithBody(server string, serviceId string, contentType
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/status/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/status", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
