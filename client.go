@@ -4517,4 +4517,3 @@ func ParseRetrieveApiVersionResponse(rsp *http.Response) (*RetrieveApiVersionRes
 
 	return response, nil
 }
-

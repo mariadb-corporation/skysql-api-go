@@ -276,7 +276,8 @@ type ServiceType struct {
 
 // Request body to update a services - currently limited to name only
 type ServiceUpdate struct {
-	Name string `json:"name"`
+	Name      *string `json:"name,omitempty"`
+	TxStorage *string `json:"tx_storage,omitempty"`
 }
 
 // Node size, as defined by the providers
@@ -466,4 +467,3 @@ type AddAllowedAddressJSONRequestBody AddAllowedAddressJSONBody
 
 // UpdateStatusJSONRequestBody defines body for UpdateStatus for application/json ContentType.
 type UpdateStatusJSONRequestBody UpdateStatusJSONBody
-
