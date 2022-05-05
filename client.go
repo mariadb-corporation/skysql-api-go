@@ -2152,7 +2152,7 @@ type DeleteConfigurationResponse struct {
 	JSON403      *Message
 	JSON404      *Message
 	JSON409      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2179,7 +2179,7 @@ type ReadConfigurationResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2206,7 +2206,7 @@ type UpdateConfigurationResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2442,7 +2442,7 @@ type CreateServiceResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2470,7 +2470,7 @@ type DeleteServiceResponse struct {
 	JSON403      *Message
 	JSON404      *Message
 	JSON409      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2497,7 +2497,7 @@ type ReadServiceResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2524,7 +2524,7 @@ type UpdateServiceResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2650,7 +2650,7 @@ type RetrieveDefaultCredentialsResponse struct {
 	JSON403      *Message
 	JSON404      *Message
 	JSON409      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -3265,7 +3265,7 @@ func ParseDeleteConfigurationResponse(rsp *http.Response) (*DeleteConfigurationR
 		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3326,7 +3326,7 @@ func ParseReadConfigurationResponse(rsp *http.Response) (*ReadConfigurationRespo
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3387,7 +3387,7 @@ func ParseUpdateConfigurationResponse(rsp *http.Response) (*UpdateConfigurationR
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3887,7 +3887,7 @@ func ParseCreateServiceResponse(rsp *http.Response) (*CreateServiceResponse, err
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3955,7 +3955,7 @@ func ParseDeleteServiceResponse(rsp *http.Response) (*DeleteServiceResponse, err
 		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -4016,7 +4016,7 @@ func ParseReadServiceResponse(rsp *http.Response) (*ReadServiceResponse, error) 
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -4077,7 +4077,7 @@ func ParseUpdateServiceResponse(rsp *http.Response) (*UpdateServiceResponse, err
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -4319,7 +4319,7 @@ func ParseRetrieveDefaultCredentialsResponse(rsp *http.Response) (*RetrieveDefau
 		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
