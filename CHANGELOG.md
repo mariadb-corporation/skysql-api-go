@@ -1,3 +1,15 @@
+# v0.0.24 (Fri May 06 2022)
+
+#### 🚀 Enhancement
+
+
+#### Authors: 2
+
+- John Halbert ([@mariadb-JohnHalbert](https://github.com/mariadb-JohnHalbert))
+- SkySQL API Golang SDK Release Pipeline (no-reply@mariadb.com)
+
+---
+
 # v0.0.24 (Wed Jan 12 2022)
 
 #### 🚀 Enhancement
