@@ -276,7 +276,8 @@ type ServiceType struct {
 
 // Request body to update a services - currently limited to name only
 type ServiceUpdate struct {
-	Name string `json:"name"`
+	Name      *string `json:"name,omitempty"`
+	TxStorage *string `json:"tx_storage,omitempty"`
 }
 
 // Node size, as defined by the providers
@@ -286,7 +287,6 @@ type Size struct {
 	Name        string  `json:"name"`
 	Provider    string  `json:"provider"`
 	Ram         *string `json:"ram,omitempty"`
-	Sequence    string  `json:"sequence"`
 	ServiceType string  `json:"service_type"`
 	Tier        string  `json:"tier"`
 	Visibility  string  `json:"visibility"`
@@ -384,15 +384,16 @@ type ReadServiceTypesParams struct {
 
 // ReadSizesParams defines parameters for ReadSizes.
 type ReadSizesParams struct {
-	ServiceType ReadSizesParamsServiceType `json:"service_type"`
-	Provider    SnowProviders              `json:"provider"`
-	Tier        ReadSizesParamsTier        `json:"tier"`
-	Limit       *int                       `json:"limit,omitempty"`
-	Offset      *int                       `json:"offset,omitempty"`
+	Region   string                  `json:"region"`
+	Topology ReadSizesParamsTopology `json:"topology"`
+	Provider SnowProviders           `json:"provider"`
+	Tier     ReadSizesParamsTier     `json:"tier"`
+	Limit    *int                    `json:"limit,omitempty"`
+	Offset   *int                    `json:"offset,omitempty"`
 }
 
-// ReadSizesParamsServiceType defines parameters for ReadSizes.
-type ReadSizesParamsServiceType string
+// ReadSizesParamsTopology defines parameters for ReadSizes.
+type ReadSizesParamsTopology string
 
 // ReadSizesParamsTier defines parameters for ReadSizes.
 type ReadSizesParamsTier string
@@ -434,7 +435,7 @@ type UpdateServiceJSONBody ServiceUpdate
 
 // RemoveAllowedAddressParams defines parameters for RemoveAllowedAddress.
 type RemoveAllowedAddressParams struct {
-	Address *string `json:"address,omitempty"`
+	Address string `json:"address"`
 }
 
 // ListAllowedAddressesParams defines parameters for ListAllowedAddresses.
@@ -466,4 +467,3 @@ type AddAllowedAddressJSONRequestBody AddAllowedAddressJSONBody
 
 // UpdateStatusJSONRequestBody defines body for UpdateStatus for application/json ContentType.
 type UpdateStatusJSONRequestBody UpdateStatusJSONBody
-

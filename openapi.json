@@ -3,9 +3,66 @@
   "info": {
     "title": "MariaDB SkySQL API",
     "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n\n### Authentication\nTo authenticate with the API, do the following:\n\n- Generate an [API key from MariaDB ID](https://id-dev.mariadb.com/account/api)\n\n- Use the API key to generate a short lived token\n    ```\n    curl \\\n        --location \\\n        --request POST \\\n        --header \"Authorization: Token REDACTED\" \\\n        --header \"Content-length: 0\" \\\n        'https://id-dev.mariadb.com/api/v1/token/'\n    ```\n\n- Use the `token` field from the response in the _Authorization_ header for `Bearer` auth in subsequent api requests.\n\n\n### Clients\nClients have been developed to simplify the usage of this API:\n* Command line tool: [`skysqlcli`](https://github.com/mariadb-corporation/skysql-api-cli)\n* Golang SDK: [`skysql-api-go`](https://github.com/mariadb-corporation/skysql-api-go)\n* Terraform provider: [`terraform-provider-skysql`](https://github.com/mariadb-corporation/terraform-provider-skysql)\n\nThese clients handle the token retrieval step automatically, and only need to be supplied with the API key.\n\n\n\n\n\n**Note:** The example values provided below, if used, may not return a success response.",
-    "version": "0.0.102"
+    "version": "0.0.116"
   },
   "paths": {
+    "/users/tier": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get Current User Tier",
+        "description": "Return the tier of the currently logged in user",
+        "operationId": "get_current_user_tier",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tier"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/billing/quotas": {
       "get": {
         "tags": [
@@ -67,7 +124,7 @@
         ]
       }
     },
-    "/configurations/": {
+    "/configurations": {
       "get": {
         "tags": [
           "Configurations"
@@ -95,7 +152,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Configurations Configurations  Get",
+                  "title": "Response List Configurations Configurations Get",
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/ConfigurationResponseBaseModel"
@@ -298,6 +355,16 @@
               }
             }
           },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -324,16 +391,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Message"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -406,6 +463,16 @@
               }
             }
           },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -432,16 +499,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Message"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -532,6 +589,16 @@
               }
             }
           },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -561,16 +628,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
         },
         "security": [
@@ -580,7 +637,7 @@
         ]
       }
     },
-    "/services/": {
+    "/services": {
       "get": {
         "tags": [
           "Services"
@@ -628,7 +685,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Services Services  Get",
+                  "title": "Response List Services Services Get",
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/ServiceOut"
@@ -703,17 +760,17 @@
                   "description": "Create a new service using a single node transactions topology in Power tier",
                   "value": {
                     "name": "single-node-example",
+                    "tx_storage": "100",
                     "maxscale_config": "",
                     "maxscale_proxy": "false",
                     "monitor": "false",
                     "provider": "Amazon AWS",
                     "region": "ca-central-1",
-                    "release_version": "MariaDB Enterprise Server 10.6.4-1",
+                    "release_version": "MariaDB Enterprise Server 10.6.7-3",
                     "replicas": "0",
                     "size": "Sky-2x4",
                     "tier": "Power",
                     "topology": "Single Node Transactions",
-                    "tx_storage": "100",
                     "volume_iops": "100",
                     "ssl_tls": "Enabled"
                   }
@@ -753,6 +810,16 @@
               }
             }
           },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -779,16 +846,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Message"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -848,6 +905,16 @@
               }
             }
           },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -874,16 +941,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Message"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -951,6 +1008,16 @@
               }
             }
           },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -980,16 +1047,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
         },
         "security": [
@@ -1003,7 +1060,7 @@
           "Services"
         ],
         "summary": "Update Service",
-        "description": "Update an existing service name. Valid names may only contain lowercase letters,\ndigits and hyphens up to 24 characters in length.",
+        "description": "Update an existing service. Valid names may only contain lowercase letters,\ndigits and hyphens up to 24 characters in length.\n\nValid tx_storage may only be bigger than the current size.",
         "operationId": "update_service",
         "parameters": [
           {
@@ -1032,9 +1089,16 @@
               "examples": {
                 "rename": {
                   "summary": "Rename service",
-                  "description": "Change the name of a services",
+                  "description": "Change the name of a service",
                   "value": {
                     "name": "new-custom-name"
+                  }
+                },
+                "upgrade_tx_storage": {
+                  "summary": "Upgrade storage",
+                  "description": "Upgrade storage size of a service",
+                  "value": {
+                    "tx_storage": "300"
                   }
                 }
               }
@@ -1054,6 +1118,16 @@
           },
           "404": {
             "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -1091,16 +1165,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
         },
         "security": [
@@ -1110,9 +1174,10 @@
         ]
       }
     },
-    "/services/{service_id}/security/allowlist/": {
+    "/services/{service_id}/security/allowlist": {
       "get": {
         "tags": [
+          "Services",
           "Services · Allowlist"
         ],
         "summary": "List Allowed Addresses",
@@ -1158,7 +1223,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "title": "Response List Allowed Addresses Services  Service Id  Security Allowlist  Get",
+                  "title": "Response List Allowed Addresses Services  Service Id  Security Allowlist Get",
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/AllowlistIPAddress"
@@ -1186,6 +1251,7 @@
       },
       "post": {
         "tags": [
+          "Services",
           "Services · Allowlist"
         ],
         "summary": "Add Allowed Address",
@@ -1272,6 +1338,7 @@
       },
       "delete": {
         "tags": [
+          "Services",
           "Services · Allowlist"
         ],
         "summary": "Remove Allowed Address",
@@ -1288,7 +1355,7 @@
             "in": "path"
           },
           {
-            "required": false,
+            "required": true,
             "schema": {
               "title": "Address",
               "pattern": "(?:\\d{1,3}\\.){3}\\d{1,3}(?:/\\d\\d?)?",
@@ -1360,6 +1427,7 @@
     "/services/{service_id}/security/allowlist/status": {
       "get": {
         "tags": [
+          "Services",
           "Services · Allowlist"
         ],
         "summary": "Read Allowlist Status",
@@ -1408,6 +1476,7 @@
     "/services/{service_id}/security/credentials": {
       "get": {
         "tags": [
+          "Services",
           "Services · Security"
         ],
         "summary": "Retrieve Default Credentials",
@@ -1455,6 +1524,16 @@
               }
             }
           },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -1484,16 +1563,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
           }
         },
         "security": [
@@ -1503,9 +1572,10 @@
         ]
       }
     },
-    "/services/{service_id}/status/": {
+    "/services/{service_id}/status": {
       "get": {
         "tags": [
+          "Services",
           "Services · Status"
         ],
         "summary": "Read Status",
@@ -1582,6 +1652,7 @@
       },
       "post": {
         "tags": [
+          "Services",
           "Services · Status"
         ],
         "summary": "Update Status",
@@ -1987,26 +2058,45 @@
           {
             "required": true,
             "schema": {
-              "title": "Service Type",
+              "title": "Region",
+              "type": "string"
+            },
+            "examples": {
+              "us-west1": {
+                "summary": "us-west1",
+                "description": "Query for sizes in the us-west1 region.",
+                "value": "us-west1"
+              }
+            },
+            "name": "region",
+            "in": "query"
+          },
+          {
+            "required": true,
+            "schema": {
+              "title": "Topology",
               "enum": [
-                "Transactions",
-                "Analytics"
+                "Single Node Transactions",
+                "Replicated Transactions",
+                "Distributed Transactions",
+                "Multi-Node Analytics",
+                "Single Node Analytics"
               ],
               "type": "string"
             },
             "examples": {
-              "transactions": {
-                "summary": "Transactions",
+              "single node transactions": {
+                "summary": "Single Node Transactions",
                 "description": "Deploy a cloud database for transaction processing with persistent storage,\nreplication, read load balancing and read/write splitting all configured\nout of the box and ready to go.",
-                "value": "Transactions"
+                "value": "Single Node Transactions"
               },
-              "analytics": {
-                "summary": "Analytics",
+              "single node analytics": {
+                "summary": "Single Node Analytics",
                 "description": "Deploy a cloud data warehouse for ad hoc, interactive analytics on billions of rows\nwith data stored in a columnar format on low-cost object storage and massively\nparallel processing architecture.",
-                "value": "Analytics"
+                "value": "Single Node Analytics"
               }
             },
-            "name": "service_type",
+            "name": "topology",
             "in": "query"
           },
           {
@@ -2872,19 +2962,24 @@
         "title": "ServiceIn",
         "required": [
           "name",
+          "tx_storage",
           "provider",
           "region",
           "release_version",
           "replicas",
           "size",
           "tier",
-          "topology",
-          "tx_storage"
+          "topology"
         ],
         "type": "object",
         "properties": {
           "name": {
             "title": "Name",
+            "minLength": 1,
+            "type": "string"
+          },
+          "tx_storage": {
+            "title": "Tx Storage",
             "minLength": 1,
             "type": "string"
           },
@@ -2942,11 +3037,6 @@
             ],
             "type": "string"
           },
-          "tx_storage": {
-            "title": "Tx Storage",
-            "minLength": 1,
-            "type": "string"
-          },
           "volume_iops": {
             "title": "Volume Iops",
             "type": "string",
@@ -2970,6 +3060,10 @@
         "properties": {
           "name": {
             "title": "Name",
+            "type": "string"
+          },
+          "tx_storage": {
+            "title": "Tx Storage",
             "type": "string"
           },
           "maxscale_config": {
@@ -3010,10 +3104,6 @@
           },
           "topology": {
             "title": "Topology",
-            "type": "string"
-          },
-          "tx_storage": {
-            "title": "Tx Storage",
             "type": "string"
           },
           "volume_iops": {
@@ -3149,14 +3239,14 @@
       },
       "ServiceUpdate": {
         "title": "ServiceUpdate",
-        "required": [
-          "name"
-        ],
         "type": "object",
         "properties": {
           "name": {
             "title": "Name",
-            "minLength": 1,
+            "type": "string"
+          },
+          "tx_storage": {
+            "title": "Tx Storage",
             "type": "string"
           }
         },
@@ -3169,8 +3259,7 @@
           "visibility",
           "tier",
           "provider",
-          "name",
-          "sequence"
+          "name"
         ],
         "type": "object",
         "properties": {
@@ -3204,10 +3293,6 @@
           },
           "ram": {
             "title": "Ram",
-            "type": "string"
-          },
-          "sequence": {
-            "title": "Sequence",
             "type": "string"
           }
         },

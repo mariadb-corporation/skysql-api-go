@@ -177,6 +177,9 @@ type ClientInterface interface {
 
 	UpdateStatus(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetCurrentUserTier request
+	GetCurrentUserTier(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// RetrieveApiVersion request
 	RetrieveApiVersion(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
@@ -553,6 +556,18 @@ func (c *Client) UpdateStatus(ctx context.Context, serviceId string, body Update
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetCurrentUserTier(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCurrentUserTierRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) RetrieveApiVersion(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRetrieveApiVersionRequest(c.Server)
 	if err != nil {
@@ -601,7 +616,7 @@ func NewListConfigurationsRequest(server string, params *ListConfigurationsParam
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/configurations/")
+	operationPath := fmt.Sprintf("/configurations")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -659,7 +674,7 @@ func NewCreateConfigurationRequestWithBody(server string, contentType string, bo
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/configurations/")
+	operationPath := fmt.Sprintf("/configurations")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1016,7 +1031,19 @@ func NewReadSizesRequest(server string, params *ReadSizesParams) (*http.Request,
 
 	queryValues := queryURL.Query()
 
-	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "service_type", runtime.ParamLocationQuery, params.ServiceType); err != nil {
+	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "region", runtime.ParamLocationQuery, params.Region); err != nil {
+		return nil, err
+	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+		return nil, err
+	} else {
+		for k, v := range parsed {
+			for _, v2 := range v {
+				queryValues.Add(k, v2)
+			}
+		}
+	}
+
+	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "topology", runtime.ParamLocationQuery, params.Topology); err != nil {
 		return nil, err
 	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 		return nil, err
@@ -1304,7 +1331,7 @@ func NewListServicesRequest(server string, params *ListServicesParams) (*http.Re
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/")
+	operationPath := fmt.Sprintf("/services")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1394,7 +1421,7 @@ func NewCreateServiceRequestWithBody(server string, contentType string, body io.
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/")
+	operationPath := fmt.Sprintf("/services")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1545,7 +1572,7 @@ func NewRemoveAllowedAddressRequest(server string, serviceId string, params *Rem
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1557,20 +1584,16 @@ func NewRemoveAllowedAddressRequest(server string, serviceId string, params *Rem
 
 	queryValues := queryURL.Query()
 
-	if params.Address != nil {
-
-		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "address", runtime.ParamLocationQuery, *params.Address); err != nil {
-			return nil, err
-		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-			return nil, err
-		} else {
-			for k, v := range parsed {
-				for _, v2 := range v {
-					queryValues.Add(k, v2)
-				}
+	if queryFrag, err := runtime.StyleParamWithLocation("form", true, "address", runtime.ParamLocationQuery, params.Address); err != nil {
+		return nil, err
+	} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+		return nil, err
+	} else {
+		for k, v := range parsed {
+			for _, v2 := range v {
+				queryValues.Add(k, v2)
 			}
 		}
-
 	}
 
 	queryURL.RawQuery = queryValues.Encode()
@@ -1599,7 +1622,7 @@ func NewListAllowedAddressesRequest(server string, serviceId string, params *Lis
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1680,7 +1703,7 @@ func NewAddAllowedAddressRequestWithBody(server string, serviceId string, conten
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/security/allowlist/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/security/allowlist", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1784,7 +1807,7 @@ func NewReadStatusRequest(server string, serviceId string) (*http.Request, error
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/status/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/status", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1829,7 +1852,7 @@ func NewUpdateStatusRequestWithBody(server string, serviceId string, contentType
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/services/%s/status/", pathParam0)
+	operationPath := fmt.Sprintf("/services/%s/status", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1845,6 +1868,33 @@ func NewUpdateStatusRequestWithBody(server string, serviceId string, contentType
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetCurrentUserTierRequest generates requests for GetCurrentUserTier
+func NewGetCurrentUserTierRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/users/tier")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -2006,6 +2056,9 @@ type ClientWithResponsesInterface interface {
 
 	UpdateStatusWithResponse(ctx context.Context, serviceId string, body UpdateStatusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateStatusResponse, error)
 
+	// GetCurrentUserTier request
+	GetCurrentUserTierWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetCurrentUserTierResponse, error)
+
 	// RetrieveApiVersion request
 	RetrieveApiVersionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*RetrieveApiVersionResponse, error)
 }
@@ -2095,7 +2148,7 @@ type DeleteConfigurationResponse struct {
 	JSON403      *Message
 	JSON404      *Message
 	JSON409      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2122,7 +2175,7 @@ type ReadConfigurationResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2149,7 +2202,7 @@ type UpdateConfigurationResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2385,7 +2438,7 @@ type CreateServiceResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2413,7 +2466,7 @@ type DeleteServiceResponse struct {
 	JSON403      *Message
 	JSON404      *Message
 	JSON409      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2440,7 +2493,7 @@ type ReadServiceResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2467,7 +2520,7 @@ type UpdateServiceResponse struct {
 	JSON401      *Message
 	JSON403      *Message
 	JSON404      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2593,7 +2646,7 @@ type RetrieveDefaultCredentialsResponse struct {
 	JSON403      *Message
 	JSON404      *Message
 	JSON409      *Message
-	JSON422      *HTTPValidationError
+	JSON422      *Message
 	JSON502      *Message
 }
 
@@ -2659,6 +2712,31 @@ func (r UpdateStatusResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r UpdateStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetCurrentUserTierResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Tier
+	JSON401      *Message
+	JSON403      *Message
+	JSON502      *Message
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCurrentUserTierResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCurrentUserTierResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -2960,6 +3038,15 @@ func (c *ClientWithResponses) UpdateStatusWithResponse(ctx context.Context, serv
 	return ParseUpdateStatusResponse(rsp)
 }
 
+// GetCurrentUserTierWithResponse request returning *GetCurrentUserTierResponse
+func (c *ClientWithResponses) GetCurrentUserTierWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetCurrentUserTierResponse, error) {
+	rsp, err := c.GetCurrentUserTier(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCurrentUserTierResponse(rsp)
+}
+
 // RetrieveApiVersionWithResponse request returning *RetrieveApiVersionResponse
 func (c *ClientWithResponses) RetrieveApiVersionWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*RetrieveApiVersionResponse, error) {
 	rsp, err := c.RetrieveApiVersion(ctx, reqEditors...)
@@ -3174,7 +3261,7 @@ func ParseDeleteConfigurationResponse(rsp *http.Response) (*DeleteConfigurationR
 		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3235,7 +3322,7 @@ func ParseReadConfigurationResponse(rsp *http.Response) (*ReadConfigurationRespo
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3296,7 +3383,7 @@ func ParseUpdateConfigurationResponse(rsp *http.Response) (*UpdateConfigurationR
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3796,7 +3883,7 @@ func ParseCreateServiceResponse(rsp *http.Response) (*CreateServiceResponse, err
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3864,7 +3951,7 @@ func ParseDeleteServiceResponse(rsp *http.Response) (*DeleteServiceResponse, err
 		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3925,7 +4012,7 @@ func ParseReadServiceResponse(rsp *http.Response) (*ReadServiceResponse, error) 
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -3986,7 +4073,7 @@ func ParseUpdateServiceResponse(rsp *http.Response) (*UpdateServiceResponse, err
 		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -4228,7 +4315,7 @@ func ParseRetrieveDefaultCredentialsResponse(rsp *http.Response) (*RetrieveDefau
 		response.JSON409 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 422:
-		var dest HTTPValidationError
+		var dest Message
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -4354,6 +4441,53 @@ func ParseUpdateStatusResponse(rsp *http.Response) (*UpdateStatusResponse, error
 	return response, nil
 }
 
+// ParseGetCurrentUserTierResponse parses an HTTP response from a GetCurrentUserTierWithResponse call
+func ParseGetCurrentUserTierResponse(rsp *http.Response) (*GetCurrentUserTierResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCurrentUserTierResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Tier
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 401:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON401 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 403:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON403 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 502:
+		var dest Message
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON502 = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseRetrieveApiVersionResponse parses an HTTP response from a RetrieveApiVersionWithResponse call
 func ParseRetrieveApiVersionResponse(rsp *http.Response) (*RetrieveApiVersionResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
@@ -4379,4 +4513,3 @@ func ParseRetrieveApiVersionResponse(rsp *http.Response) (*RetrieveApiVersionRes
 
 	return response, nil
 }
-
