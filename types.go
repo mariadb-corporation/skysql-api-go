@@ -435,7 +435,7 @@ type UpdateServiceJSONBody ServiceUpdate
 
 // RemoveAllowedAddressParams defines parameters for RemoveAllowedAddress.
 type RemoveAllowedAddressParams struct {
-	Address *string `json:"address,omitempty"`
+	Address string `json:"address"`
 }
 
 // ListAllowedAddressesParams defines parameters for ListAllowedAddresses.
