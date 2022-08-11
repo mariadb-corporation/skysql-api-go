@@ -1,0 +1,3199 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "The below documentation describes the API for MariaDB SkySQL, which can be used directly with any HTTP client (e.g. curl, Postman, language specific clients, etc.).\n# Authentication\n\n- To authenticate with the API, do the following:\n\n- Generate an API key from MariaDB ID\n\n- Use the API key to generate a short lived token\n```bash\ncurl \\\n--location \\\n--request POST \\\n--header \"Authorization: Token REDACTED\" \\\n--header \"Content-length: 0\" \\\n'https://id-dev.mariadb.com/api/v1/token/'\n```\n\n- Add the value from the token field to an environment variable\n- Use it on subsequent request, e.g:\n```bash\ncurl \\\n--location \\\n--request GET \\\n--header \"Authorization: Bearer $JWT_TOKEN\" \\\n--header \"Content-length: 0\" \\\n\"https://api.dev.mariadb.net/provisioning/v1/sizes?service_type=ut\u0026provider=ut\u0026tier=ut\u0026page_size=10\u0026page_order=ut\u0026page_token=ut\"\n```",
+        "title": "DB Provision Service",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/provisioning/v1/configs": {
+            "get": {
+                "description": "Retrieve a list of User configs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "List User Configs",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.ConfigResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create Config",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "User Config",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CreateConfigWithValuesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ConfigWithValuesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/configs/:config_name": {
+            "get": {
+                "description": "Retrieve Config and it's values",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "User Config",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ConfigWithValuesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/internal/accounts": {
+            "post": {
+                "description": "Create a new account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts",
+                    "private_api:true"
+                ],
+                "summary": "Create a new account",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CreateAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/v1.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/internal/accounts/{org_id}/{provider}": {
+            "get": {
+                "description": "Retrieve an account by org_id and provider",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts",
+                    "private_api:true"
+                ],
+                "summary": "Get account by org_id and provider",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "org id",
+                        "name": "org_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "cloud provider name",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.AccountResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update the account",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Accounts",
+                    "private_api:true"
+                ],
+                "summary": "Update account",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.PatchAccountRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Organization ID",
+                        "name": "org_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cloud Provider Name",
+                        "name": "provider",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/internal/cluster/{cluster_id}": {
+            "get": {
+                "description": "Retrieve a cluster by ID with additional details",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clusters",
+                    "private_api:true"
+                ],
+                "summary": "Get cluster by ID detailed",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "cluster_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "detailed",
+                        "name": "detailed",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ServiceResponseInternal"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update the cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clusters",
+                    "private_api:true"
+                ],
+                "summary": "Update Cluster",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.PatchClusterRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "cluster_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/internal/clusters": {
+            "post": {
+                "description": "Create a new cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clusters",
+                    "private_api:true"
+                ],
+                "summary": "Create a new cluster",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CreateClusterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ClusterResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/internal/services/{service_id}": {
+            "get": {
+                "description": "Retrieve a service by ID with additional details",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services",
+                    "private_api:true"
+                ],
+                "summary": "Get service by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "detailed",
+                        "name": "detailed",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ServiceResponseInternal"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update the service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services",
+                    "private_api:true"
+                ],
+                "summary": "Update Service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.PatchServiceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/internal/services/{service_id}/security/credentials": {
+            "get": {
+                "description": "Get the default credentials for the service, intended to be replaced by the user via a MariaDB client",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services · Security",
+                    "private_api:true"
+                ],
+                "summary": "Retrieve Default Credentials",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.CredentialsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/products": {
+            "get": {
+                "description": "Retrieve a list of configs",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Products"
+                ],
+                "summary": "List Products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Topology ID",
+                        "name": "topology_id",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "ProductResponse",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.Product"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/products/{product_name}/configs": {
+            "get": {
+                "description": "Retrieve a list of configs keys",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "List available Config Keys",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product Name",
+                        "name": "product_name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ProductConfigResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/providers": {
+            "get": {
+                "description": "Retrieve a list of available cloud providers in which to host the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offering"
+                ],
+                "summary": "Read Providers",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "aws",
+                            "gcp"
+                        ],
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "Cloud provider, e.g. AWS or GCP",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.Provider"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/providers/{provider_name}/volume-types": {
+            "get": {
+                "description": "Retrieve a list of available volume types for a specific cloud providers in which to host the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offering"
+                ],
+                "summary": "Read VolumeTypes",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "provider name",
+                        "name": "provider_name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "list of cloud storage volume types",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.VolumeTypeResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/regions": {
+            "get": {
+                "description": "Retrieve a list of available geographic regions into which a database cluster may be deployed",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offering"
+                ],
+                "summary": "Read Regions",
+                "parameters": [
+                    {
+                        "enum": [
+                            "aws",
+                            "gcp"
+                        ],
+                        "type": "string",
+                        "description": "Provider",
+                        "name": "provider",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "Response Read Regions",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.Region"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/service-types": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offering"
+                ],
+                "summary": "Retrieve a list of available database services types to choose from (e.g. Transactions, Analytics, …)",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "ASC",
+                            "DESC"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "Read Service Types Offering",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.ServiceType"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services": {
+            "get": {
+                "description": "Retrieve a list of services",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "List Services",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "ReadServicesResponse",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.ServiceResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Create a new service",
+                "parameters": [
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.CreateServiceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ServiceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services/{service_id}": {
+            "get": {
+                "description": "Retrieve a service by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Get service by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ServiceResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete the specified services and its associated data",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Delete Service",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services/{service_id}/nodes": {
+            "post": {
+                "description": "Update the number of nodes for a service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Update Service Nodes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.ServiceNodesState"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ServiceNodesState"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services/{service_id}/power": {
+            "post": {
+                "description": "Set Power State of the Service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Set Service Power State",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.PowerState"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services/{service_id}/security/allowlist": {
+            "get": {
+                "description": "Retrieve a list of IP addresses",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Read Allowed Addresses",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.AllowListEndpoint"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Updated the services’s allowlist",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Update Allowed Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.AllowListEndpoint"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add an address to the services’s allowlist",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Add Allowed Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.AddAllowListIPAddressRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.AllowListEndpoint"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove an address from the services’s allowlist",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Remove Allowed Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.DeleteAllowedAddressRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.AllowListEndpoint"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services/{service_id}/security/credentials": {
+            "get": {
+                "description": "Get the default credentials for the service, intended to be replaced by the user via a MariaDB client",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services · Security"
+                ],
+                "summary": "Retrieve Default Credentials",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/v1.CredentialsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services/{service_id}/size": {
+            "post": {
+                "description": "Update the node size of a service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Update Service Size",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.ServiceSizeState"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/v1.ServiceSizeState"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services/{service_id}/storage/iops": {
+            "post": {
+                "description": "Sets the service storage IOPS and storage type",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Set service storage",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.SetStorageIOPSRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/v1.SetStorageIOPSRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/services/{service_id}/storage/size": {
+            "post": {
+                "description": "Sets the service storage size",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Services"
+                ],
+                "summary": "Set service storage",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identifier for a services",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.SetStorageSizeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/v1.SetStorageSizeRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/sizes": {
+            "get": {
+                "description": "Retrieve a list of available node sizes that may be used for the database cluster",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offering"
+                ],
+                "summary": "Read Sizes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ServiceType",
+                        "name": "service_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Provider",
+                        "name": "provider",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tier",
+                        "name": "tier",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "Node size, as defined by the providers",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.Size"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/tiers": {
+            "get": {
+                "description": "Retrieve a list of available tiers in which a services may be created",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offering"
+                ],
+                "summary": "Read Tiers",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "Availability tier, e.g. Power, Foundation, etc.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.Tier"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/topologies": {
+            "get": {
+                "description": "Retrieve a list of valid topologies for a specified service_type which may be deployed",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offering"
+                ],
+                "summary": "Read Topologies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service Type",
+                        "name": "service_type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "Cluster topology valid for a particular product, e.g. Standalone or MaxScale",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.Topology"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/provisioning/v1/versions": {
+            "get": {
+                "description": "Retrieve a list of valid database versions which may be chosen for database deployment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offering"
+                ],
+                "summary": "Read Versions",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "page_size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "page_order",
+                        "name": "page_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "page_token",
+                        "name": "page_token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "topology name",
+                        "name": "topology",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "description": "Retrieve a list of valid database versions which may be chosen for database deployment",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/v1.Version"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/errr.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "errr.ErrorDetails": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "solution": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "errr.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/errr.ErrorDetails"
+                    }
+                },
+                "exception": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "trace_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.AccountResponse": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.AddAllowListIPAddressRequest": {
+            "type": "object",
+            "properties": {
+                "ip_address": {
+                    "type": "string",
+                    "example": "142.251.46.142/32"
+                }
+            }
+        },
+        "v1.AllowListEndpoint": {
+            "description": "IP Address that has been added to the services network allow list",
+            "type": "object",
+            "properties": {
+                "allowList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "142.251.46.142"
+                    ]
+                },
+                "name": {
+                    "type": "string",
+                    "example": "primary"
+                }
+            }
+        },
+        "v1.Certificate": {
+            "type": "object",
+            "properties": {
+                "certificate": {
+                    "type": "string"
+                },
+                "expires": {
+                    "type": "string"
+                },
+                "serial": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ClusterApplication": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ClusterResponse": {
+            "type": "object",
+            "properties": {
+                "applications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.ClusterApplication"
+                    }
+                },
+                "availability_zones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ca_cert": {
+                    "type": "string"
+                },
+                "endpoint": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kubernetes_version": {
+                    "type": "string"
+                },
+                "monitoring_fqdn": {
+                    "type": "string"
+                },
+                "nat_ips": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ConfigResponse": {
+            "description": "ConfigResponse",
+            "type": "object",
+            "properties": {
+                "createdOn": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organizationID": {
+                    "type": "string"
+                },
+                "public": {
+                    "type": "boolean"
+                },
+                "topologyName": {
+                    "type": "string"
+                },
+                "updatedOn": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ConfigValues": {
+            "description": "ConfigValues",
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ConfigVariableResponse": {
+            "description": "ConfigVariableResponse",
+            "type": "object",
+            "properties": {
+                "keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "requires_restart": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "v1.ConfigWithValuesResponse": {
+            "description": "ConfigWithValuesResponse",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "product_configs": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/v1.ConfigValues"
+                        }
+                    }
+                }
+            }
+        },
+        "v1.CreateAccountRequest": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.CreateClusterRequest": {
+            "type": "object",
+            "properties": {
+                "applications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.ClusterApplication"
+                    }
+                },
+                "availability_zones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ca_cert": {
+                    "type": "string"
+                },
+                "endpoint": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kubernetes_version": {
+                    "type": "string"
+                },
+                "monitoring_fqdn": {
+                    "type": "string"
+                },
+                "nat_ips": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.CreateConfigWithValuesRequest": {
+            "description": "CreateConfigWithValuesRequest",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "product_configs": {
+                    "$ref": "#/definitions/v1.ProductConfigs"
+                },
+                "topology_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.CreateServiceRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "doc-test-tx-single"
+                },
+                "nodes": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "project_id": {
+                    "type": "string",
+                    "example": "b4ffd36d-20b2-4813-9939-635f66a21c5e"
+                },
+                "provider": {
+                    "type": "string",
+                    "example": "aws"
+                },
+                "region": {
+                    "type": "string",
+                    "example": "us-east-1"
+                },
+                "service_type": {
+                    "type": "string",
+                    "example": "transactional"
+                },
+                "size": {
+                    "type": "string",
+                    "example": "sky-2x8"
+                },
+                "ssl_enabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "storage": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "tier": {
+                    "type": "string",
+                    "example": "foundation"
+                },
+                "topology": {
+                    "type": "string",
+                    "example": "standalone"
+                },
+                "version": {
+                    "type": "string",
+                    "example": "10.6.7-3-1"
+                },
+                "volume_iops": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "volume_type": {
+                    "type": "string",
+                    "example": "gp2"
+                }
+            }
+        },
+        "v1.CredentialsResponse": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.DeleteAllowedAddressRequest": {
+            "type": "object",
+            "properties": {
+                "ip_address": {
+                    "type": "string",
+                    "example": "142.251.46.142/32"
+                }
+            }
+        },
+        "v1.Endpoint": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "ports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.EndpointPort"
+                    }
+                },
+                "visibility": {
+                    "type": "string"
+                },
+                "whitelist": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "v1.EndpointPort": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "purpose": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.PatchAccountRequest": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.PatchClusterRequest": {
+            "type": "object",
+            "properties": {
+                "applications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.ClusterApplication"
+                    }
+                },
+                "availability_zones": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ca_cert": {
+                    "type": "string"
+                },
+                "endpoint": {
+                    "type": "string"
+                },
+                "kubernetes_version": {
+                    "type": "string"
+                },
+                "monitoring_fqdn": {
+                    "type": "string"
+                },
+                "nat_ips": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.PatchServiceRequest": {
+            "description": "Update service request",
+            "type": "object",
+            "properties": {
+                "applications": {},
+                "cert": {
+                    "$ref": "#/definitions/v1.Certificate"
+                },
+                "endpoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.Endpoint"
+                    }
+                },
+                "fqdn": {
+                    "type": "string"
+                },
+                "ips": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.PowerState": {
+            "description": "Start/Stop Service",
+            "type": "object",
+            "properties": {
+                "is_active": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "v1.Product": {
+            "description": "Product",
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ProductConfigResponse": {
+            "description": "ProductConfigResponse",
+            "type": "object",
+            "properties": {
+                "product": {
+                    "type": "string"
+                },
+                "variables": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.ConfigVariableResponse"
+                    }
+                }
+            }
+        },
+        "v1.ProductConfigs": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/v1.ConfigValues"
+                }
+            }
+        },
+        "v1.Provider": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "iops_min": {
+                    "type": "integer"
+                },
+                "iops_per_gb": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "volume_size_max_gb": {
+                    "type": "integer"
+                },
+                "volume_size_min_gb": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.Region": {
+            "description": "Geographic region, as defined by the provider",
+            "type": "object",
+            "properties": {
+                "default": {
+                    "type": "boolean"
+                },
+                "has_clusters": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ServiceEndpoint": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "ports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.EndpointPort"
+                    }
+                }
+            }
+        },
+        "v1.ServiceNodesState": {
+            "description": "Update the number of nodes for a service",
+            "type": "object",
+            "properties": {
+                "nodes": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.ServiceResponse": {
+            "description": "ServiceResponse",
+            "type": "object",
+            "properties": {
+                "created_by": {
+                    "type": "string"
+                },
+                "created_on": {
+                    "type": "integer"
+                },
+                "endpoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.ServiceEndpoint"
+                    }
+                },
+                "fqdn": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "type": "integer"
+                },
+                "outbound_ips": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "service_type": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "ssl_enabled": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "ready",
+                        "failed",
+                        "pending",
+                        "stopped",
+                        "retired"
+                    ]
+                },
+                "storage_volume": {
+                    "$ref": "#/definitions/v1.StorageVolume"
+                },
+                "tier": {
+                    "type": "string"
+                },
+                "topology": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                },
+                "updated_on": {
+                    "type": "integer"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ServiceResponseInternal": {
+            "description": "Service object",
+            "type": "object",
+            "properties": {
+                "applications": {},
+                "availability_zone": {
+                    "type": "string"
+                },
+                "cert": {},
+                "created_by": {
+                    "type": "string"
+                },
+                "created_on": {
+                    "type": "integer"
+                },
+                "custom_image_versions": {},
+                "endpoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.Endpoint"
+                    }
+                },
+                "fqdn": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ips": {},
+                "name": {
+                    "type": "string"
+                },
+                "nodes": {
+                    "type": "integer"
+                },
+                "org_id": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "proxy_options": {},
+                "region": {
+                    "type": "string"
+                },
+                "service_number": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "ssl_enabled": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "ready",
+                        "failed",
+                        "pending",
+                        "stopped",
+                        "retired"
+                    ]
+                },
+                "storage_volume": {
+                    "$ref": "#/definitions/v1.StorageVolume"
+                },
+                "tier": {
+                    "type": "string"
+                },
+                "topology": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                },
+                "updated_on": {
+                    "type": "integer"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.ServiceSizeState": {
+            "description": "Nodes size for a service",
+            "type": "object",
+            "properties": {
+                "size": {
+                    "type": "string",
+                    "example": "sky-2x8"
+                }
+            }
+        },
+        "v1.ServiceType": {
+            "description": "a database services type, e.g. Distributed Transactions",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order": {
+                    "type": "integer"
+                },
+                "short_description": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.SetStorageIOPSRequest": {
+            "description": "Storage IOPs and volume type",
+            "type": "object",
+            "properties": {
+                "iops": {
+                    "description": "Input/output operations per second\nMinimum / Maximum IOPs depend on the size of the disk and volume type.",
+                    "type": "integer"
+                },
+                "volume_type": {
+                    "description": "Type of the EBS volume. Can be gp2, gp3, io1 or io2",
+                    "type": "string",
+                    "enum": [
+                        "gp2",
+                        "gp3",
+                        "io1",
+                        "io2"
+                    ]
+                }
+            }
+        },
+        "v1.SetStorageSizeRequest": {
+            "description": "Storage size that is set for the service",
+            "type": "object",
+            "properties": {
+                "size": {
+                    "description": "Size in GBs",
+                    "type": "integer",
+                    "example": 10
+                }
+            }
+        },
+        "v1.Size": {
+            "type": "object",
+            "properties": {
+                "cpu": {
+                    "type": "string"
+                },
+                "created_on": {
+                    "type": "string"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "ram": {
+                    "type": "string"
+                },
+                "service_type": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                },
+                "updated_on": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.StorageVolume": {
+            "type": "object",
+            "properties": {
+                "iops": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "volume_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.Tier": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "topologies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v1.Topology"
+                    }
+                }
+            }
+        },
+        "v1.Topology": {
+            "description": "Cluster topology valid for a particular product, e.g. Standalone or MaxScale",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nodes": {},
+                "order": {
+                    "type": "integer"
+                },
+                "service_type": {
+                    "type": "string"
+                },
+                "storage_engine": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.Version": {
+            "description": "Database version, e.g. 10.4 or 10.5",
+            "type": "object",
+            "properties": {
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_major": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "product": {
+                    "type": "string"
+                },
+                "release_date": {
+                    "type": "string"
+                },
+                "release_notes_url": {
+                    "type": "string"
+                },
+                "topology": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.VolumeTypeResponse": {
+            "description": "cloud storage volume type",
+            "type": "object",
+            "properties": {
+                "created_on": {
+                    "type": "integer"
+                },
+                "display_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_default": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "updated_on": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

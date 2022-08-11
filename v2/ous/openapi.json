@@ -1,0 +1,417 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Organization & User Service deals with organization and user management",
+    "title": "Organization & User Service [OUS]",
+    "contact": {},
+    "version": "1.0"
+  },
+  "host": "http://localhost:8080",
+  "basePath": "/",
+  "paths": {
+    "/organization/v1/invitees/:invitee_id": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "get-invite"
+        ],
+        "summary": "get invitations by invitee ID",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dto.Invite"
+            }
+          }
+        }
+      }
+    },
+    "/organization/v1/invites": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "list-invite"
+        ],
+        "summary": "list invitations",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dto.Invite"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "create-invite"
+        ],
+        "summary": "Create user on-boarding invitations",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/dto.Invite"
+            }
+          }
+        }
+      }
+    },
+    "/organization/v1/invites/:invite_id": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "get-invite"
+        ],
+        "summary": "get invitations by invite ID",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dto.Invite"
+            }
+          }
+        }
+      }
+    },
+    "/organization/v1/invites/:invitee_id": {
+      "delete": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "cancel-invite"
+        ],
+        "summary": "cancel invitations by invitee ID",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/organization/v1/orgs": {
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "org",
+          "create org"
+        ],
+        "summary": "Registers a  new organization",
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/organization/v1/projects": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "project",
+          "get project",
+          "get project by id"
+        ],
+        "summary": "Gets a projects within the organization.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dto.Project"
+              }
+            }
+          },
+          "204": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "project",
+          "create project",
+          ""
+        ],
+        "summary": "Creates a new project in organization",
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/organization/v1/projects/{project_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "project",
+          "get project",
+          "get project by id"
+        ],
+        "summary": "Gets a project by project id within the organization.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dto.Project"
+            }
+          }
+        }
+      }
+    },
+    "/organization/v1/public-key/:key_name/:key_version": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "get-invite-public-key"
+        ],
+        "summary": "get public key",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dto.PubKey"
+            }
+          }
+        }
+      }
+    },
+    "/organization/v1/users": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user",
+          "get user",
+          "get user by id"
+        ],
+        "summary": "Gets a users within the organization.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dto.User"
+              }
+            }
+          },
+          "204": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user",
+          "create user",
+          ""
+        ],
+        "summary": "Registers a new user to a team organization",
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/organization/v1/users/{user_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "user",
+          "get user",
+          "get user by id"
+        ],
+        "summary": "Gets a user by user id within the organization.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dto.User"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "dto.Invite": {
+      "type": "object",
+      "properties": {
+        "created_on": {
+          "type": "string"
+        },
+        "expire_on": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "invitees": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dto.Invitee"
+          }
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "org_id": {
+          "type": "string"
+        },
+        "updated_on": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.Invitee": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.Project": {
+      "type": "object",
+      "properties": {
+        "created_by": {
+          "type": "string"
+        },
+        "created_on": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "is_default": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "updated_by": {
+          "type": "string"
+        },
+        "updated_on": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.PubKey": {
+      "type": "object",
+      "properties": {
+        "algo": {
+          "type": "string"
+        },
+        "data": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.User": {
+      "type": "object",
+      "properties": {
+        "created_by": {
+          "type": "string"
+        },
+        "created_on": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "is_deleted": {
+          "type": "boolean"
+        },
+        "updated_by": {
+          "type": "string"
+        },
+        "updated_on": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}
