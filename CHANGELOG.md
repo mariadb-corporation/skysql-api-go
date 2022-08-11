@@ -1,3 +1,15 @@
+# v0.0.26 (Thu Aug 11 2022)
+
+#### 🚀 Enhancement
+
+- SkySQL 2.0 API Support [#30](https://github.com/mariadb-corporation/skysql-api-go/pull/30) ([@serafdev](https://github.com/serafdev))
+
+#### Authors: 1
+
+- Fares Bessrour ([@serafdev](https://github.com/serafdev))
+
+---
+
 # v0.0.24 (Fri May 06 2022)
 
 #### 🚀 Enhancement
