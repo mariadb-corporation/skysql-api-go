@@ -1,0 +1,588 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a notification service",
+    "title": "Notification Service",
+    "contact": {},
+    "version": "1.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "paths": {
+    "/notifications/v1/channels/emails/{channel_id}": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "get-channel-email"
+        ],
+        "summary": "Get email notification channel",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "channel id",
+            "name": "channel_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/dto.ChannelEmail"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "delete-channel-email"
+        ],
+        "summary": "Delete email notification channel",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "channel id",
+            "name": "channel_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "update-channel-email"
+        ],
+        "summary": "Update email notification channel",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "channel id",
+            "name": "channel_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Request Body",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dto.UpdateChannelEmail"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/notifications/v1/preferences/{preference_id}": {
+      "delete": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "delete-preference"
+        ],
+        "summary": "Delete notification preference",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "preference id",
+            "name": "preference_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/notifications/v1/subscribers/{subscriber_id}/channels/emails": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "get-subscribers-channel-email"
+        ],
+        "summary": "List email notification channels for a subscriber",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "subscriber id i.e. user id",
+            "name": "subscriber_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dto.ChannelEmail"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "create-channel-email"
+        ],
+        "summary": "Create email notification channel for a subscriber",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "subscriber id i.e. user id",
+            "name": "subscriber_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Request Body",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dto.CreateChannelEmail"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/dto.ChannelEmail"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/notifications/v1/subscribers/{subscriber_id}/notifications": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "get-notifications"
+        ],
+        "summary": "Get notifications of a subscriber",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "subscriber id i.e. user id",
+            "name": "subscriber_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Number of records per page.",
+            "name": "page_size",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Field on which the records are sorted.",
+            "name": "page_column",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "ASC/DESC",
+            "name": "page_order",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Page token to fetch next or previous page.",
+            "name": "page_token",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dto.Notification"
+              }
+            },
+            "headers": {
+              "X-SkySQL-Page-Token-Next": {
+                "type": "string",
+                "description": "Page token to fetch next page"
+              },
+              "X-SkySQL-Page-Token-Previous": {
+                "type": "string",
+                "description": "Page token to fetch previous page"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/notifications/v1/subscribers/{subscriber_id}/preferences": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "get-preferences"
+        ],
+        "summary": "Get notification preference of a subscriber",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "subscriber id i.e. user id",
+            "name": "subscriber_id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dto.Preference"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "create-preferences"
+        ],
+        "summary": "Create notification preference of a subscriber",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "subscriber id i.e. user id",
+            "name": "subscriber_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Request Body",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dto.CreatePreference"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dto.Preference"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errr.ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "dto.ChannelEmail": {
+      "type": "object",
+      "properties": {
+        "channel_name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "org_id": {
+          "type": "string"
+        },
+        "receivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dto.EmailRecipients"
+          }
+        },
+        "subscriber_id": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.CreateChannelEmail": {
+      "type": "object",
+      "properties": {
+        "channel_name": {
+          "type": "string"
+        },
+        "receivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dto.EmailRecipients"
+          }
+        }
+      }
+    },
+    "dto.CreatePreference": {
+      "type": "object",
+      "properties": {
+        "event_types": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "example": {
+            "service_id_1": "<list of event types>",
+            "service_id_2": "<list of event types>"
+          }
+        }
+      }
+    },
+    "dto.EmailRecipients": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.Notification": {
+      "type": "object",
+      "properties": {
+        "created_on": {
+          "type": "string"
+        },
+        "event_type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "marked_read": {
+          "type": "boolean"
+        },
+        "org_id": {
+          "type": "string"
+        },
+        "subscriber_id": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.Preference": {
+      "type": "object",
+      "properties": {
+        "event_source_svc": {
+          "type": "string"
+        },
+        "event_type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "org_id": {
+          "type": "string"
+        },
+        "subscriber_id": {
+          "type": "string"
+        }
+      }
+    },
+    "dto.UpdateChannelEmail": {
+      "type": "object",
+      "properties": {
+        "channel_name": {
+          "type": "string"
+        },
+        "receivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dto.EmailRecipients"
+          }
+        }
+      }
+    },
+    "errr.ErrorDetails": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "solution": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "errr.ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/errr.ErrorDetails"
+          }
+        },
+        "exception": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "integer"
+        },
+        "trace_id": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
